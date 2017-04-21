@@ -1,0 +1,50 @@
+#
+# htaccess file for echocms
+# 
+# @since 1.0.0
+# @author Keith Wheatley
+# @package echocms
+# 
+
+# Block access to all .php files except index.php and check.php, treat others as not found, 
+order deny,allow
+<files *.php>
+    deny from all
+</files>
+<files index.php>
+    allow from all
+</files>
+<files check.php>
+    allow from all
+</files>
+ErrorDocument 403 /cms/error/notfound
+
+# Allow controller "index" and root index.php
+# see: http://httpd.apache.org/docs/2.2/content-negotiation.html
+Options -MultiViews
+
+# Prevent access directly into folders
+Options -Indexes
+
+# URL rewriting
+RewriteEngine On
+
+# If not a directory,
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# and not an existing file,
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# and not a symbolic link,
+RewriteCond %{REQUEST_FILENAME} !-l
+
+# then rewrite the URL.
+#  - Sent all requests to index.php with a query string of 'url=' the request filename.
+#  - Append any query string from the original URL as further query parameters (QSA)
+#  - Stop processing this .htaccess file (L).
+RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
+
+
+
+
+

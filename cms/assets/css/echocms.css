@@ -1,0 +1,498 @@
+/**
+ * @package echocms
+ * @since 1.0.0
+ * @author Keith Wheatley
+ *
+ * Minified with YUI Compressor at http://refresh-sf.com BUT switch off clean-CSS advanced settings
+ * For other css files, see cms/view/common/header.php for links to Bootstrap, jQuery-UI, Jcrop
+ */
+.header {
+    width: 100%;
+    height: 110px;
+    z-index: 999;
+}
+.header-logo a:hover,
+.header img:hover{
+    opacity: 0.8;
+    color: #999999;
+}
+.header-logo {
+    height: 60px;
+    padding-top:10px;
+}
+.header-logo  img {
+    height: 40px;
+}
+.header-title {
+    padding: 5px 0 0 0px;
+    height: 40px;
+    overflow:hidden;
+}
+.header-title a{
+    text-decoration: none;
+    line-height:40px;
+    font-size: 16px;
+    font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+    color: #777777;
+    letter-spacing: 0.0625em;
+}
+
+/**
+ * Footer
+ *          for sticky footer see https://getbootstrap.com/examples/sticky-footer/
+ */
+html {
+    position: relative;
+    min-height: 100%;
+}
+body {
+    margin-bottom: 40px; /* Set margin bottom to footer height plus some space above footer*/
+}
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 36px;        /* Set the fixed height of the footer here */
+    padding:7px 12px 0 0;
+    border-bottom: solid 1px #FC8E5F;
+    text-shadow: 0 1px 0 #fff;
+    background-image: -webkit-linear-gradient(top, #eee 0, #ccc 100%);
+    background-image: -o-linear-gradient(top, #eee 0, #ccc 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#eee), to(#ccc));
+    background-image: linear-gradient(to bottom, #eee 0, #ccc 100%);
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ffeeeeee', endColorstr='#ffcccccc', GradientType=0);
+    filter: progid: DXImageTransform.Microsoft.gradient(enabled=false);
+    background-repeat: repeat-x;
+}
+footer img{
+    height:20px;
+}
+.footer img:hover{
+    opacity: 0.8;
+}
+.footer-text{
+    padding: 4px 3px 0 0;
+    font-size: 80%;
+}
+
+/**
+ * Bootstrap overrides
+ */
+.nav-tabs>li.active>a,
+.nav-tabs>li.active>a:focus,
+.nav-tabs>li.active>a:hover {
+     background-color: #f7f7f4;
+     border-top-right-radius: 8px;
+     border-top-left-radius: 8px;
+     border-top: solid 2px #bbb;
+     border-left: solid 2px #bbb;
+     border-right: solid 2px #bbb;
+     border-bottom: solid 2px transparent;
+ }
+.nav .open>a,
+.nav .open>a:focus,
+.nav .open>a:hover {
+     border-color: transparent;
+}
+.nav-tabs{
+     border-bottom: 2px solid #bbb;
+ }
+.nav-tabs>li>a {
+     border-top-right-radius: 8px;
+     border-top-left-radius: 8px;
+     margin-bottom: -2px;
+     margin-right: 0;
+ }
+body,
+.header,
+.dropdown-menu {
+    background-color: #f7f7f4;
+}
+.dropdown-menu {
+    min-width: 110px;
+}
+.mce-content-body {
+    background-color: #ffffff;
+}
+.form-horizontal .control-label {
+    text-align:left;
+}
+.form-horizontal .control-label.text-center{
+    text-align: center;
+}
+@media (min-width: 768px) {
+  .form-horizontal .control-label {
+    padding-top: 0;
+  }
+}
+legend {
+    font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+    margin-bottom: 6px;
+    font-size: 16px;
+    border-bottom: 1px solid #999999;
+    color: #999999;
+    letter-spacing: 0.0625em;
+}
+fieldset {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group-margin {
+    margin-bottom: 25px;
+}
+
+.form-group-heading {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color: #999;
+    font-weight: 700;
+    margin-top: 6px;
+}
+.form-group-margin-top {
+    margin-top: 30px;
+}
+.form-group-sm div label {
+    width: 100%;
+}
+.status {
+    vertical-align:-1px;
+    font-size: 15px;
+}
+textarea {
+    resize: none;
+    width:100%;
+    padding-left:11px;
+}
+input {
+    width:100%;
+}
+.form-fluid {
+    padding-right: 5%;
+    padding-left: 5%;
+    max-width: 970px;
+}
+.alert {
+    margin-bottom:0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.modal {
+    margin-top: 30vh;
+}
+.modal-header {
+    border: none;
+    padding-bottom: 0;
+}
+.modal-dismiss-size {
+    font-size: 200%;
+}
+.modal-spinner-size {
+    font-size: 350%;
+}
+.modal-body .glyphicon {
+    font-size: 250%;
+    margin-top: 12px;
+}
+.modal-backdrop-notify,
+.modal-content {
+    text-shadow: 0 1px 0 #fff;
+    background-image: -webkit-linear-gradient(top, #eee 0, #ccc 100%);
+    background-image: -o-linear-gradient(top, #eee 0, #ccc 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#eee), to(#ccc));
+    background-image: linear-gradient(to bottom, #eee 0, #ccc 100%);
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ffeeeeee', endColorstr='#ffcccccc', GradientType=0);
+    filter: progid: DXImageTransform.Microsoft.gradient(enabled=false);
+    background-repeat: repeat-x;
+}
+
+.modal-backdrop-notify {
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+/**
+ * Fix to get bootstrap to render text correctly following glyphicon
+ *   http://stackoverflow.com/questions/18526828/bootstrap-3-font-family-within-a-glyphicon-span
+ */
+.glyphicon {
+    font-family: inherit;
+}
+.glyphicon.large {
+    font-size: 130%;
+    padding-top: 4px;
+}
+.glyphicon:before{
+    font-family:'Glyphicons Halflings';
+}
+.progress {
+    background-image: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    margin-bottom: 10px;
+}
+
+/**
+ * Vertical margins
+ */
+.vertical-space-sm {
+    margin-top: 10px;
+}
+.vertical-space-md {
+    margin-top: 10vh;
+}
+.vertical-space-lg {
+    margin-top: 16vh;
+}
+.marginTop {
+    margin-top: 14px;
+}
+.marginBottom {
+    margin-bottom: 30px;
+}
+
+/**
+ * File upload, radio and checkbox buttons
+ *      see https://css-tricks.com/styling-customizing-file-inputs-the-smart-way/
+ */
+input[type=radio], input[type=checkbox],
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+input[type=checkbox] + label:after {
+    content: "";
+    display: inline-block;
+    width: 33px;
+    height: 33px;
+    vertical-align:middle;
+    margin-top: 7px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    text-align:center;
+    font-size: 22px;
+    color: #777777;
+
+    /* bootstrap button style bg*/
+    text-shadow: 0 1px 0 #fff;
+    background-image: -webkit-linear-gradient(top, #fff 0, #e0e0e0 100%);
+    background-image: -o-linear-gradient(top, #fff 0, #e0e0e0 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#e0e0e0));
+    background-image: linear-gradient(to bottom, #fff 0, #e0e0e0 100%);
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffe0e0e0', GradientType=0);
+    filter: progid: DXImageTransform.Microsoft.gradient(enabled=false);
+    background-repeat: repeat-x;
+}
+input[type=checkbox].no-top-margin + label:after {
+    margin-top: 0;
+}
+input[type=checkbox]:checked + label:after {
+    content:"\2713";
+}
+input[type=radio] + label:after {
+    content: "";
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align:middle;
+    margin-right: 8px;
+    background-color: #aaa;
+    box-shadow: inset 0px 2px 2px rgba(0, 0, 0, .3);
+    border-radius: 8px;
+}
+input[type=radio]:checked + label:after {
+    content: "\2022";
+    color:white;
+    background-color: #666;
+    font-size:1.8em;
+    text-align:center;
+    line-height:14px;
+    text-shadow:0px 0px 3px #eee;
+}
+
+/**
+ * Cropping - for image cropping in view/edit/image.php
+ */
+.jcrop-holder {
+    margin: auto;
+}
+.imageMargins {
+    padding-top:15px;
+    padding-bottom:15px;
+}
+.imagePortraitCrop {
+    padding: 0 40px 0 40px;
+}
+.imageLandscapeCrop {
+    padding: 0 20px 0 20px;
+}
+
+/**
+ * Selectize overrides (css/selectize.bootstrap3.css)
+ */
+
+.selectize-dropdown-content .option {
+    display:inline-block;
+
+}
+.selectize-dropdown-header,
+.selectize-control.plugin-remove_button [data-value] .remove,
+.selectize-input,
+.selectize-control.single .selectize-input.input-active,
+.selectize-input.dropdown-active,
+.selectize-dropdown,
+.selectize-dropdown [data-selectable] .highlight,
+.selectize-dropdown,
+.selectize-dropdown.form-control,
+.selectize-input.dropdown-active,
+.form-control.selectize-control {
+    border: 1px solid #777;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+
+/**
+ * Font styles for links and buttons
+ */
+a,
+.btn-default,
+.nav>li>a {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #444;
+    font-size:13px;
+    text-decoration: none;
+}
+.btn-default {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #444;
+    font-size:13px;
+    text-decoration: none;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: #666;
+    font-size:14px;
+}
+a:hover,
+a:focus {
+    color: #000;
+}
+
+/**
+ * Font styles for labels
+ */
+.control-label {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:13px;
+    color: #999;
+}
+
+/**
+ * Font styles for text areas, overrides for Bootstrap, Selectize and TinyMCE
+ */
+body, textarea,
+.selectize-dropdown,
+.selectize-input,
+.selectize-input input,
+.selectize-dropdown-header-close,
+.selectize-control.multi .selectize-input > div,
+.selectize-dropdown-header-close {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: #555;
+    font-size:14px;
+}
+
+/**
+ * Pick-a-Color - menu layout overrides
+ *   Also all media max-widths changed from 991 to 480 in assets/css/pick-a-color-1.2.3.min.css
+ */
+.color-menu li {
+    float: left;
+}
+.color-label {
+    display:none;
+}
+.pick-a-color-markup .color-menu .basicColors-content li>a{
+    padding: 5px 0px 3px 16px;
+}
+#pickAColor {
+    float: left;
+    padding: 0 0 10px 10px;
+}
+
+/**
+ *  form Validator.js overrides
+ */
+.help-block {
+    height: 20px;
+    margin-bottom: 0;
+}
+
+/**
+ * "hidden" classes borrowed from Bootstrap V.4
+ */
+@media (max-width: 767px) {
+  .hidden-sm-down {
+    display: none !important;
+  }
+}
+
+/**
+ * activation buttons
+ */
+.activation {
+    width: 120px;
+}
+.activation a span{
+    transition: .3s all;
+    font-size: 22px;
+}
+.activation a span:hover{
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+}
+
+/**
+ * Animated loading spinner
+ */
+.spinner {
+    font-size: 300%;
+    animation: spin 2s infinite linear;
+    -webkit-animation: spin 2s infinite linear;
+}
+@-webkit-keyframes spin {
+    0% {
+        transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(359deg);
+        -webkit-transform: rotate(359deg);
+        -ms-transform: rotate(359deg);
+    }
+}
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);\
+        -ms-transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(359deg);
+        -webkit-transform: rotate(359deg);
+        -ms-transform: rotate(359deg);
+    }
+}
+/**
+ *  line on list item page
+ */
+.list-item {
+   cursor: pointer;
+}
+.list-item:hover {
+   background-color: #eee;
+}
