@@ -3,9 +3,9 @@
 >Simple and elegant CMS for developers who craft their own Front End code. Easy to use input of text, creates responsive-friendly images in multiple sizes and aspect ratios. No templates, minimum impact on front end design, content simply inserted with PHP echo statements.
 
 ## Features
-* provides flexible structuring of content to match your website pages.
+* provides flexible structuring of content to match your website structure and design,
 * content is simply inserted into your HTML with PHP echo statements,
-* Neat and simple user input pages with full featured text editing and image cropping,
+* neat and simple user input pages with full featured text editing and image cropping,
 * multiple configurable aspect ratios for each image, each individually cropped,
 * configurable image sizes to support Responsive Images, with `srcset` statements generated automatically,
 * secure user authentication, using powerful password hashing and attack blocking,
