@@ -3,7 +3,7 @@
 >EchoCMS is an easy to use Contents Management System intended for developers who craft their own Front End code and need a simple, elegant, Responsive-friendly CMS for content input. It does not use templates and is designed to impinge as little as possible on Front End structure and design.
 
 ## Features
-* provides flexible structuring of content to match your website pages.
+* provides flexible structuring of content to match your website pages,
 * content is simply inserted into your HTML with PHP echo statements,
 * full featured text editing,
 * multiple configurable aspect ratios for each image, each individually cropped,
