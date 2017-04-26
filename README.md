@@ -5,7 +5,7 @@
 ## Features
 * provides flexible structuring of content to match your website pages.
 * content is simply inserted into your HTML with PHP echo statements,
-* Neat and simple input pages with full featured text editing and image cropping,
+* Neat and simple user input pages with full featured text editing and image cropping,
 * multiple configurable aspect ratios for each image, each individually cropped,
 * configurable image sizes to support Responsive Images, with `srcset` statements generated automatically,
 * secure user authentication, using powerful password hashing and attack blocking,
