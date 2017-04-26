@@ -345,12 +345,12 @@ $(document).ready(function() {
 // SET UP TEXTAREA EDIT
     tinymce.init({
         content_css : '/cms/assets/css/echocms.css',
-        plugins : 'lorumipsum advlist autolink codesample code fullscreen image paste preview link lists table textcolor',
+        plugins : 'lorumipsum advlist autolink code fullscreen paste preview link lists table textcolor',
         paste_as_text: true,
         selector: '#textContent',
         menubar : false,
         statusbar : false,
-        toolbar: 'styleselect forecolor | indent outdent | undo redo | bullist numlist |  link unlink | table codesample code lorumipsum image fullscreen',
+        toolbar: 'styleselect forecolor | indent outdent | undo redo | bullist numlist |  link unlink | table code lorumipsum fullscreen',
         relative_urls: true
      });
 
@@ -363,7 +363,7 @@ $(document).ready(function() {
         maxItems: 1,
 <?php if ($config['pages_updatable']) { ?>
         create: true,
-        placeholder:'select 1 option or add new'
+        placeholder:'select or add 1 option'
 <?php } else { ?>
         placeholder:'select 1 option'
 <?php } ?>
@@ -378,7 +378,7 @@ $(document).ready(function() {
         maxItems: 1,
 <?php if ($config['elements_updatable']) { ?>
         create: true,
-        placeholder:'select 1 option or add new'
+        placeholder:'select or add 1 option'
 <?php } else { ?>
         placeholder:'select 1 option'
 <?php } ?>
@@ -390,7 +390,7 @@ $(document).ready(function() {
         createOnBlur: true,
         create: true,
         hideSelected: true,
-        placeholder:'select multiple options or add new',
+        placeholder:'select and/or add multiple options',
         maxItems: 99
     });
 

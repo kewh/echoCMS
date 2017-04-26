@@ -399,7 +399,6 @@ class editModel
      */
 	  public function reportError($message)
 	  {
-        error_log ('cms/model/auth.php  reportError error message: ' . print_r($message, true) );
         //error_log ('cms/model/auth.php  reportError session data: ' . print_r($_SESSION, true) );
         header('location: ' . CONFIG_URL. 'error/notify' );
         exit();

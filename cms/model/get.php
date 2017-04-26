@@ -175,6 +175,7 @@ class getModel
             $item['text'] = html_entity_decode($item['text']);
         }
 
+        //error_log ('cms/model/get.php  item. $item : ' . print_r($item, true) );
         return ($item);
     }
 

@@ -1,44 +1,39 @@
 ![EchoCMS](assets/images/echocmsLogoMd.png)
 
->EchoCMS is an easy to use Contents Management System intended for developers who craft their own Front End code and need a simple, elegant, Responsive-friendly CMS for content input. It does not use templates and is designed to impinge as little as possible on your Front End structure and design.
+>EchoCMS is an easy to use Contents Management System intended for developers who craft their own Front End code and need a simple, elegant, Responsive-friendly CMS for content input. It does not use templates and is designed to impinge as little as possible on Front End structure and design.
 
 ## Features
-* provides flexible structuring of content to match your website pages and elements, defaults to HTML5 Semantic Elements
+* provides flexible structuring of content to match your website pages.
 * content is simply inserted into your HTML with PHP echo statements,
 * full featured text editing,
 * multiple configurable aspect ratios for each image, each individually cropped,
 * configurable image sizes to support Responsive Images, with `srcset` statements generated automatically,
 * secure user authentication, using powerful password hashing and attack blocking,
-* built with PHP, MySQL,  HTML5, Bootstrap, jQuery, TinyMCE, Jcrop.
+* built with PHP, MySQL, HTML5, Bootstrap, jQuery, TinyMCE, Jcrop.
 
 ## Content structure
 
-The basic building block is an **item**.
+The basic building block for the content structure is an **item**. Content for each **item** is added and updated using a single input form for text and images, and one further page for cropping images (accessed from the menu links 'create item' and 'edit item'). Note that, in order to keep things flexible, no content is mandatory. Leave fields blank if you do not need them for display or sequencing.
 
-Each **item** can be assigned to a **page** and/or **element**, and can have multiple **tags**. These are used to determine the items to be retrieved.
+Each **item** can be assigned to a **page** and/or an **element**, and can have multiple **tags**, as described below. These are used to determine the items to be retrieved. A single item can be used on multiple pages, for example the content of a header section. Multiple items can belong to the same page and element, for example when there are multiple sections or articles. And different data from an item can appear on more than one page, for example a page listing blog entry titles and a page with all the data for a blog entry.
 
-A **page** is a page of your website.
+* `page` is the name of a page of your website and can be picked from a dropdown list, which can be configured by Admin or, if configured to updatable, added here on the user input page. See the Configuration section below for further details.
 
-An **element** is a part of a website page for which you want to have unique content. By default, these are set to the HTML5 Semantic Elements (e.g. header, section, etc) but they can be configured to elements of your choice, for example to align them to business descriptions of your content items (e.g. people, projects, etc). See the Configuration section below for further details.
+* `element` is a part of a website page for which you want to have unique content. Elements can be picked from a dropdown list which can be configured by Admin or, if configured to updatable, added here on the user input page. These could be set to HTML5 Semantic Elements (e.g. header, section, article, etc) or to elements of your choice  to align them to business entities (e.g. people, project, product, etc).
 
-Content for each **item** is added and updated using a single input form for text and images, and one further page for cropping images (accessed from the menu links 'create item' and 'edit item').
+* `tags` multiple tags can be entered for each item. They can be used to retrieve groups of associated items. Tag values are not set by the configuration but are entered here and, once entered, will be available in a drop down list for all other items.
 
-## Content for each Item
-Note that, in order to keep things flexible, no content is mandatory. Leave fields blank if you do not need them for display or sequencing.
+* `date` defaults to the current date but can be updated. It is made available for display in several formats but also determines the sequencing of items, even if not displayed.
 
-`date` is the date available for display in several formats but also determines the sequencing of items, even if not displayed.
+* `heading` and `caption` are plain text and can be formatted and used in your code as required.
 
-`heading` and `caption` items can be used as you wish, they can be retrieved and formatted in your code as required.
+* `download` is a single PDF file selected for each item. Once selected, the file name, minus its file extension, appears as a draft download name but can be updated as required.
 
-`tags` multiple tags can be entered for each item. They can be used to retrieve groups of associated items. (And, just like the element and heading, once entered they are available in a drop down box to be used in other items.)
+* `text` is the main text edited into html format, using the outstandingly good TinyMCE editing plugin. The facilities are relatively intuitive; particularly useful are the **_lorem ipsum_** feature which can quickly generate test data, and the **_full screen_** feature, which is useful for items with a lot of text to edit.
 
-`download` is a single PDF file selected for each item. Once selected, the file name, minus its file extension, appears as a draft download name but can be updated as required.
+* `images` multiple images can be uploaded for each item. Their sequence can be changed by drag and dropping them into the required sequence. Clicking on the **crop** button for an image will bring up a new page where the cropping for each aspect ratio can be defined. The text for the image's `alt` tag can also be entered on this page. The **confirm crop** button must be clicked to record the crop and return to the main data entry page.
 
-`text` is the main text edited into html format, using the outstandingly good TinyMCE editing plugin. The facilities are relatively intuitive; particularly useful are the **_lorem ipsum_** feature which can quickly generate test data, and the full screen feature, which is useful for items with a lot of text to edit.
-
-`images` multiple images can be uploaded for each item. Their sequence can be changed by drag and dropping them into the required sequence. Clicking on the **crop** button for an image will bring up a new page where the cropping for each aspect ratio can be defined. The text for the image's `alt` tag can also be entered on this page. The **confirm crop** button must be clicked to record the crop and return to the main data entry page.
-
-`status` of the item is shown at the top left of the input page. The status can be updated using the **save draft**, **publish** and **take offline** buttons.  The **publish**  process is where the images are created for the website and may take some time depending on the number of images the item has and also on the number and sizes of images defined in the config settings.
+* `status` of the item is shown at the top left of the input page. The status can be updated using the **save draft**, **publish** and **take offline** buttons.  The **publish**  process is where the images are created for the website and may take some time depending on the number of images the item has and also on the number and sizes of images defined in the config settings.
 
 ## Getting content into your code
 
@@ -51,34 +46,34 @@ Install echoCMS on your server (see installation element below). Use the .php su
 The first call to the **`item`** function will get the most recent item for the specified page and/or element. Arguments of null or 'all' will look within all pages and/or elements. The data for the single item is then available to echo into your HTML, for example:
 ````php
 <?php
-     $item = $get->item('yourPage', 'yourSection');
-     echo $item['header'];
+     $yourItem = $get->item('yourPage', 'yourElement');
+     echo $item['heading'];
      echo $item['text'];
-     // see element below for list of all data items available
+     // see below for list of all data entities available for each item
 ?>
 ````
 After the first call to the **`item`** function, subsequent calls can get the next and previous items within the specified page/element, by using the `next` and `prev` items, for example:
 ````php
 <?php
-     $item = $get->item($item['next']);
+     $yourItem = $get->item($yourItem['next']);
      ....
-     $item = $get->item($item['prev']);
+     $yourItem = $get->item($yourItem['prev']);
 ?>
 ````
 Or if you want to use the next or previous item on another page, use the `next` or `prev` item in the URL query string of a link to that page, for example:
 
 ````php
-    <a href='another.php<?php echo $item['next'];?>'>go to next</a>
+    <a href='another.php<?php echo $yourItem['next'];?>'>go to next</a>
 
     <!-- and in the next page -->
-    <?php $item = $get->item($_GET);?>
+    <?php $yourItem = $get->item($_GET);?>
 ````
 
 #### To get multiple items
 Use the **`items`** function (note the plural) to get an array of all items for a specified page and/or element (or use null or 'all' to get items within all pages/elements.). Then do something like the following to loop around the array and echo the data:
 
 ````php
-    <?php $yourItems = $get->items('yourPage','yourSection');?>
+    <?php $yourItems = $get->items('yourPage','yourElement');?>
 
     <section>
         <?php foreach ($yourItems as $yourItem) { ?>
@@ -96,41 +91,44 @@ Use the **`items`** function (note the plural) to get an array of all items for 
 #### To add images
 To use images in your HTML do something like the following (see also the element below for details of the image types available for each item):
 ````php
-    <?php $items = $get->items('yourPage','yourSection');?>
+    <?php $yourItems = $get->items('yourPage','yourElement');?>
 
     <section>
-      <?php foreach ($items as $item) { ?>
-          <?php foreach ($item['images'] as $image) { ?>
-              ....
-              <img src="<?php echo $image['landscape']['1x'];?>"
-                   alt="<?php echo $image['alt'];?>">
-              ....
-              <!-- or for Responsive Images use srcset -->
-              <img src="<?php echo $image['landscape']['1x'];?>"
-                   srcset="<?php echo $image['landscape']['srcset-w'];?>"
-                   alt="<?php echo $image['alt'];?>">
-              ....
-            <?php } ?>
+       <?php foreach ($yourItems as $yourItem) { ?>
+          <article>
+              .....
+              <?php foreach ($yourItem['images'] as $image) { ?>
+                  ....
+                  <img src="<?php echo $image['landscape']['1x'];?>"
+                       alt="<?php echo $image['alt'];?>">
+                  ....
+                  <!-- or for Responsive Images use srcset -->
+                  <img src="<?php echo $image['landscape']['1x'];?>"
+                       srcset="<?php echo $image['landscape']['srcset-w'];?>"
+                       alt="<?php echo $image['alt'];?>">
+                  ....
+              <?php } ?>
+
+         </article>
         <?php } ?>
     </section>
 ````
-Or if you want a single image for a specific item, do something like the following; this example gets the first image in panorama format in the x2 size for the specified item:
+Or if you want a single image for a specific item, do something like the following; this example gets the first image in panorama format in the x2 size for the header of the an index page:
 ````php
-    <?php $hero = $get->item("index", "yourHeroItem"); ?>
+    <?php $header = $get->item("index", "header"); ?>
     ....
-    <img src="<?php echo $hero['images']['0']['panorama']['2x'];?>"
-         alt="<?php echo $hero['images']['0']['alt'];?>">
+    <img src="<?php echo $heading['images']['0']['panorama']['2x'];?>"
+         alt="<?php echo $heading['images']['0']['alt'];?>">
 ````
 #### To get items by `tag`
 Each item can contain multiple `tags` in the `item` array. A tag can be used by passing it to another page in a URL string to retrieve items with the same tag value for example,  like this:
 ````php
-    <?php foreach ($item['tags'] as $tag) { ?>
+    <?php foreach ($yourItem['tags'] as $tag) { ?>
         <a href="another.php?tag=<?php echo $tag;?>"><?php echo $tag; ?></a>
     <?php } ?>
 
-    <!-- and in the receiving page -->
-    <?php $item = $get->item($_GET);?>
-
+    <!-- and in the linked page -->
+    <?php $yourItems = $get->items($_GET);?>
 ````
 ## Data available for each item
 
@@ -217,7 +215,7 @@ The authentication model is designed for a single Admin managing multiple Users 
 
 * `updatable` : setting associated to `pages' can be set to allow additional values to be added by the user content input page.
 
-* `elements` : the default values to be selected in the dropdown list on the user content input page. See Content Structure section above. Defaults to HTML5 Semantic Elements but can be configured to elements of your choice.
+* `elements` : the default values to be selected in the dropdown list on the user content input page. See Content Structure section above. By default, these are set to the HTML5 Semantic Elements (e.g. header, section, etc) but they can be configured to elements of your choice, for example to align them to business descriptions of your content items (e.g. people, projects, etc).
 
 * `updatable` setting associated to `elements` can be set to allow additional values to be added by the user content input page.
 

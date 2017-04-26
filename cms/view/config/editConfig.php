@@ -449,7 +449,6 @@ $(document).ready(function() {
           createOnBlur: true,
           create: true,
           hideSelected: true,
-          placeholder:'select multiple options or add new',
           maxItems: 99
       });
 
@@ -459,7 +458,6 @@ $(document).ready(function() {
           createOnBlur: true,
           create: true,
           hideSelected: true,
-          placeholder:'select multiple options or add new',
           maxItems: 99
       });
 });
