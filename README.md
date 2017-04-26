@@ -1,11 +1,11 @@
 ![EchoCMS](https://raw.githubusercontent.com/kewh/echoCMS/master/cms/assets/images/echocmsLogoMd.png)
 
->EchoCMS is an easy to use Contents Management System intended for developers who craft their own Front End code and need a simple, elegant, Responsive-friendly CMS for content input. It does not use templates and is designed to impinge as little as possible on Front End structure and design.
+>Simple and elegant CMS for developers who craft their own Front End code. Easy to use input of text, creates responsive-friendly images in multiple sizes and aspect ratios. No templates, minimum impact on front end design, content simply inserted with PHP echo statements.
 
 ## Features
 * provides flexible structuring of content to match your website pages.
 * content is simply inserted into your HTML with PHP echo statements,
-* full featured text editing,
+* Neat and simple input pages with full featured text editing and image cropping,
 * multiple configurable aspect ratios for each image, each individually cropped,
 * configurable image sizes to support Responsive Images, with `srcset` statements generated automatically,
 * secure user authentication, using powerful password hashing and attack blocking,
