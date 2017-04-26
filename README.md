@@ -1,4 +1,4 @@
-![EchoCMS](assets/images/echocmsLogoMd.png)
+![EchoCMS](https://raw.githubusercontent.com/kewh/echoCMS/master/cms/assets/images/echocmsLogoMd.png)
 
 >EchoCMS is an easy to use Contents Management System intended for developers who craft their own Front End code and need a simple, elegant, Responsive-friendly CMS for content input. It does not use templates and is designed to impinge as little as possible on Front End structure and design.
 
