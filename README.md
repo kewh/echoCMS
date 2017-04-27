@@ -89,7 +89,7 @@ Use the **`items`** function (note the plural) to get an array of all items for 
     </section>
 ````
 #### To add images
-To use images in your HTML do something like the following (see also the element below for details of the image types available for each item):
+To use images in your HTML do something like the following (see also the section below for details of the image types available for each item):
 ````php
     <?php $yourItems = $get->items('yourPage','yourElement');?>
 
@@ -290,7 +290,7 @@ zxcvbn  | https://github.com/dropbox/zxcvbn
 Jcrop   | https://github.com/tapmodo/Jcrop
 jquery-ui  |  https://jqueryui.com
 tinymce	  |   https://www.tinymce.com
-| **bundled with EchoCMS**
+|| **bundled with EchoCMS**
 validator	| https://github.com/1000hz/bootstrap-validator
 pick-a-color | https://github.com/lauren/pick-a-color
 selectize	| https://github.com/selectize/selectize.js
