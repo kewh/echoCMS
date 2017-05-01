@@ -247,14 +247,16 @@ class getModel
                 . $sql . ' ORDER BY date ASC LIMIT 1');
         $stmt->execute(array($date));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        if (empty($row))
-            $next = NULL;
-        else
-            $next = 'id='. $row['id'];
+        if ($row) {
+            $next = '?id='. $row['id'];
             if ($page)
-                $next += '&page=' . $page;
+                $next .= '&page=' . $page;
             if ($element)
-                $next += '&element=' . $element;
+                $next .= '&element=' . $element;
+        }
+        else {
+            $next = NULL;
+        }
 
         return ($next);
 	  }
@@ -283,14 +285,16 @@ class getModel
               . $sql . ' ORDER BY date DESC LIMIT 1');
         $stmt->execute(array($date));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        if (empty($row))
-            $prev = NULL;
-        else
-            $prev = 'id='. $row['id'];
+        if ($row) {
+            $prev = '?id='. $row['id'];
             if ($page)
-                $prev += '&page=' . $page;
+                $prev .= '&page=' . $page;
             if ($element)
-                $prev += '&element=' . $element;
+                $prev .= '&element=' . $element;
+        }
+        else {
+            $prev = NULL;
+        }
 
 		    return ($prev);
 	  }
