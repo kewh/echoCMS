@@ -1,4 +1,4 @@
--- echoCMS version 1.0.0
+-- echoCMS version 1.0.1
 -- https://github.com/kewh/echoCMS
 --
 -- database setup
@@ -71,7 +71,7 @@ INSERT INTO `config` (`setting`, `value`) VALUES
 --
 -- Table structure for table `pagesTable`
 --
-
+DROP TABLE IF EXISTS `pagesTable`;
 CREATE TABLE `pagesTable` (
   `page` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -81,7 +81,7 @@ CREATE TABLE `pagesTable` (
 --
 -- Table structure for table `elementsTable`
 --
-
+DROP TABLE IF EXISTS `elementsTable`;
 CREATE TABLE `elementsTable` (
   `element` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -198,7 +198,8 @@ CREATE TABLE `imagesTable` (
   `sy2` int(11) DEFAULT NULL,
   `height` int(11) DEFAULT NULL,
   `width` int(11) DEFAULT NULL,
-  `alt` varchar(255) DEFAULT NULL
+  `alt` varchar(255) DEFAULT NULL,
+  `web_images` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -257,7 +258,8 @@ CREATE TABLE `pendingImagesTable` (
   `sy2` int(11) DEFAULT NULL,
   `height` int(11) DEFAULT NULL,
   `width` int(11) DEFAULT NULL,
-  `alt` varchar(255) DEFAULT NULL
+  `alt` varchar(255) DEFAULT NULL,
+  `web_images` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

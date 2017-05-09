@@ -2,7 +2,7 @@
 /**
  * model class for edit
  *
- * @since 1.0.0
+ * @since 1.0.1
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -56,7 +56,7 @@ class editModel
 	  }
 
     /**
-	   *  Gets list of all unique config, live & pending elements
+	   *  Gets list of all unique config, live & pending, and newly added elements
 	   *
      * @return array $elements
 	   */
@@ -81,13 +81,17 @@ class editModel
 			      if (!empty($row['element']))
                 $allElements[] =  $row['element'];
 		    }
+
+        // get newly added element from session data
+        $allElements[] = $_SESSION['item']['element'];
+
 	      $elements = array_unique ($allElements);
 
 	      return ($elements);
 	  }
 
     /**
-	   * Gets a list of all unique Live & Pending Pages
+	   * Gets a list of all unique Live & Pending, and newly added Pages
      *
      * @return array $pages
 	   */
@@ -112,6 +116,10 @@ class editModel
         		if (!empty($row['page']))
 		            $allPages[] =  $row['page'];
 		    }
+
+        // get page newly added to session data
+        $allPages[] = $_SESSION['item']['page'];
+
 		    $pages = array_unique ($allPages);
 
 		    return ($pages);
@@ -238,26 +246,34 @@ class editModel
     }
 
     /**
-     * Gets a list of all unique tags from all pending and content items
+     * Gets a list of all unique tags from all pending and content items, and newly added tags
 	   *
      * @return array $tagList
 	   */
 	  function getAllTagList()
     {
 	      $tagsAll = array();
-        $tagsPending = array();
-        $tags = array();
+
+        // get pending tags
 		    $stmt = $this->dbh->prepare('SELECT tag FROM pendingTagsTable');
 	      $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $tagsPending[] = $row['tag'];
+            $tagsAll[] = $row['tag'];
         }
+
+        // add live tags
 		    $stmt = $this->dbh->prepare('SELECT tag FROM tagsTable');
 	      $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $tags[] = $row['tag'];
+            $tagsAll[] = $row['tag'];
         }
-        $tagsAll = array_merge($tags, $tagsPending);
+
+        // add newly added tags from SESSION data
+        foreach ($_SESSION['item']['tags'] as $tag) {
+            $tagsAll[] = $tag;
+        }
+
+        // merge and sort tags
 		    $tagList = array_unique ($tagsAll);
 	      asort($tagList);
 
@@ -399,7 +415,7 @@ class editModel
      */
 	  public function reportError($message)
 	  {
-        //error_log ('cms/model/auth.php  reportError session data: ' . print_r($_SESSION, true) );
+        error_log ('cms/model/auth.php  reportError session data: ' . print_r($_SESSION, true) );
         header('location: ' . CONFIG_URL. 'error/notify' );
         exit();
 	  }

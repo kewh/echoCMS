@@ -3,7 +3,7 @@
  * controller class for edit
  *
  *
- * @since 1.0.0
+ * @since 1.0.1
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -68,13 +68,9 @@ class edit
 
         $config = $this->config;
         $postMaxSize = $this->editInput->getMaxFileSize();
-        $tags = $this->editInput->getAllTagList();
-        $elements = $this->editInput->getElementList();
-        $pages = $this->editInput->getPagesList();
-        $menu = '';
+        $menu = 'update';
 
         // set up SESSION data when first time in
-        $menu = 'update';
         if ($itemId != null ) {
             if ( $itemId == 'create') {
                 $_SESSION['item'] = $this->editInput->setupNewItem();
@@ -89,12 +85,16 @@ class edit
             }
             $item = $_SESSION['item'];
         }
-        // update item with incoming posted data
+        // update SESSION data and item with incoming posted data
         else {
             $item           = $this->editInput->getPostedItemData();
             $item['tags']   = $this->editInput->getPostedTags();
             $item['images'] = $this->editInput->getImages();
         }
+
+        $tags = $this->editInput->getAllTagList();
+        $elements = $this->editInput->getElementList();
+        $pages = $this->editInput->getPagesList();
 
         if ($item['status'] == 'offline') $class = 'text-danger';
         elseif ($item['status'] == 'live') $class = 'text-success';
@@ -127,6 +127,7 @@ class edit
         $_SESSION['item']['tags']   = $this->editInput->getPostedTags();
         $_SESSION['item']['images'] = $this->editInput->getImages();
         $item = $_SESSION['item'];
+
         // update database with SESSION data
         require CONFIG_DIR. '/model/edit_update.php';
         $this->editUpdate = new editModelUpdate($this->dbh, $this->config);
@@ -162,6 +163,7 @@ class edit
         $_SESSION['item']            = $this->editInput->getPostedItemData();
         $_SESSION['item']['tags']    = $this->editInput->getPostedTags();
         $_SESSION['item']['images']  = $this->editInput->getImages();
+
         // prepare image data for view
         if ( empty( $_SESSION['item']['images'][$cropId])) {
             $this->edit->reportError('cms/controller/edit.php function: image. Error: invalid crop id');
@@ -174,7 +176,7 @@ class edit
         $image_ratio_square =  $this->editInput->convertConfigRatio($this->config['image_ratio_square']);
 
         if (empty($_SESSION['currentBgColor']))
-             $currentBgColor = $this->config['image_bg_crop'];
+            $currentBgColor = $this->config['image_bg_crop'];
         else $currentBgColor = $_SESSION['currentBgColor'];
         $menu = 'update';
 

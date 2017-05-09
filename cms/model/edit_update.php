@@ -2,7 +2,7 @@
 /**
  * model class for edit
  *
- * @since 1.0.0
+ * @since 1.0.1
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -139,8 +139,8 @@ class editModelUpdate extends editModel
         $this->createContent ($_SESSION['item']);
         $this->createContentTags ($_SESSION['item']['id'], $_SESSION['item']['tags']);
         $this->createContentTerms ($_SESSION['item']['id'], $_SESSION['item']['heading']);
-        $this->createContentImages ($_SESSION['item']['id'], $_SESSION['item']['images']);
         $this->createWebsiteImages ($_SESSION['item']['images']);
+        $this->createContentImages ($_SESSION['item']['id'], $_SESSION['item']['images']);
     }
 
     /**
@@ -159,8 +159,8 @@ class editModelUpdate extends editModel
         $this->deleteContentImages ($_SESSION['item']['id']);
         $this->createContentTags ($_SESSION['item']['id'], $_SESSION['item']['tags']);
         $this->createContentTerms ($_SESSION['item']['id'], $_SESSION['item']['heading']);
-        $this->createContentImages ($_SESSION['item']['id'], $_SESSION['item']['images']);
         $this->createWebsiteImages ($_SESSION['item']['images']);
+        $this->createContentImages ($_SESSION['item']['id'], $_SESSION['item']['images']);
     }
 
     /**
@@ -400,16 +400,16 @@ class editModelUpdate extends editModel
                 lx1, lx2, ly1, ly2,
                 px1, px2, py1, py2,
                 sx1, sx2, sy1, sy2,
-                height, width, alt
+                height, width, alt, web_images
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
             $array = array(
                 $content_id, $image['src'], $image['seq'],
                 $image['mx1'], $image['mx2'], $image['my1'], $image['my2'],
                 $image['lx1'], $image['lx2'], $image['ly1'], $image['ly2'],
                 $image['px1'], $image['px2'], $image['py1'], $image['py2'],
                 $image['sx1'], $image['sx2'], $image['sy1'], $image['sy2'],
-                $image['height'], $image['width'], $image['alt']);
+                $image['height'], $image['width'], $image['alt'], $image['web_images']);
             $stmt->execute($array);
         }
     }
@@ -427,90 +427,95 @@ class editModelUpdate extends editModel
      */
     function createWebsiteImages($images, $folder='images')
     {
+        $i = -1;
         foreach ($images as $image) {
-            ini_set('memory_limit', '1024M');
+            $i = $i + 1;
+            if ($image['web_images'] || substr($folder,0,7) == 'backups') {
+                $_SESSION ['item']['images'][$i]['web_images'] = '0';
+                ini_set('memory_limit', '1024M');
 
-            // setup variables for source image from original image input
-            list($originalWidth, $originalHeight, $type) = getimagesize(CONFIG_DIR.'/content/images/original/'.$image['src']);
-            list($uncroppedWidth, $uncroppedHeight) = getimagesize(CONFIG_DIR.'/content/images/uncropped/'.$image['src']);
-            if (! $image_from_src = imagecreatefromjpeg(CONFIG_DIR.'/content/images/original/'.$image['src']))
-                $this->reportError('cms/model/edit_update createWebsiteImages Problem with imagecreatefromjpeg, image src: '. $image['src']);
+                // setup variables for source image from original image input
+                list($originalWidth, $originalHeight, $type) = getimagesize(CONFIG_DIR.'/content/images/original/'.$image['src']);
+                list($uncroppedWidth, $uncroppedHeight) = getimagesize(CONFIG_DIR.'/content/images/uncropped/'.$image['src']);
+                if (! $image_from_src = imagecreatefromjpeg(CONFIG_DIR.'/content/images/original/'.$image['src']))
+                    $this->reportError('cms/model/edit_update createWebsiteImages Problem with imagecreatefromjpeg, image src: '. $image['src']);
 
-            // set up array of parameters of the aspect ratios and sizes to be created for this image
-            $images_to_create = array(
-                'landscape' => array (
-                    'x1' => $image['lx1'],
-                    'x2' => $image['lx2'],
-                    'y1' => $image['ly1'],
-                    'y2' => $image['ly2'],
-                    'aspect' => 'landscape',
-                    'image_create' => $this->config['image_create_landscape'],
-                    'image_ratio' => $this->convertConfigRatio($this->config['image_ratio_landscape']),
-                    'image_sizes' => $this->config['image_sizes_landscape'],
-                    'image_width' => $this->config['image_width_landscape'],
-                ),
-                'portrait' => array (
-                    'x1' => $image['px1'],
-                    'x2' => $image['px2'],
-                    'y1' => $image['py1'],
-                    'y2' => $image['py2'],
-                    'aspect' => 'portrait',
-                    'image_create' => $this->config['image_create_portrait'],
-                    'image_ratio' => $this->convertConfigRatio($this->config['image_ratio_portrait']),
-                    'image_sizes' => $this->config['image_sizes_portrait'],
-                    'image_width' => $this->config['image_width_portrait'],
-                ),
-                'panorama' => array (
-                    'x1' => $image['mx1'],
-                    'x2' => $image['mx2'],
-                    'y1' => $image['my1'],
-                    'y2' => $image['my2'],
-                    'aspect' => 'panorama',
-                    'image_create' => $this->config['image_create_panorama'],
-                    'image_ratio' => $this->convertConfigRatio($this->config['image_ratio_panorama']),
-                    'image_sizes' => $this->config['image_sizes_panorama'],
-                    'image_width' => $this->config['image_width_panorama'],
-                ),
-                'square' => array (
-                    'x1' => $image['sx1'],
-                    'x2' => $image['sx2'],
-                    'y1' => $image['sy1'],
-                    'y2' => $image['sy2'],
-                    'aspect' => 'square',
-                    'image_create' => $this->config['image_create_square'],
-                    'image_ratio' => $this->convertConfigRatio($this->config['image_ratio_square']),
-                    'image_sizes' => $this->config['image_sizes_square'],
-                    'image_width' => $this->config['image_width_square'],
-                ),
-            );
+                // set up array of parameters of the aspect ratios and sizes to be created for this image
+                $images_to_create = array(
+                    'landscape' => array (
+                        'x1' => $image['lx1'],
+                        'x2' => $image['lx2'],
+                        'y1' => $image['ly1'],
+                        'y2' => $image['ly2'],
+                        'aspect' => 'landscape',
+                        'image_create' => $this->config['image_create_landscape'],
+                        'image_ratio' => $this->convertConfigRatio($this->config['image_ratio_landscape']),
+                        'image_sizes' => $this->config['image_sizes_landscape'],
+                        'image_width' => $this->config['image_width_landscape'],
+                    ),
+                    'portrait' => array (
+                        'x1' => $image['px1'],
+                        'x2' => $image['px2'],
+                        'y1' => $image['py1'],
+                        'y2' => $image['py2'],
+                        'aspect' => 'portrait',
+                        'image_create' => $this->config['image_create_portrait'],
+                        'image_ratio' => $this->convertConfigRatio($this->config['image_ratio_portrait']),
+                        'image_sizes' => $this->config['image_sizes_portrait'],
+                        'image_width' => $this->config['image_width_portrait'],
+                    ),
+                    'panorama' => array (
+                        'x1' => $image['mx1'],
+                        'x2' => $image['mx2'],
+                        'y1' => $image['my1'],
+                        'y2' => $image['my2'],
+                        'aspect' => 'panorama',
+                        'image_create' => $this->config['image_create_panorama'],
+                        'image_ratio' => $this->convertConfigRatio($this->config['image_ratio_panorama']),
+                        'image_sizes' => $this->config['image_sizes_panorama'],
+                        'image_width' => $this->config['image_width_panorama'],
+                    ),
+                    'square' => array (
+                        'x1' => $image['sx1'],
+                        'x2' => $image['sx2'],
+                        'y1' => $image['sy1'],
+                        'y2' => $image['sy2'],
+                        'aspect' => 'square',
+                        'image_create' => $this->config['image_create_square'],
+                        'image_ratio' => $this->convertConfigRatio($this->config['image_ratio_square']),
+                        'image_sizes' => $this->config['image_sizes_square'],
+                        'image_width' => $this->config['image_width_square'],
+                    ),
+                );
 
-            // create images for the aspect ratios and sizes required for this input image
-            foreach ($images_to_create as $i) {
-                if ( $i['image_create']) {
-                    $size = 1;
-                    do {
-                        set_time_limit(30); // resets default time limit back to zero
-                        $orig_1x = round ($originalWidth * ( $i['x1'] / $uncroppedWidth));
-                        $orig_2x = round ($originalWidth * ( $i['x2'] / $uncroppedWidth));
-                        $orig_y1 = round ($originalWidth * ( $i['y1'] / $uncroppedWidth));
-                        $orig_y2 = round ($originalWidth * ( $i['y2'] / $uncroppedWidth));
-                        $dst_URL = CONFIG_DIR.'/content/'.$folder.'/'. $i['aspect'].'/'. $size .'x/' . $image['src'];
-                        $width  = $i['image_width'] * $size;
-                        $height = ($i['image_width'] / $i['image_ratio']) * $size;
-                        if (!$image_dst = imagecreatetruecolor( $width , $height ))
-                            $this->reportError('cms/model/edit_update createWebsiteImages '. $i['aspect'].' image. Problem with imagecreatetruecolor');
+                // create images for the aspect ratios and sizes required for this input image
+                foreach ($images_to_create as $i) {
+                    if ( $i['image_create']) {
+                        $size = 1;
+                        do {
+                            set_time_limit(30); // resets default time limit back to zero
+                            $orig_1x = round ($originalWidth * ( $i['x1'] / $uncroppedWidth));
+                            $orig_2x = round ($originalWidth * ( $i['x2'] / $uncroppedWidth));
+                            $orig_y1 = round ($originalWidth * ( $i['y1'] / $uncroppedWidth));
+                            $orig_y2 = round ($originalWidth * ( $i['y2'] / $uncroppedWidth));
+                            $dst_URL = CONFIG_DIR.'/content/'.$folder.'/'. $i['aspect'].'/'. $size .'x/' . $image['src'];
+                            $width  = $i['image_width'] * $size;
+                            $height = ($i['image_width'] / $i['image_ratio']) * $size;
+                            if (!$image_dst = imagecreatetruecolor( $width , $height ))
+                                $this->reportError('cms/model/edit_update createWebsiteImages '. $i['aspect'].' image. Problem with imagecreatetruecolor');
 
-                        if (!imagecopyresampled( $image_dst, $image_from_src, 0, 0, $orig_1x, $orig_y1,
-                                                 $width, $height, ($orig_2x - $orig_1x), ($orig_y2 - $orig_y1)))
-                            $this->reportError('cms/model/edit_update createWebsiteImages '. $i['aspect'].' image. Problem with imagecopyresampled');
+                            if (!imagecopyresampled( $image_dst, $image_from_src, 0, 0, $orig_1x, $orig_y1,
+                                                     $width, $height, ($orig_2x - $orig_1x), ($orig_y2 - $orig_y1)))
+                                $this->reportError('cms/model/edit_update createWebsiteImages '. $i['aspect'].' image. Problem with imagecopyresampled');
 
-                        if (!imagejpeg($image_dst, $dst_URL , $this->config['image_quality']))
-                            $this->reportError('cms/model/edit_update createWebsiteImages '. $i['aspect'].' image. Problem with imagejpeg');
+                            if (!imagejpeg($image_dst, $dst_URL , $this->config['image_quality']))
+                                $this->reportError('cms/model/edit_update createWebsiteImages '. $i['aspect'].' image. Problem with imagejpeg');
 
-                        imagedestroy($image_dst);
-                        $size = $size + 1;
+                            imagedestroy($image_dst);
+                            $size = $size + 1;
 
-                    } while ($i['image_sizes'] && $size <= 3);
+                        } while ($i['image_sizes'] && $size <= 3);
+                    }
                 }
             }
         }
@@ -691,16 +696,16 @@ class editModelUpdate extends editModel
                 lx1, lx2, ly1, ly2,
                 px1, px2, py1, py2,
                 sx1, sx2, sy1, sy2,
-                height, width, alt
+                height, width, alt, web_images
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
             $array = array(
                 $pending_id, $image['src'], $image['seq'],
                 $image['mx1'], $image['mx2'], $image['my1'], $image['my2'],
                 $image['lx1'], $image['lx2'], $image['ly1'], $image['ly2'],
                 $image['px1'], $image['px2'], $image['py1'], $image['py2'],
                 $image['sx1'], $image['sx2'], $image['sy1'], $image['sy2'],
-                $image['height'], $image['width'], $image['alt']
+                $image['height'], $image['width'], $image['alt'], $image['web_images']
             );
             $stmt->execute($array);
         }

@@ -1,3 +1,12 @@
+<?php
+/**
+ * view for edit/input
+ *
+ * @since 1.0.1
+ * @author Keith Wheatley
+ * @package echocms\edit
+ */
+?>
 <!-- INPUT FORM  ****************************************************** -->
 <div class='container-fluid'>
 <form class='form-horizontal' name='inputForm' id='inputForm' action='<?php echo CONFIG_URL; ?>edit/input' method='post' enctype='multipart/form-data'>
@@ -81,7 +90,7 @@
             <div class='form-group'>
                 <label for='element' class='col-sm-3 col-md-2 control-label'>element</label>
                 <div class='col-sm-9 col-md-10'>
-                    <select name='element' required='required' class='element'>
+                    <select name='element' class='element'>
                         <option value=''></option>
                         <?php
                         foreach ($elements as $element) {
@@ -99,19 +108,10 @@
             <div class='form-group form-group-margin'>
                 <label for='tags' class='col-sm-3 col-md-2 control-label'>tags</label>
                 <div class='col-sm-9 col-md-10'>
-                    <select name='tags[]' multiple class='tags'>
-                        <option value='' disable></option>
-                        <?php
-                        foreach ($tags as $tag) {
-                            echo '
-                        <option value="' . $tag . '"';
-                            if (in_array ($tag, $item['tags']))
-                                echo ' selected';
-                            echo '>' . $tag . '</option>';
-                        } ?>
-                    </select>
+                    <input name='tags' type='text' class='tags'>
                 </div>
             </div>
+
 
             <!-- Heading     ********************************************** -->
             <div class='form-group'>
@@ -351,9 +351,9 @@ $(document).ready(function() {
         menubar : false,
         statusbar : false,
         toolbar: 'styleselect forecolor | indent outdent | undo redo | bullist numlist |  link unlink | table code lorumipsum fullscreen',
-        relative_urls: true
+        relative_urls: true,
+        branding: false
      });
-
 
 //  SET UP PAGE SELECTION
     $('.page').selectize({
@@ -384,26 +384,28 @@ $(document).ready(function() {
 <?php } ?>
     });
 
+
 //  SET UP TAGS
+<?php
+    $options = $items = null;
+    foreach ($tags as $tag) {
+        $options .= '{ label: "' .$tag.'",value: "' .$tag. '"},';
+        if (in_array ($tag, $item['tags']))
+            $items .= '"' .$tag.'",';
+    }
+?>
     $('.tags').selectize({
         persist: false,
         createOnBlur: true,
         create: true,
         hideSelected: true,
         placeholder:'select and/or add multiple options',
+        valueField: 'value',
+        labelField: 'label',
+        options: [<?php echo $options;?>],
+        items: [<?php echo $items;?>],
         maxItems: 99
     });
-
-  //  SET UP elements
-      $('.elements').selectize({
-          persist: false,
-          createOnBlur: true,
-          create: false,
-          hideSelected: true,
-          placeholder:'select multiple options',
-          maxItems: 99
-      });
-
 
 // SET UP DATE
     $('.dateDisplay').datepicker({

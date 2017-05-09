@@ -2,7 +2,7 @@
 /**
  * model class for edit
  *
- * @since 1.0.0
+ * @since 1.0.1
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -17,8 +17,8 @@ class editModelInput extends editModel
 	   */
 	  function getPostedTags()
     {
-        if ( isset( $_POST['tags']) && $_POST['tags'] != null) {
-            $_SESSION['item']['tags'] = $_POST['tags'];
+        if (isset($_POST['tags'])) {
+                $_SESSION['item']['tags'] = array_filter(explode(',',$_POST['tags']));
         }
 
         return($_SESSION['item']['tags']);
@@ -113,6 +113,7 @@ class editModelInput extends editModel
                 return;
             }
             $cropId = $_SESSION['cropId'];
+            $_SESSION ['item']['images'][$cropId]['web_images'] = true;
             if ( isset( $_POST['alt']) )
                 $_SESSION['item']['images'] [$cropId]['alt'] = $_POST['alt'];
             $cropCoordsInput = true;
@@ -138,6 +139,8 @@ class editModelInput extends editModel
             $_SESSION['cropId'] = null;
             $_SESSION['scrollToImages'] = true;
         }
+
+        //  process incoming image
         if ( !empty($_FILES['postedImage']['error']) && $_FILES['postedImage'] ['error'] == 0     ) {
             $this->reportError('cms/model/edit_input.php. Failed image load. Maximum file size is: '. getMaxFileSize() . '. Posted error code is: '. $_FILES['postedImage'] ['error'] );
         }
@@ -304,9 +307,7 @@ class editModelInput extends editModel
         }
 
         // add new image to session data
-        if ( count($_SESSION['item']['images']) == 0 )
-             $imageSeq = 1;
-        else $imageSeq = 0;
+        $imageSeq = count($_SESSION['item']['images']);
         $image = array(
                 'src' => $newImage,
                 'seq' => $imageSeq,
@@ -314,8 +315,9 @@ class editModelInput extends editModel
                 'lx1' => $lx1, 'lx2' => $lx2, 'ly1' => $ly1, 'ly2' => $ly2,
                 'px1' => $px1, 'px2' => $px2, 'py1' => $py1, 'py2' => $py2,
                 'sx1' => $sx1, 'sx2' => $sx2, 'sy1' => $sy1, 'sy2' => $sy2,
-                'height' => $uncroppedHeight, 'width' => $uncroppedWidth, 'alt' => null     );
-        $_SESSION['item']['images'] [] = $image;
+                'height' => $uncroppedHeight, 'width' => $uncroppedWidth,
+                'alt' => null, 'web_images' => true     );
+        $_SESSION['item']['images'][] = $image;
     }
 
 	  /**
@@ -328,20 +330,31 @@ class editModelInput extends editModel
      *
      * @return void
 	   */
-	  private function createThumbnail($image)
-    {
-        ini_set('memory_limit', '1024M');
-        set_time_limit(120);
-        if (! $image_src = imagecreatefromjpeg(CONFIG_DIR.'/content/images/uncropped/'.$image['src']))
-            $this->reportError('cms/model/edit_input createThumbnail. Problem with imagecreatefromjpeg');
-        if (! $image_dst = imagecreatetruecolor(200, 200))
-            $this->reportError('cms/model/edit_input createThumbnail. Problem with imagecreatetruecolor');
-        if (! imagecopyresampled ($image_dst, $image_src, 0, 0, $image['sx1'], $image['sy1'], 200, 200,($image['sx2'] - $image['sx1']), ($image['sy2'] - $image['sy1'])))
-            $this->reportError('cms/model/edit_input createThumbnail. Problem with imagecopyresampled');
-        if (! imagejpeg($image_dst, CONFIG_DIR.'/content/images/thumbnail/'.$image['src'] , 90))
-            $this->reportError('cms/model/edit_input createThumbnail. Problem with imagejpeg');
-        imagedestroy($image_dst);
-    }
+     private function createThumbnail($image)
+     {
+         // set longest side to 200 and use 'square' aspect ratio
+         $image_ratio = $this->convertConfigRatio($this->config['image_ratio_square']);
+         if ($image_ratio > 1)
+             {
+                 $thumbWidth = 200;
+                 $thumbHeight = floor ((200 / $image_ratio));
+             }
+         else{
+                 $thumbHeight = 200;
+                 $thumbWidth = floor ((200 * $image_ratio));
+             }
+         ini_set('memory_limit', '1024M');
+         set_time_limit(120);
+         if (! $image_src = imagecreatefromjpeg(CONFIG_DIR.'/content/images/uncropped/'.$image['src']))
+             $this->reportError('cms/model/edit_input createThumbnail. Problem with imagecreatefromjpeg');
+         if (! $image_dst = imagecreatetruecolor($thumbWidth, $thumbHeight))
+             $this->reportError('cms/model/edit_input createThumbnail. Problem with imagecreatetruecolor');
+         if (! imagecopyresampled ($image_dst, $image_src, 0, 0, $image['sx1'], $image['sy1'], $thumbWidth, $thumbHeight,($image['sx2'] - $image['sx1']), ($image['sy2'] - $image['sy1'])))
+             $this->reportError('cms/model/edit_input createThumbnail. Problem with imagecopyresampled');
+         if (! imagejpeg($image_dst, CONFIG_DIR.'/content/images/thumbnail/'.$image['src'] , 90))
+             $this->reportError('cms/model/edit_input createThumbnail. Problem with imagejpeg');
+         imagedestroy($image_dst);
+     }
 
 	  /**
 	   *
