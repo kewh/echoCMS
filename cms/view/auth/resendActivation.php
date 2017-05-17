@@ -1,3 +1,12 @@
+<?php
+/**
+ * view for auth/resendActivation
+ *
+ * @since 1.0.0
+ * @author Keith Wheatley
+ * @package echocms
+ */
+?>
         <div class='col-lg-6 col-lg-offset-3 col-sm-8 col-sm-offset-2 vertical-space-lg'>
             <h4 class='text-center'>resend activation key</h4><br/>
             <form class='form-horizontal' name='login' action='<?php echo CONFIG_URL; ?>auth/resendActivation' method='post'>

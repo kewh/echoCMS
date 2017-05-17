@@ -1,19 +1,28 @@
+<?php
+/**
+ * view for auth/login
+ *
+ * @since 1.0.0
+ * @author Keith Wheatley
+ * @package echocms
+ */
+?>
         <div class='col-lg-6 col-lg-offset-3 col-sm-8 col-sm-offset-2 vertical-space-lg'>
             <form id='inputForm' class='form-horizontal' name='login' action='<?php echo CONFIG_URL; ?>auth/index' method='post'>
-    
+
                 <div class='form-group'>
                     <label for='inputEmail' class='col-sm-2 control-label'>email</label>
                     <div class='col-sm-10'>
                         <input name='email' type='email' class='form-control' data-error='invalid email'>
-                        <div class='help-block with-errors'></div> 
+                        <div class='help-block with-errors'></div>
                     </div>
                 </div>
                 <div class='form-group'>
                     <label for='inputPassword' class='col-sm-2 control-label'>password</label>
                     <div class='col-sm-10'>
                         <input type='password' required data-minlength='6' data-error='invalid password' class='form-control' name='password'>
-                        <div class='help-block with-errors'></div> 
-    
+                        <div class='help-block with-errors'></div>
+
                     </div>
                 </div>
                 <div class='form-group'>

@@ -1,4 +1,4 @@
--- echoCMS version 1.0.1
+-- echoCMS version 1.0.2
 -- https://github.com/kewh/echoCMS
 --
 -- database setup
@@ -28,7 +28,7 @@ INSERT INTO `config` (`setting`, `value`) VALUES
 ('cms_page_logo', 'echocmsLogoMd.png'),
 ('cookie_name', 'echocms'),
 ('date_format', 'j M Y'),
-('elements_updatable', '0'),
+('subtopics_updatable', '0'),
 ('email_notifications_on', '1'),
 ('image_bg_crop', 'fc8e5f'),
 ('image_bg_opacity', '0.8'),
@@ -52,7 +52,7 @@ INSERT INTO `config` (`setting`, `value`) VALUES
 ('ip_ban_attempts', '8'),
 ('ip_ban_minutes', '5'),
 ('mail_charset', 'UTF-8'),
-('pages_updatable', '0'),
+('topics_updatable', '0'),
 ('password_reset_minutes', '60'),
 ('remember_me_days', '30'),
 ('site_email', 'sitemail@example.com'),
@@ -69,40 +69,22 @@ INSERT INTO `config` (`setting`, `value`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pagesTable`
+-- Table structure for table `topicsTable`
 --
-DROP TABLE IF EXISTS `pagesTable`;
-CREATE TABLE `pagesTable` (
-  `page` varchar(100) DEFAULT NULL
+DROP TABLE IF EXISTS `topicsTable`;
+CREATE TABLE `topicsTable` (
+  `topic` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `elementsTable`
+-- Table structure for table `subtopicsTable`
 --
-DROP TABLE IF EXISTS `elementsTable`;
-CREATE TABLE `elementsTable` (
-  `element` varchar(100) DEFAULT NULL
+DROP TABLE IF EXISTS `subtopicsTable`;
+CREATE TABLE `subtopicsTable` (
+  `subtopic` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `elementsTable`
---
-
-INSERT INTO `elementsTable` (`element`) VALUES
-('header'),
-('footer'),
-('main'),
-('section'),
-('item'),
-('details'),
-('aside'),
-('summary'),
-('figure'),
-('nav'),
-('mark'),
-('time');
 
 -- --------------------------------------------------------
 --
@@ -143,8 +125,8 @@ CREATE TABLE `itemsTable` (
   `updatedBy` int(11) DEFAULT NULL,
   `status` varchar(11) DEFAULT NULL,
   `date` datetime DEFAULT NULL,
-  `page` varchar(255) DEFAULT NULL,
-  `element` varchar(40) DEFAULT NULL,
+  `topic` varchar(255) DEFAULT NULL,
+  `subtopic` varchar(40) DEFAULT NULL,
   `heading` varchar(255) DEFAULT NULL,
   `caption` varchar(255) DEFAULT NULL,
   `text` text,
@@ -218,8 +200,8 @@ CREATE TABLE `pendingItemsTable` (
   `updatedBy` int(11) DEFAULT NULL,
   `status` varchar(11) DEFAULT NULL,
   `date` datetime DEFAULT NULL,
-  `page` varchar(255) DEFAULT NULL,
-  `element` varchar(40) DEFAULT NULL,
+  `topic` varchar(255) DEFAULT NULL,
+  `subtopic` varchar(40) DEFAULT NULL,
   `heading` varchar(255) DEFAULT NULL,
   `caption` varchar(255) DEFAULT NULL,
   `text` text,

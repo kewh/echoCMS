@@ -2,7 +2,7 @@
 /**
  * model class for edit
  *
- * @since 1.0.1
+ * @since 1.0.2
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -219,8 +219,8 @@ class editModelUpdate extends editModel
             updatedBy,
             status,
             heading,
-            page,
-            element,
+            topic,
+            subtopic,
             caption,
             text,
             date,
@@ -236,8 +236,8 @@ class editModelUpdate extends editModel
             $row['updatedBy'],
             $row['status'],
             $row['heading'],
-            $row['page'],
-            $row['element'],
+            $row['topic'],
+            $row['subtopic'],
             $row['caption'],
             $row['text'],
             $row['date'],
@@ -262,8 +262,8 @@ class editModelUpdate extends editModel
             updatedBy = ?,
             status = ?,
             heading = ?,
-            page = ?,
-            element = ?,
+            topic = ?,
+            subtopic = ?,
             caption = ?,
             text = ?,
             date = ?,
@@ -279,8 +279,8 @@ class editModelUpdate extends editModel
             $row['updatedBy'],
             $row['status'],
             $row['heading'],
-            $row['page'],
-            $row['element'],
+            $row['topic'],
+            $row['subtopic'],
             $row['caption'],
             $row['text'],
             $row['date'],
@@ -427,11 +427,11 @@ class editModelUpdate extends editModel
      */
     function createWebsiteImages($images, $folder='images')
     {
-        $i = -1;
+        $image_number = -1;
         foreach ($images as $image) {
-            $i = $i + 1;
+            $image_number++;
             if ($image['web_images'] || substr($folder,0,7) == 'backups') {
-                $_SESSION ['item']['images'][$i]['web_images'] = '0';
+                $_SESSION ['item']['images'][$image_number]['web_images'] = '0';
                 ini_set('memory_limit', '1024M');
 
                 // setup variables for source image from original image input
@@ -535,8 +535,8 @@ class editModelUpdate extends editModel
             updatedBy,
             status,
             heading,
-            page,
-            element,
+            topic,
+            subtopic,
             caption,
             text,
             date,
@@ -552,8 +552,8 @@ class editModelUpdate extends editModel
             $row['updatedBy'],
             $row['status'],
             $row['heading'],
-            $row['page'],
-            $row['element'],
+            $row['topic'],
+            $row['subtopic'],
             $row['caption'],
             $row['text'],
             $row['date'],
@@ -579,8 +579,8 @@ class editModelUpdate extends editModel
             updatedBy = ?,
             status = ?,
             heading = ?,
-            page = ?,
-            element = ?,
+            topic = ?,
+            subtopic = ?,
             caption = ?,
             text = ?,
             date = ?,
@@ -596,8 +596,8 @@ class editModelUpdate extends editModel
             $row['updatedBy'],
             $row['status'],
             $row['heading'],
-            $row['page'],
-            $row['element'],
+            $row['topic'],
+            $row['subtopic'],
             $row['caption'],
             $row['text'],
             $row['date'],

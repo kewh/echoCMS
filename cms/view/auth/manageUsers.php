@@ -1,3 +1,12 @@
+<?php
+/**
+ * view for auth/manageUsers
+ *
+ * @since 1.0.0
+ * @author Keith Wheatley
+ * @package echocms
+ */
+?>
 <div class='col-xs-12 col-lg-10 col-lg-offset-1 marginTop'>
 <table class='table table-condensed'>
     <thead class='header-title'>

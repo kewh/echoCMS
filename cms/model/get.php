@@ -3,7 +3,7 @@
 /**
  * model class for get
  *
- * @since 1.0.0
+ * @since 1.0.2
  * @author Keith Wheatley
  * @package echocms\get
  */
@@ -13,13 +13,11 @@ class getModel
 
     function __construct()
     {
-
 	      require $_SERVER['DOCUMENT_ROOT'] . '/cms/config/db.php';
         $this->connCMS = new \PDO('mysql:host=' .$db_host. ';dbname=' .$db_name. ';charset=utf8mb4', $db_user, $db_pass,
                              array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION));
         define('URL_content', '//' . $_SERVER['HTTP_HOST'] . '/cms/content/');
         $this->config = $this->getConfig();
-
 	  }
 
     /**
@@ -45,29 +43,29 @@ class getModel
     /**
      * Get items
      *
-     * Gets an array of items filtered by page and/or element
+     * Gets an array of all items filtered by specified topic and/or subtopic
      *
-     * @param string $page
-     * @param string $element
+     * @param string $topic
+     * @param string $subtopic
      *
      * @return array $items
      */
-	  public function items($page = NULL, $element = NULL)
+	  public function items($topic = NULL, $subtopic = NULL)
 	  {
-        if (strtolower($page) == 'all') $page = NULL;
-        if (strtolower($element) == 'all') $element = NULL;
-        if ($element AND !$page)
-            $sql = 'element = "' . $element . '" ';
-        elseif (!$element AND $page)
-            $sql = 'page = "' . $page . '" ';
-        elseif ($element AND $page)
-            $sql = 'page = "' . $page . '" AND element = "' . $element . '" ';
-        else $sql = ''; //must be (!$element and !$page)
+        if (strtolower($topic) == 'all') $topic = NULL;
+        if (strtolower($subtopic) == 'all') $subtopic = NULL;
+        if ($subtopic AND !$topic)
+            $sql = 'subtopic = "' . $subtopic . '" ';
+        elseif (!$subtopic AND $topic)
+            $sql = 'topic = "' . $topic . '" ';
+        elseif ($subtopic AND $topic)
+            $sql = 'topic = "' . $topic . '" AND subtopic = "' . $subtopic . '" ';
+        else $sql = ''; //must be (!$subtopic and !$topic)
         if ($sql){
             $sql = 'WHERE ' . $sql;
         }
         $stmt = $this->connCMS->prepare(
-            'SELECT id, date, heading, page, element, caption, text, download_src, download_name
+            'SELECT id, date, heading, topic, subtopic, caption, text, download_src, download_name
             FROM itemsTable ' . $sql .' ORDER BY date DESC');
         $stmt->execute();
         $items = array();
@@ -78,46 +76,55 @@ class getModel
             $items[$id] += $this->itemTags($id);
             if ($items[$id]['download_src'] != null)
                 $items[$id]['download_src'] = URL_content .'downloads/' . $items[$id]['download_src'];
-            $items[$id]['this'] = 'id='. $id . '&page=' . $page  . '&element=' . $element;
-            $items[$id]['prev'] = $this->itemPrev($items[$id]['date'], $page, $element);
-            $items[$id]['next'] = $this->itemNext($items[$id]['date'], $page, $element);
+            $items[$id]['this'] = '?id='. $id;
+            if ($topic) $items[$id]['this'] .= '&topic=' . $topic;
+            if ($subtopic) $items[$id]['this'] .= '&subtopic=' . $subtopic;
+            $items[$id]['prev'] = $this->prevItem($items[$id]['date'], $topic, $subtopic);
+            $items[$id]['next'] = $this->nextItem($items[$id]['date'], $topic, $subtopic);
             $items[$id]['date_tw'] = $this->date_tw($items[$id]['date']);
             $items[$id]['date_display'] = date($this->config['date_format'], strtotime( $items[$id]['date'] ));
             $items[$id]['text'] = html_entity_decode($items[$id]['text']);
         }
 
+        //error_log ('cms/model/get.php  items. $items : ' . print_r($items, true) );
 		    return ($items);
 	  }
 
     /**
      * Get item
      *
-     * Get a single item filtered by page and/or element
+     * Get a single item filtered by topic and/or subtopic
      *
      * @param array|string $param1
      * @param string $param2
      *
      * note:
-     *   param1 can be an associative array with key of [id] plus optionally [page] and [element]
+     *   param1 can be an associative array with key of [id]
+     *   param1 can be an associative array with keys of [id] and [topic] and/or [subtopic]
+     *   param1 can be an associative array with keys of [id] and [tag]
      *   param1 can be a string containing a valid item id (param2 is then ignored)
-     *   param1 can be a string in HTTP query string format with id plus optional page and element
-	   *   param1 can be a string containing a page with optionally param2 a string containing a element
-     *   in all of above, page/element can be absent, null or 'all', in which case all items are returned for the page/element)
+     *   param1 can be a string in HTTP query string format with id plus optional topic and subtopic OR tag
+	   *   param1 can be a string containing a topic with optionally param2 a string containing an subtopic
+     *   in above, topic/subtopic can be absent, null or 'all', in which case all items are returned for the topic/subtopic)
      *
      * @return array $item
      */
 	  public function item($param1 = NULL, $param2 = NULL)
 	  {
         $item = array();
-        $id = $page = $element = $sql = $sqlQ = $stmt = NULL;
-        $wa = 'WHERE ';
+        $id = $tag = $topic = $subtopic = $sql = $sqlQ = $stmt = NULL;
+
         if (is_array($param1)) {
             if (!empty($param1['id']))
                  $id = $param1['id'];
-            if (!empty($param1['page']) AND strtolower($param1['page']) !== 'all')
-                 $page = $param1['page'];
-            if (!empty($param1['element']) AND strtolower($param1['element']) !== 'all')
-                $element = $param1['element'];
+            if (!empty($param1['tag']))
+                $tag = $param1['tag'];
+            else {
+                if (!empty($param1['topic']) AND strtolower($param1['topic']) !== 'all')
+                    $topic = $param1['topic'];
+                if (!empty($param1['subtopic']) AND strtolower($param1['subtopic']) !== 'all')
+                    $subtopic = $param1['subtopic'];
+            }
         }
         elseif (isset($param1)) {
             if (is_numeric($param1)) {
@@ -132,33 +139,44 @@ class getModel
                 parse_str ($param1, $array);
                 if (!empty($array['id'])) {
                     $id = $array['id'];
-                    if (!empty($array['page']) AND strtolower($array['page']) !== 'all')
-                         $page = $array['page'];
-                    if (!empty($array['element']) AND strtolower($array['element']) !== 'all')
-                         $element = $array['element'];
+                    if (!empty($array['tag'])) {
+                        $tag = $array['tag'];
+                    }
+                    else {
+                        if (!empty($array['topic']) AND strtolower($array['topic']) !== 'all')
+                            $topic = $array['topic'];
+                        if (!empty($array['subtopic']) AND strtolower($array['subtopic']) !== 'all')
+                            $subtopic = $array['subtopic'];
+                    }
                 }
                 else {
                     if ($param1 != NULL AND strtolower($param1) !== 'all')
-                        $page = $param1;
+                        $topic = $param1;
                     if (!empty($param2) AND strtolower($param2) !== 'all')
-                        $element = $param2;
+                        $subtopic = $param2;
                 }
             }
         }
+
         $wa = ' WHERE';
         if ($id) {
             $sql .= $wa . ' id = ' . $id;
             $wa = ' AND';
         }
-        if ($page) {
-            $sql .= $wa . ' page = "' . $page . '"';
-            $wa = ' AND';
+
+        else {
+            if ($topic) {
+                $sql .= $wa . ' topic = "' . $topic . '"';
+                $wa = ' AND';
+            }
+            if ($subtopic) {
+                $sql .= $wa . ' subtopic = "' . $subtopic . '"';
+            }
         }
-        if ($element) {
-            $sql .= $wa . ' element = "' . $element . '"';
-        }
+
+
         $stmt = $this->connCMS->prepare(
-             'SELECT id, date, heading, page, element, caption, text, download_src, download_name
+             'SELECT id, date, heading, topic, subtopic, caption, text, download_src, download_name
               FROM itemsTable ' . $sql . ' LIMIT 1');
         $stmt->execute();
         $item = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -167,12 +185,21 @@ class getModel
                 $item['download_src'] = URL_content . 'downloads/' . $item['download_src'];
             $item += $this->itemImages($item['id']);
             $item += $this->itemTags($item['id']);
-            $item['this'] = 'id='. $item['id']. '&page=' . $page  . '&element=' . $element;
-            $item['prev'] = $this->itemPrev($item['date'], $page, $element);
-            $item['next'] = $this->itemNext($item['date'], $page, $element);
             $item['date_tw'] = $this->date_tw($item['date']);
             $item['date_display'] = date($this->config['date_format'], strtotime( $item['date'] ));
             $item['text'] = html_entity_decode($item['text']);
+            if ($tag) {
+                $item['this'] = '?id='. $item['id']. '&tag=' . $tag;
+                $item['prev'] = $this->prevItemForTag($item['date'], $tag);
+                $item['next'] = $this->nextItemForTag($item['date'], $tag);
+            }
+            else {
+                $item['this'] = '?id='. $item['id'];
+                if ($topic) $item['this'] .= '&topic=' . $topic;
+                if ($subtopic) $item['this'] .= '&subtopic=' . $subtopic;
+                $item['prev'] = $this->prevItem($item['date'], $topic, $subtopic);
+                $item['next'] = $this->nextItem($item['date'], $topic, $subtopic);
+            }
         }
 
         //error_log ('cms/model/get.php  item. $item : ' . print_r($item, true) );
@@ -180,9 +207,85 @@ class getModel
     }
 
     /**
+     * Query string for next item for topic/subtopic.
+     *
+     * Construct a URL query string with an item id which will locate the next item, after the specified date and
+     * within the topic and subtopic specified.
+     *
+     * @param string $date
+     * @param string $topic
+     * @param string $subtopic
+     *
+     * @return string $next URL query string to locate next item
+     */
+    private function nextItem($date, $topic, $subtopic)
+	  {
+        $sql = '';
+        if ($topic)
+            $sql .= ' AND topic = "' . $topic . '"';
+        if ($subtopic)
+            $sql .= ' AND subtopic = "' . $subtopic . '"';
+        $stmt = $this->connCMS->prepare(
+                'SELECT id FROM itemsTable WHERE date > ?'
+                . $sql . ' ORDER BY date ASC LIMIT 1');
+        $stmt->execute(array($date));
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($row) {
+            $next = '?id='. $row['id'];
+            if ($topic)
+                $next .= '&topic=' . $topic;
+            if ($subtopic)
+                $next .= '&subtopic=' . $subtopic;
+        }
+        else {
+            $next = NULL;
+        }
+
+        return ($next);
+	  }
+
+    /**
+     * Query string for previous item for topic/subtopic.
+     *
+     * Construct a URL query string with an item id which will locate the previous item, before the specified date and
+     * within the topic and subtopic specified.
+     *
+     * @param string $date
+     * @param string $topic
+     * @param string $subtopic
+     *
+     * @return string $next URL query string to locate previous item
+     */
+	  private function prevItem($date, $topic, $subtopic)
+	  {
+        $sql = '';
+        if ($topic)
+            $sql .= ' AND topic = "' . $topic . '"';
+        if ($subtopic)
+            $sql .= ' AND subtopic = "' . $subtopic . '"';
+        $stmt = $this->connCMS->prepare(
+             'SELECT id FROM itemsTable WHERE date < ? '
+              . $sql . ' ORDER BY date DESC LIMIT 1');
+        $stmt->execute(array($date));
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($row) {
+            $prev = '?id='. $row['id'];
+            if ($topic)
+                $prev .= '&topic=' . $topic;
+            if ($subtopic)
+                $prev .= '&subtopic=' . $subtopic;
+        }
+        else {
+            $prev = NULL;
+        }
+
+		    return ($prev);
+	  }
+
+    /**
      * Get items for tag.
      *
-     * Get all items which are tagged with the specified tag.
+     * Gets an array of all items filtered by the specified tag.
      *
      * @param string $tag
      *
@@ -194,8 +297,8 @@ class getModel
 					   itemsTable.id,
 					   itemsTable.date,
 					   itemsTable.heading,
-             itemsTable.page,
-             itemsTable.element,
+             itemsTable.topic,
+             itemsTable.subtopic,
 	  	   		 itemsTable.caption,
              itemsTable.text,
              itemsTable.download_src,
@@ -209,50 +312,50 @@ class getModel
         $items = array();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $id = $row['id'];
-			$items[$id] = $row;
+			      $items[$id] = $row;
             $items[$id] += $this->itemImages($id);
             $items[$id] += $this->itemTags($id);
+
             if ($items[$id]['download_src'] != null)
                 $items[$id]['download_src'] = URL_content . 'downloads/' . $items[$id]['download_src'];
+
+            $items[$id]['this'] = '?id='. $items[$id]['id']. '&tag=' . $tag;
+            $items[$id]['prev'] = $this->prevItemForTag($items[$id]['date'], $tag);
+            $items[$id]['next'] = $this->nextItemForTag($items[$id]['date'], $tag);
+
             $items[$id]['date_tw'] = $this->date_tw($items[$id]['date']);
             $items[$id]['date_display'] = date($this->config['date_format'], strtotime( $items[$id]['date'] ));
             $items[$id]['text'] = html_entity_decode($items[$id]['text']);
-
         }
 
+        //error_log ('cms/model/get.php  itemsForTag. $items : ' . print_r($items, true) );
 		    return ($items);
 	  }
 
     /**
-     * Query string for next item.
+     * Query string for next item for tag.
      *
-     * Construct a URL query string with an item id which will locate the next item, after the specified date and
-     * within the page and element specified.
+     * Construct a URL query string with an item id which will locate the next item,
+     * after the date and within the tag specified.
      *
      * @param string $date
-     * @param string $page
-     * @param string $element
+     * @param string $tag
      *
      * @return string $next URL query string to locate next item
      */
-    private function itemNext($date, $page, $element)
+    private function nextItemForTag($date = NULL, $tag = NULL)
 	  {
-        $sql = '';
-        if ($page)
-            $sql .= ' AND page = "' . $page . '"';
-        if ($element)
-            $sql .= ' AND element = "' . $element . '"';
         $stmt = $this->connCMS->prepare(
-                'SELECT id FROM itemsTable WHERE date > ?'
-                . $sql . ' ORDER BY date ASC LIMIT 1');
-        $stmt->execute(array($date));
+            'SELECT itemsTable.id
+             FROM itemsTable
+             LEFT JOIN tagsTable
+             ON tagsTable.content_id = itemsTable.id
+             WHERE date > ? AND tagsTable.tag = ?
+             ORDER BY itemsTable.date ASC LIMIT 1');
+        $stmt->execute(array($date,$tag));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row) {
-            $next = '?id='. $row['id'];
-            if ($page)
-                $next .= '&page=' . $page;
-            if ($element)
-                $next .= '&element=' . $element;
+            $next = '?id='. $row['id'] . '&tag=' . $tag;
         }
         else {
             $next = NULL;
@@ -262,41 +365,35 @@ class getModel
 	  }
 
     /**
-     * Query string for previous item.
+     * Query string for previous item for tag.
      *
-     * Construct a URL query string with an item id which will locate the previous item, before the specified date and
-     * within the page and element specified.
+     * Construct a URL query string with an item id which will locate the previous item,
+     * before the date and within the tag specified.
      *
      * @param string $date
-     * @param string $page
-     * @param string $element
+     * @param string $tag
      *
-     * @return string $next URL query string to locate previous item
+     * @return string $next URL query string to locate next item
      */
-	  private function itemPrev($date, $page, $element)
+    private function prevItemForTag($date = NULL, $tag = NULL)
 	  {
-        $sql = '';
-        if ($page)
-            $sql .= ' AND page = "' . $page . '"';
-        if ($element)
-            $sql .= ' AND element = "' . $element . '"';
         $stmt = $this->connCMS->prepare(
-             'SELECT id FROM itemsTable WHERE date < ? '
-              . $sql . ' ORDER BY date DESC LIMIT 1');
-        $stmt->execute(array($date));
+            'SELECT itemsTable.id
+             FROM itemsTable
+             LEFT JOIN tagsTable
+             ON tagsTable.content_id = itemsTable.id
+             WHERE date < ? AND tagsTable.tag = ?
+             ORDER BY itemsTable.date DESC LIMIT 1');
+        $stmt->execute(array($date, $tag));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($row) {
-            $prev = '?id='. $row['id'];
-            if ($page)
-                $prev .= '&page=' . $page;
-            if ($element)
-                $prev .= '&element=' . $element;
+            $next = '?id='. $row['id'] . '&tag=' . $tag;
         }
         else {
-            $prev = NULL;
+            $next = NULL;
         }
 
-		    return ($prev);
+        return ($next);
 	  }
 
     /**

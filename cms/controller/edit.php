@@ -3,7 +3,7 @@
  * controller class for edit
  *
  *
- * @since 1.0.1
+ * @since 1.0.2
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -93,8 +93,8 @@ class edit
         }
 
         $tags = $this->editInput->getAllTagList();
-        $elements = $this->editInput->getElementList();
-        $pages = $this->editInput->getPagesList();
+        $topics = $this->editInput->getTopicsList();
+        $subtopics = $this->editInput->getSubtopicsList();
 
         if ($item['status'] == 'offline') $class = 'text-danger';
         elseif ($item['status'] == 'live') $class = 'text-success';
@@ -188,7 +188,7 @@ class edit
     /**
      * Manage recreate images
      *
-     * Presents page where user can request and monitor recreation of images.
+     * Presents topic where user can request and monitor recreation of images.
      *
      * Note: This operation uses SSE (Server Sent Events) to monitor progress. The JavaScript in
      *       view/edit/recreateImages fires a call to controller/edit/recreateImages which uses

@@ -1,3 +1,12 @@
+<?php
+/**
+ * view for edit/image
+ *
+ * @since 1.0.0
+ * @author Keith Wheatley
+ * @package echocms\edit
+ */
+?>
 <div class='container-fluid'>
 
     <form class='form-horizontal' name='inputForm' id='inputForm' action='<?php echo CONFIG_URL; ?>edit/input' method='post' enctype='multipart/form-data'>

@@ -1,3 +1,12 @@
+<?php
+/**
+ * view for common/header
+ *
+ * @since 1.0.0
+ * @author Keith Wheatley
+ * @package echocms
+ */
+?>
 <!DOCTYPE html>
 <html lang='en'>
 <head>

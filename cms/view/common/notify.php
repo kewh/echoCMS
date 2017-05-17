@@ -1,3 +1,12 @@
+<?php
+/**
+ * view for common/notify
+ *
+ * @since 1.0.0
+ * @author Keith Wheatley
+ * @package echocms
+ */
+?>
     <div class='col-lg-6 col-lg-offset-3 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1 vertical-space-lg alert modal-backdrop-notify'>
         <div class='text-center'>
             <h4>

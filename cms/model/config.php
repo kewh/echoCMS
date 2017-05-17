@@ -2,7 +2,7 @@
 /**
  * Model class for system configuration
  *
- * @since 1.0.0
+ * @since 1.0.2
  * @author Keith Wheatley
  * @package echocms\config
  */
@@ -42,20 +42,20 @@ class configModel
         }
         date_default_timezone_set($config['site_timezone']);
 
-        // get page config items from pages table, add as 2nd dim array
-        $config['pages'] = array();
-		    $stmt = $this->dbh->prepare('SELECT page FROM pagesTable');
+        // get topics config items from topics table, add as 2nd dim array
+        $config['topics'] = array();
+		    $stmt = $this->dbh->prepare('SELECT topic FROM topicsTable');
 	      $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $config['pages'][] = $row['page'];
+            $config['topics'][] = $row['topics'];
         }
 
-        // get element config items from elements table, add as 2nd dim array
-        $config['elements'] = array();
-		    $stmt = $this->dbh->prepare('SELECT element FROM elementsTable');
+        // get subtopic config items from subtopics table, add as 2nd dim array
+        $config['subtopics'] = array();
+		    $stmt = $this->dbh->prepare('SELECT subtopic FROM subtopicsTable');
 	      $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $config['elements'][] = $row['element'];
+            $config['subtopics'][] = $row['subtopic'];
         }
 
         //error_log ('cms/model/config.php readConfig. $config: ' . print_r($config, true) );
@@ -83,7 +83,7 @@ class configModel
             $image_posted = $_FILES['postedImage']['tmp_name'];
             $newImage = $_FILES['postedImage']['name'] .'.png';
             $this->createLogoImage($image_posted, $newImage);
-            $config['cms_page_logo'] = $newImage;
+            $config['cms_topics_logo'] = $newImage;
         }
         if ( isset( $_POST['site_name']) )
             $config['site_name'] = $_POST['site_name'];
@@ -92,8 +92,8 @@ class configModel
         if ( isset( $_POST['site_timezone']) )
             $config['site_timezone'] = $_POST['site_timezone'];
 
-        $config['elements_updatable'] = empty($_POST['elements_updatable']) ? '0' : '1';
-        $config['pages_updatable'] = empty($_POST['pages_updatable']) ? '0' : '1';
+        $config['subtopics_updatable'] = empty($_POST['subtopics_updatable']) ? '0' : '1';
+        $config['topics_updatable'] = empty($_POST['topics_updatable']) ? '0' : '1';
 
         // Authentication items
         if ( isset( $_POST['ip_ban_minutes']) )
@@ -264,65 +264,65 @@ class configModel
     }
 
     /**
-     * Get posted pages
+     * Get posted topics
 	 *
-	 * @return array $pages
+	 * @return array $topics
 	 */
-	  function getPostedPages()
+	  function getPostedTopics()
     {
-        $pages = array();
-        if ( isset( $_POST['pages']) && $_POST['pages'] != null) {
-            $pages = $_POST['pages'];
+        $topics = array();
+        if ( isset( $_POST['topics']) && $_POST['topics'] != null) {
+            $topics = $_POST['topics'];
         }
 
-        return($pages);
+        return($topics);
     }
 
     /**
-     * Update config pages.
+     * Update config topics.
      *
-     * @param array $pages
+     * @param array $topics
      */
-    function updateConfigPages($pages)
+    function updateConfigTopics($topics)
     {
-        $stmt = $this->dbh->prepare('TRUNCATE TABLE pagesTable');
+        $stmt = $this->dbh->prepare('TRUNCATE TABLE topicsTable');
         $stmt->execute();
-        foreach($pages as $page) {
-            $element = trim($page);
-            $stmt = $this->dbh->prepare('INSERT INTO pagesTable (page) VALUES (?)');
-            $array = array($page);
+        foreach($topics as $topics) {
+            $subtopic = trim($topics);
+            $stmt = $this->dbh->prepare('INSERT INTO topicsTable (topics) VALUES (?)');
+            $array = array($topics);
             $stmt->execute($array);
         }
     }
 
     /**
-     * Get posted elements
+     * Get posted subtopics
 	 *
-	 * @return array elements
+	 * @return array subtopics
 	 */
-	  function getPostedElements()
+	  function getPostedSubtopics()
     {
-        $elements = array();
-        if ( isset( $_POST['elements']) && $_POST['elements'] != null) {
-            $elements = $_POST['elements'];
+        $subtopics = array();
+        if ( isset( $_POST['subtopics']) && $_POST['subtopics'] != null) {
+            $subtopics = $_POST['subtopics'];
         }
 
-        return($elements);
+        return($subtopics);
     }
 
     /**
-     * Update config elements.
+     * Update config subtopics.
      *
-     * @param array $elements
+     * @param array $subtopics
      */
-    function updateConfigElements($elements)
+    function updateConfigSubtopics($subtopics)
     {
-        $stmt = $this->dbh->prepare('TRUNCATE TABLE elementsTable');
+        $stmt = $this->dbh->prepare('TRUNCATE TABLE subtopicsTable');
         $stmt->execute();
-        foreach($elements as $element) {
-            $element = trim($element);
-            $stmt = $this->dbh->prepare('INSERT INTO elementsTable (element) VALUES (?)');
-            $array = array($element);
+        foreach($subtopics as $subtopic) {
+            $subtopic = trim($subtopic);
+            $stmt = $this->dbh->prepare('INSERT INTO subtopicsTable (subtopic) VALUES (?)');
+            $array = array($subtopic);
             $stmt->execute($array);
         }
     }
@@ -330,7 +330,7 @@ class configModel
     /**
      * Report error.
      *
-     * Reports a system error to error_log then sets header location to error notification page and exits script.
+     * Reports a system error to error_log then sets header location to error notification topics and exits script.
      *
      * @param string $message
      */

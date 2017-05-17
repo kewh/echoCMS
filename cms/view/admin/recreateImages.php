@@ -1,3 +1,12 @@
+<?php
+/**
+ * view for admin/recreateImages
+ *
+ * @since 1.0.0
+ * @author Keith Wheatley
+ * @package echocms
+ */
+?>
     <div class='col-lg-8 col-lg-offset-2 col-sm-8 col-sm-offset-2 vertical-space-md'>
         <h4 class='text-center'>recreate images</h4>
 

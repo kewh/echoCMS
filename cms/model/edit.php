@@ -2,7 +2,7 @@
 /**
  * model class for edit
  *
- * @since 1.0.1
+ * @since 1.0.2
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -56,73 +56,73 @@ class editModel
 	  }
 
     /**
-	   *  Gets list of all unique config, live & pending, and newly added elements
+	   *  Gets list of all unique config, live & pending, and newly added subtopics
 	   *
-     * @return array $elements
+     * @return array $subtopics
 	   */
-	  function getElementList()
+	  function getSubtopicsList()
 	  {
-        // get default elements from config
-        $allElements = $this->config['elements'];
+        // get default subtopics from config
+        $allSubtopics = $this->config['subtopics'];
 
-        // get elements from Pending items but not 'offline' items
+        // get subtopics from Pending items but not 'offline' items
         $status = 'offline';
-		    $stmt = $this->dbh->prepare('SELECT element FROM pendingItemsTable WHERE status != ?');
+		    $stmt = $this->dbh->prepare('SELECT subtopic FROM pendingItemsTable WHERE status != ?');
 	      $stmt->execute(array($status));
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-			      if (!empty($row['element']))
-                $allElements[] =  $row['element'];
+			      if (!empty($row['subtopic']))
+                $allSubtopics[] =  $row['subtopic'];
 	      }
 
-        // get elements from live items
-		    $stmt = $this->dbh->prepare('SELECT element FROM itemsTable');
+        // get subtopics from live items
+		    $stmt = $this->dbh->prepare('SELECT subtopic FROM itemsTable');
 	      $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-			      if (!empty($row['element']))
-                $allElements[] =  $row['element'];
+			      if (!empty($row['subtopic']))
+                $allSubtopics[] =  $row['subtopic'];
 		    }
 
-        // get newly added element from session data
-        $allElements[] = $_SESSION['item']['element'];
+        // get newly added subtopic from session data
+        $allSubtopics[] = $_SESSION['item']['subtopic'];
 
-	      $elements = array_unique ($allElements);
+	      $subtopics = array_unique ($allSubtopics);
 
-	      return ($elements);
+	      return ($subtopics);
 	  }
 
     /**
-	   * Gets a list of all unique Live & Pending, and newly added Pages
+	   * Gets a list of all unique Live & Pending, and newly added Topics
      *
-     * @return array $pages
+     * @return array $topics
 	   */
-	  function getPagesList()
+	  function getTopicsList()
     {
-        // get default pages from config
-        $allPages = $this->config['pages'];
+        // get default topics from config
+        $allTopics = $this->config['topics'];
 
         // get Pending items but not 'offline' items
         $status = 'offline';
-	      $stmt = $this->dbh->prepare('SELECT page FROM pendingItemsTable WHERE status != ?');
+	      $stmt = $this->dbh->prepare('SELECT topic FROM pendingItemsTable WHERE status != ?');
 	      $stmt->execute(array($status));
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-        		if (!empty($row['page']))
-		            $allPages[] =  $row['page'];
+        		if (!empty($row['topic']))
+		            $allTopics[] =  $row['topic'];
 		    }
 
         // get all Live items
-		    $stmt = $this->dbh->prepare('SELECT page FROM itemsTable');
+		    $stmt = $this->dbh->prepare('SELECT topic FROM itemsTable');
 	      $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-        		if (!empty($row['page']))
-		            $allPages[] =  $row['page'];
+        		if (!empty($row['topic']))
+		            $allTopics[] =  $row['topic'];
 		    }
 
-        // get page newly added to session data
-        $allPages[] = $_SESSION['item']['page'];
+        // get topic newly added to session data
+        $allTopics[] = $_SESSION['item']['topic'];
 
-		    $pages = array_unique ($allPages);
+		    $topics = array_unique ($allTopics);
 
-		    return ($pages);
+		    return ($topics);
 	   }
 
     /**
@@ -176,18 +176,18 @@ class editModel
             $pendingList[$row['id']] = $row;
 		    }
 
-		    //  sort list into status within heading within element
+		    //  sort list into status within heading within subtopic
 		    //  Ref: sort multidimentional array on columns, see http://php.net/manual/en/function.array-multisort.php
-        $page = $element = $date = $status = $heading = array();
+        $topic = $subtopic = $date = $status = $heading = array();
 		    if ( count($pendingList) > 1) {
 		        foreach ($pendingList as $key => $row) {
     			      $heading[$key]  = $row['heading'];
     			      $status[$key]  = $row['status'];
     			      $date[$key]  = $row['date'];
-    			      $element[$key] = $row['element'];
-    			      $page[$key] = $row['page'];
+    			      $subtopic[$key] = $row['subtopic'];
+    			      $topic[$key] = $row['topic'];
 			      }
-			      array_multisort ( $page, SORT_ASC, $element, SORT_ASC, $date, SORT_DESC, $status, SORT_DESC,  $heading, SORT_ASC, $pendingList);
+			      array_multisort ( $topic, SORT_ASC, $subtopic, SORT_ASC, $date, SORT_DESC, $status, SORT_DESC,  $heading, SORT_ASC, $pendingList);
 		    }
 
 		    return ($pendingList);
@@ -208,18 +208,18 @@ class editModel
             $pendingList[$row['id']] = $row;
 	      }
 
-		    //  SORT LIST into status within heading within element
+		    //  SORT LIST into status within heading within subtopic
     	  //  ref: sort multidimentional array on columns, see http://php.net/manual/en/function.array-multisort.php
-        $page = $element = $date = $status = $heading = array();
+        $topic = $subtopic = $date = $status = $heading = array();
     	  if ( count($pendingList) > 1) {
             foreach ($pendingList as $key => $row) {
         		    $heading[$key]  = $row['heading'];
     			      $status[$key]  = $row['status'];
     			      $date[$key]  = $row['date'];
-        		    $element[$key] = $row['element'];
-    			      $page[$key] = $row['page'];
+        		    $subtopic[$key] = $row['subtopic'];
+    			      $topic[$key] = $row['topic'];
             }
-        	  array_multisort ( $page, SORT_ASC, $element, SORT_ASC, $date, SORT_DESC, $status, SORT_DESC,  $heading, SORT_ASC, $pendingList);
+        	  array_multisort ( $topic, SORT_ASC, $subtopic, SORT_ASC, $date, SORT_DESC, $status, SORT_DESC,  $heading, SORT_ASC, $pendingList);
     	  }
 
 		    return ($pendingList);
@@ -371,16 +371,16 @@ class editModel
 		    $pendingList = $this->getPending();
 		    $mergedList = array_merge($contentList, $pendingList);
 	      // Sort multidimentional array on columns, see http://php.net/manual/en/function.array-multisort.php
-        $page = $element = $date = $status = $heading = array();
+        $topic = $subtopic = $date = $status = $heading = array();
 		    if (isset ($mergedList) &&  count($mergedList) > 1) {
 	          foreach ($mergedList as $key => $row) {
                 $heading[$key]  = $row['heading'];
                 $status[$key]  = $row['status'];
                 $date[$key]  = $row['date'];
-                $element[$key] = $row['element'];
-                $page[$key] = $row['page'];
+                $subtopic[$key] = $row['subtopic'];
+                $topic[$key] = $row['topic'];
 			      }
-            array_multisort ( $page, SORT_ASC, $element, SORT_ASC, $date, SORT_DESC, $status, SORT_DESC,  $heading, SORT_ASC, $mergedList);
+            array_multisort ( $topic, SORT_ASC, $subtopic, SORT_ASC, $date, SORT_DESC, $status, SORT_DESC,  $heading, SORT_ASC, $mergedList);
 		    }
 
 		        return ($mergedList);
@@ -409,13 +409,13 @@ class editModel
     /**
      * Report a system error.
      *
-     * Reports error to error_log then sets header location to error notification page and exits script.
+     * Reports error to error_log then sets header location to error notification topic and exits script.
      *
      * @param string $message
      */
 	  public function reportError($message)
 	  {
-        error_log ('cms/model/auth.php  reportError session data: ' . print_r($_SESSION, true) );
+        //error_log ('cms/model/auth.php  reportError session data: ' . print_r($_SESSION, true) );
         header('location: ' . CONFIG_URL. 'error/notify' );
         exit();
 	  }

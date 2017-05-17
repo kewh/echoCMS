@@ -1,3 +1,12 @@
+<?php
+/**
+ * view for auth/changePassword
+ *
+ * @since 1.0.0
+ * @author Keith Wheatley
+ * @package echocms
+ */
+?>
         <div class='col-lg-6 col-lg-offset-3 col-sm-8 col-sm-offset-2 vertical-space-md'>
             <h4 class='text-center'>change your password</h4><br/>
             <form id='inputForm' class='form-horizontal' name='login' action='<?php echo CONFIG_URL; ?>auth/changePassword' method='post'>

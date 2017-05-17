@@ -1,3 +1,12 @@
+<?php
+/**
+ * view for common/footer
+ *
+ * @since 1.0.0
+ * @author Keith Wheatley
+ * @package echocms
+ */
+?>
         <footer class='footer'>
             <a class='pull-right' href='https://github.com/kewh/echoCMS'>
                 <img src='<?php echo CONFIG_URL;?>assets/images/echocmsLogo.png' alt=''>

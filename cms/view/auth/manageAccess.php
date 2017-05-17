@@ -1,3 +1,12 @@
+<?php
+/**
+ * view for auth/manageAccess
+ *
+ * @since 1.0.0
+ * @author Keith Wheatley
+ * @package echocms
+ */
+?>
 <div class='col-xs-12 col-lg-10 col-lg-offset-1 marginTop'>
 <table class='table table-condensed'>
     <thead class='header-title'>
@@ -17,7 +26,7 @@
             <td <?php if ($attempt['email'] == 'failed access attempt') echo 'class="text-danger"';?>><?php echo $attempt['email'];?> </td>
         </tr>
     <?php $lastAttempt = $attempt;} ?>
-    </tbody>    
+    </tbody>
 </table>
-&nbsp;<br> 
+&nbsp;<br>
 </div>

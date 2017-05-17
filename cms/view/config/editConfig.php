@@ -1,3 +1,12 @@
+<?php
+/**
+ * view for config/editConfig
+ *
+ * @since 1.0.2
+ * @author Keith Wheatley
+ * @package echocms\config
+ */
+?>
 <div class='container-fluid form-fluid'>
 <form class='form' name='inputForm' id='inputForm' action='<?php echo CONFIG_URL; ?>config/editConfig' method='post' enctype='multipart/form-data'>
 
@@ -11,7 +20,7 @@
     <div class='row'>
         <fieldset>
         <legend>CMS Configuration</legend>
-        <!-- cms_page_logo     ********************************************** -->
+        <!-- logo     ********************************************** -->
         <div class='form-group form-group-sm-margin col-xs-12 col-sm-11 col-sm-offset-1' style='margin-top:15px;margin-bottom:0;'>
             <label for='postedImage'><span class='btn btn-default btn-xs'>&nbsp;change logo&nbsp;</span></label>
             <input class='inputfile' type='file' onchange='return checkImage();' id='postedImage' name='postedImage'>
@@ -44,42 +53,42 @@
 
     <!-- CONTENT STRUCTURE  ****************************************** -->
         <legend>content structure</legend>
-        <!--  Pages    *********************************************** -->
+        <!--  topics    *********************************************** -->
         <div class='form-group col-xs-11 col-sm-9 col-sm-offset-1'>
-            <label for='pages' class='control-label'>pages</label>
-            <select name='pages[]' multiple class='pages'>
+            <label for='topics' class='control-label'>topics</label>
+            <select name='topics[]' multiple class='topics'>
                 <option value='' disable></option>
                 <?php
-                foreach ($config['pages'] as $page) {
-                    echo '<option value="' . $page . '" selected>' . $page . '</option>';
+                foreach ($config['topics'] as $topic) {
+                    echo '<option value="' . $topic . '" selected>' . $topic . '</option>';
                 } ?>
             </select>
         </div>
 
-        <!-- Pages updatable by user -  on if user can update pages defined by Admin -->
+        <!-- topics updatable by user -  on if user can update topics defined by Admin -->
         <div class='form-group col-xs-1 col-sm-2'>
-            <input name='pages_updatable' id='pages_updatable' type='checkbox' class='form-control' value='1'
-            <?php if ($config['pages_updatable'] == 1) echo ' checked'; ?>>
-            <label for='pages_updatable' class='control-label text-right'>updatable<br></label>
+            <input name='topics_updatable' id='topics_updatable' type='checkbox' class='form-control' value='1'
+            <?php if ($config['topics_updatable'] == 1) echo ' checked'; ?>>
+            <label for='topics_updatable' class='control-label text-right'>updatable<br></label>
        </div>
 
-       <!--  Elements    *********************************************** -->
+       <!--  subtopics    *********************************************** -->
        <div class='form-group col-xs-11 col-sm-9 col-sm-offset-1'>
-           <label for='elements' class='control-label'>elements</label>
-           <select name='elements[]' multiple class='elements'>
+           <label for='subtopics' class='control-label'>subtopics</label>
+           <select name='subtopics[]' multiple class='subtopics'>
                <option value='' disable></option>
                <?php
-               foreach ($config['elements'] as $element) {
-                   echo '<option value="' . $element . '" selected>' . $element . '</option>';
+               foreach ($config['subtopics'] as $subtopic) {
+                   echo '<option value="' . $subtopic . '" selected>' . $subtopic . '</option>';
                } ?>
            </select>
        </div>
 
-       <!-- Elements updatable by user -   on if user can update elements defined by Admin -->
+       <!-- subtopics updatable by user -   on if user can update subtopics defined by Admin -->
        <div class='form-group col-xs-1 col-sm-2'>
-           <input name='elements_updatable' id='elements_updatable' type='checkbox' class='form-control' value='1'
-           <?php if ($config['elements_updatable'] == 1) echo ' checked'; ?>>
-           <label for='elements_updatable' class='control-label text-right'>updatable<br></label>
+           <input name='subtopics_updatable' id='subtopics_updatable' type='checkbox' class='form-control' value='1'
+           <?php if ($config['subtopics_updatable'] == 1) echo ' checked'; ?>>
+           <label for='subtopics_updatable' class='control-label text-right'>updatable<br></label>
       </div>
 
       </fieldset>
@@ -443,8 +452,8 @@ $(document).ready(function() {
         $(this).val($newColor);
     });
 
-  //  SET UP PAGES SELECTION
-      $('.pages').selectize({
+  //  SET UP topics SELECTION
+      $('.topics').selectize({
           persist: false,
           createOnBlur: true,
           create: true,
@@ -452,8 +461,8 @@ $(document).ready(function() {
           maxItems: 99
       });
 
-  //  SET UP ELEMENTS SELECTION
-      $('.elements').selectize({
+  //  SET UP subtopics SELECTION
+      $('.subtopics').selectize({
           persist: false,
           createOnBlur: true,
           create: true,

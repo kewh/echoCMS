@@ -2,7 +2,7 @@
 /**
  * view for edit/input
  *
- * @since 1.0.1
+ * @since 1.0.2
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -68,37 +68,37 @@
                 </div>
             </div>
 
-            <!--  Page   ********************************************* -->
+            <!--  topic   ********************************************* -->
             <div class='form-group'>
-                <label for='page' class='col-sm-3 col-md-2 control-label'>page</label>
+                <label for='topic' class='col-sm-3 col-md-2 control-label'>topic</label>
                 <div class='col-sm-9 col-md-10'>
-                    <select name='page' required='required' class='page'>
+                    <select name='topic' required='required' class='topic'>
                         <option value=''></option>
                         <?php
-                        foreach ($pages as $page) {
+                        foreach ($topics as $topic) {
                             echo '
-                        <option value="' . $page . '"';
-                            if ($page == $item['page'])
+                        <option value="' . $topic . '"';
+                            if ($topic == $item['topic'])
                                 echo ' selected';
-                            echo '>' . $page . '</option>';
+                            echo '>' . $topic . '</option>';
                         } ?>
                     </select>
                 </div>
             </div>
 
-            <!--  Element    ********************************************* -->
+            <!--  subtopic    ********************************************* -->
             <div class='form-group'>
-                <label for='element' class='col-sm-3 col-md-2 control-label'>element</label>
+                <label for='subtopic' class='col-sm-3 col-md-2 control-label'>subtopic</label>
                 <div class='col-sm-9 col-md-10'>
-                    <select name='element' class='element'>
+                    <select name='subtopic' class='subtopic'>
                         <option value=''></option>
                         <?php
-                        foreach ($elements as $element) {
+                        foreach ($subtopics as $subtopic) {
                             echo '
-                        <option value="' . $element . '"';
-                            if ($element == $item['element'])
+                        <option value="' . $subtopic . '"';
+                            if ($subtopic == $item['subtopic'])
                                 echo ' selected';
-                            echo '>' . $element . '</option>';
+                            echo '>' . $subtopic . '</option>';
                         } ?>
                     </select>
                 </div>
@@ -355,13 +355,13 @@ $(document).ready(function() {
         branding: false
      });
 
-//  SET UP PAGE SELECTION
-    $('.page').selectize({
+//  SET UP topic SELECTION
+    $('.topic').selectize({
         persist: false,
         createOnBlur: true,
         hideSelected: true,
         maxItems: 1,
-<?php if ($config['pages_updatable']) { ?>
+<?php if ($config['topics_updatable']) { ?>
         create: true,
         placeholder:'select or add 1 option'
 <?php } else { ?>
@@ -371,12 +371,12 @@ $(document).ready(function() {
     });
 
 //  SET UP SECTION SELECTION
-    $('.element').selectize({
+    $('.subtopic').selectize({
         persist: false,
         createOnBlur: true,
         hideSelected: true,
         maxItems: 1,
-<?php if ($config['elements_updatable']) { ?>
+<?php if ($config['subtopics_updatable']) { ?>
         create: true,
         placeholder:'select or add 1 option'
 <?php } else { ?>

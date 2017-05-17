@@ -1,3 +1,12 @@
+<?php
+/**
+ * view for admin/manageBackups
+ *
+ * @since 1.0.0
+ * @author Keith Wheatley
+ * @package echocms
+ */
+?>
     <div class='col-xs-4 col-xs-offset-3'>
         <h4 class='text-center'>image backups</h4>
     </div>

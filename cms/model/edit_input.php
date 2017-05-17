@@ -2,7 +2,7 @@
 /**
  * model class for edit
  *
- * @since 1.0.1
+ * @since 1.0.2
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -31,10 +31,10 @@ class editModelInput extends editModel
 	   */
 	  function getPostedItemData()
     {
-        if ( isset( $_POST['page']) )
-            $_SESSION['item']['page'] = $_POST['page'];
-        if ( isset( $_POST['element']) )
-            $_SESSION['item']['element'] = $_POST['element'];
+        if ( isset( $_POST['topic']) )
+            $_SESSION['item']['topic'] = $_POST['topic'];
+        if ( isset( $_POST['subtopic']) )
+            $_SESSION['item']['subtopic'] = $_POST['subtopic'];
         if ( isset( $_POST['heading']) )
             $_SESSION['item']['heading'] = htmlentities($_POST['heading']);
         if ( isset( $_POST['caption']) )
@@ -330,31 +330,31 @@ class editModelInput extends editModel
      *
      * @return void
 	   */
-     private function createThumbnail($image)
-     {
-         // set longest side to 200 and use 'square' aspect ratio
-         $image_ratio = $this->convertConfigRatio($this->config['image_ratio_square']);
-         if ($image_ratio > 1)
-             {
-                 $thumbWidth = 200;
-                 $thumbHeight = floor ((200 / $image_ratio));
-             }
-         else{
-                 $thumbHeight = 200;
-                 $thumbWidth = floor ((200 * $image_ratio));
-             }
-         ini_set('memory_limit', '1024M');
-         set_time_limit(120);
-         if (! $image_src = imagecreatefromjpeg(CONFIG_DIR.'/content/images/uncropped/'.$image['src']))
-             $this->reportError('cms/model/edit_input createThumbnail. Problem with imagecreatefromjpeg');
-         if (! $image_dst = imagecreatetruecolor($thumbWidth, $thumbHeight))
-             $this->reportError('cms/model/edit_input createThumbnail. Problem with imagecreatetruecolor');
-         if (! imagecopyresampled ($image_dst, $image_src, 0, 0, $image['sx1'], $image['sy1'], $thumbWidth, $thumbHeight,($image['sx2'] - $image['sx1']), ($image['sy2'] - $image['sy1'])))
-             $this->reportError('cms/model/edit_input createThumbnail. Problem with imagecopyresampled');
-         if (! imagejpeg($image_dst, CONFIG_DIR.'/content/images/thumbnail/'.$image['src'] , 90))
-             $this->reportError('cms/model/edit_input createThumbnail. Problem with imagejpeg');
-         imagedestroy($image_dst);
-     }
+	  private function createThumbnail($image)
+    {
+        // set longest side to 200 and use 'square' aspect ratio
+        $image_ratio = $this->convertConfigRatio($this->config['image_ratio_square']);
+        if ($image_ratio > 1)
+            {
+                $thumbWidth = 200;
+                $thumbHeight = floor ((200 / $image_ratio));
+            }
+        else{
+                $thumbHeight = 200;
+                $thumbWidth = floor ((200 * $image_ratio));
+            }
+        ini_set('memory_limit', '1024M');
+        set_time_limit(120);
+        if (! $image_src = imagecreatefromjpeg(CONFIG_DIR.'/content/images/uncropped/'.$image['src']))
+            $this->reportError('cms/model/edit_input createThumbnail. Problem with imagecreatefromjpeg');
+        if (! $image_dst = imagecreatetruecolor($thumbWidth, $thumbHeight))
+            $this->reportError('cms/model/edit_input createThumbnail. Problem with imagecreatetruecolor');
+        if (! imagecopyresampled ($image_dst, $image_src, 0, 0, $image['sx1'], $image['sy1'], $thumbWidth, $thumbHeight,($image['sx2'] - $image['sx1']), ($image['sy2'] - $image['sy1'])))
+            $this->reportError('cms/model/edit_input createThumbnail. Problem with imagecopyresampled');
+        if (! imagejpeg($image_dst, CONFIG_DIR.'/content/images/thumbnail/'.$image['src'] , 90))
+            $this->reportError('cms/model/edit_input createThumbnail. Problem with imagejpeg');
+        imagedestroy($image_dst);
+    }
 
 	  /**
 	   *
@@ -375,8 +375,8 @@ class editModelInput extends editModel
             'updated'       => null,
             'updatedBy'     => null,
             'status'        => 'create',
-            'page'          => null,
-            'element'       => null,
+            'topic'          => null,
+            'subtopic'       => null,
             'heading'       => null,
             'date'          => date( 'Y-m-d H:i:s'),
             'caption'       => null,

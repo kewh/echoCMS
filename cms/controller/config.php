@@ -3,7 +3,7 @@
  * controller class for config
  *
  *
- * @since 1.0.0
+ * @since 1.0.2
  * @author Keith Wheatley
  * @package echocms\config
  */
@@ -41,11 +41,11 @@ class config
             $configUpdates = $this->configModel->getPostedConfig();
             $this->configModel->updateConfig($configUpdates);
 
-            $elements = $this->configModel->getPostedElements();
-            $this->configModel->updateConfigElements($elements);
+            $subtopics = $this->configModel->getPostedSubtopics();
+            $this->configModel->updateConfigSubtopics($subtopics);
 
-            $pages = $this->configModel->getPostedPages();
-            $this->configModel->updateConfigPages($pages);
+            $topics = $this->configModel->getPostedTopics();
+            $this->configModel->updateConfigTopics($topics);
 
             $result['message'] = 'configuration updated';
         }

@@ -1,64 +1,78 @@
-
-
-    <div class='col-sm-10 col-sm-offset-1 vertical-space-sm'>
-      <table class='table table-condensed'>
-          <thead class='header-title'>
-              <tr>
-                  <th>Page</th>
-                  <th>Element</th>
-                  <th>Date</th>
-                  <th>Item</th>
-              </tr>
-          </thead>
-          <tbody>
-
-
 <?php
-    $thisSection = null;
-    $thisPage = null;
+/**
+ * view for edit/items
+ *
+ * @since 1.0.2
+ * @author Keith Wheatley
+ * @package echocms\edit
+ */
 ?>
+<div class='col-sm-10 col-sm-offset-1 vertical-space-sm'>
+    <table class='table table-condensed'>
+        <thead class='header-title'>
+            <tr>
+                <th>item</th>
+                <th>date</th>
+                <th>topic</th>
+                <th>subtopic</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php
+            $thisSubtopic = null;
+            $thisTopic = null;
+        ?>
 
-<?php foreach ($itemsList as $item) { ?>
+        <?php
+            foreach ($itemsList as $item) {
+                if ($thisTopic != $item['topic']) echo '<tr></tr>';
+        ?>
 
-    <?php if ($thisPage != $item['page']) echo '<tr></tr>';?>
+            <tr class='list-item' data-id='<?php echo $item['id'];?>' data-status='<?php echo $item['status'];?>'>
 
-    <tr class='list-item' data-id='<?php echo $item['id'];?>' data-status='<?php echo $item['status'];?>'>
-        <td>
+                <td>
+                <?php
+                    echo $item['heading'] . '&nbsp;';
+                    if ($item['status'] =='update' || $item['status'] == 'draft')
+                        echo '<span class="text-warning"> (' . $item['status'] . ' pending) &nbsp;</span>';
+                ?>
+                </td>
 
-    <?php   if ($thisPage != $item['page']) {
-                $thisPage = $item['page'];
-                $thisSection = null;
-                echo $item['page'];
-    } ?>
-
-        </td>
-        <td>
-
-    <?php   if ($thisSection != $item['element']) {
-                $thisSection = $item['element'];
-                echo $item['element'];
-    } ?>
-
-        </td>
-        <td>
+                <td>
                     <?php echo  date( 'd/m/Y &\nb\sp; H:i', strtotime( $item['date']));?>
-        </td>
-        <td>
+                </td>
 
-                    <?php echo  $item['heading'] . '&nbsp;';
-                          if ($item['status'] =='update' || $item['status'] == 'draft')
-                            echo '<span class="text-warning"> (' . $item['status'] . ' pending) &nbsp;</span>';
-                          echo '<span class="fade glyphicon glyphicon-pencil badge pull-right"> </span>';
-                    ?>
+                <td>
+                <?php
+                    if ($thisTopic != $item['topic']) {
+                        $thisTopic = $item['topic'];
+                        $thisSubtopic = null;
+                        echo $item['topic'];
+                    }
+                    elseif ($thisSubtopic != null){
+                        echo '&nbsp;&nbsp;&nbsp;"';
+                    }
+                ?>
+                </td>
 
-        </td>
-    </tr>
+                <td>
+                <?php
+                    if ($thisSubtopic != $item['subtopic']) {
+                        $thisSubtopic = $item['subtopic'];
+                        echo $item['subtopic'];
+                    }
+                    elseif ($thisSubtopic != null){
+                        echo '&nbsp;&nbsp;&nbsp;"';
+                    }
+                    echo '<span class="fade glyphicon glyphicon-pencil badge pull-right"> </span>';
+                ?>
+                </td>
 
-<?php } ?>
-  </tbody>
-</table>
-
-&nbsp;<br>
+            </tr>
+        <?php } ?>
+        </tbody>
+    </table>
+    &nbsp;<br>
 </div>
 
 <script>
