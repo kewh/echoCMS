@@ -2,7 +2,7 @@
 /**
  * Model class for system configuration
  *
- * @since 1.0.2
+ * @since 1.0.3
  * @author Keith Wheatley
  * @package echocms\config
  */
@@ -17,7 +17,7 @@ class configModel
      */
     function setupDbh()
     {
-        require $_SERVER['DOCUMENT_ROOT'] . '/cms/config/db.php';
+        require CONFIG_DIR . '/config/db.php';
         $this->dbh = new \PDO('mysql:host=' .$db_host. ';dbname=' .$db_name. ';charset=utf8mb4', $db_user, $db_pass, array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION));
 
         return($this->dbh);
@@ -42,15 +42,15 @@ class configModel
         }
         date_default_timezone_set($config['site_timezone']);
 
-        // get topics config items from topics table, add as 2nd dim array
+        // get topics config items from topics table, add as 2 dim array
         $config['topics'] = array();
 		    $stmt = $this->dbh->prepare('SELECT topic FROM topicsTable');
 	      $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $config['topics'][] = $row['topics'];
+            $config['topics'][] = $row['topic'];
         }
 
-        // get subtopic config items from subtopics table, add as 2nd dim array
+        // get subtopic config items from subtopics table, add as 2 dim array
         $config['subtopics'] = array();
 		    $stmt = $this->dbh->prepare('SELECT subtopic FROM subtopicsTable');
 	      $stmt->execute();
@@ -83,7 +83,7 @@ class configModel
             $image_posted = $_FILES['postedImage']['tmp_name'];
             $newImage = $_FILES['postedImage']['name'] .'.png';
             $this->createLogoImage($image_posted, $newImage);
-            $config['cms_topics_logo'] = $newImage;
+            $config['cms_page_logo'] = $newImage;
         }
         if ( isset( $_POST['site_name']) )
             $config['site_name'] = $_POST['site_name'];
@@ -287,10 +287,10 @@ class configModel
     {
         $stmt = $this->dbh->prepare('TRUNCATE TABLE topicsTable');
         $stmt->execute();
-        foreach($topics as $topics) {
-            $subtopic = trim($topics);
-            $stmt = $this->dbh->prepare('INSERT INTO topicsTable (topics) VALUES (?)');
-            $array = array($topics);
+        foreach($topics as $topic) {
+            $topic = trim($topic);
+            $stmt = $this->dbh->prepare('INSERT INTO topicsTable (topic) VALUES (?)');
+            $array = array($topic);
             $stmt->execute($array);
         }
     }

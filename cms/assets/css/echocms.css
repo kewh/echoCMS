@@ -1,6 +1,6 @@
 /**
  * @package echocms
- * @since 1.0.0
+ * @since 1.0.3
  * @author Keith Wheatley
  *
  * Minified with YUI Compressor at http://refresh-sf.com BUT switch off clean-CSS advanced settings
@@ -420,6 +420,13 @@ body, textarea,
 #pickAColor {
     float: left;
     padding: 0 0 10px 10px;
+}
+
+/**
+ * tinyMCE - icon for lorem ipsum plugin
+ */
+.mce-i-lorem:before {
+    content: "\1F58B";
 }
 
 /**

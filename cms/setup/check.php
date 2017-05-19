@@ -2,12 +2,15 @@
 /**
  * echocms - check setup script
  *
- * @since 1.0.0
+ * @since 1.0.3
  * @author Keith Wheatley
  * @package echocms
  */
-        $error = null;
-        if(!in_array('mod_rewrite', apache_get_modules())) {
+        $error = $warning = null;
+        if(!function_exists('apache_get_modules')) {
+            $warning .= 'Unable to check if Apache server mod_rewrite is available.<br>';
+        }
+        elseif(!in_array('mod_rewrite', apache_get_modules())) {
             $error .= 'Apache server mod_rewrite is not available.<br>';
         }
         if (version_compare(phpversion(), '5.5.0', '<')) {
@@ -23,7 +26,7 @@
             $error .= 'PDO is not installed.<br>';
         }
         if (!extension_loaded('zip')) {
-            $error .= 'ZipArchive is not installed, download of backups will not be available.<br>';
+            $warning .= 'ZipArchive is not installed, download of backups will not be available.<br>';
         }
 ?>
 <!DOCTYPE html>
@@ -81,6 +84,14 @@
     <?php } else { ?>
         <h4>Your server configuration looks OK for echoCMS</h4>
     <?php } ?>
+
+    <?php if ($warning) { ?>
+        <h4>Warning:</h4>
+        <div class="text">
+            <?php echo ($warning); ?>
+        </div>
+    <?php } ?>
+
 
     </div>
 </html>

@@ -2,7 +2,7 @@
 /**
  * view for edit/input
  *
- * @since 1.0.2
+ * @since 1.0.3
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -344,7 +344,7 @@ $(document).ready(function() {
 
 // SET UP TEXTAREA EDIT
     tinymce.init({
-        content_css : '/cms/assets/css/echocms.css',
+        content_css : '<?php echo CONFIG_URL_DIR . '/cms/assets/css/echocms.css';?>',
         plugins : 'lorumipsum advlist autolink code fullscreen paste preview link lists table textcolor',
         paste_as_text: true,
         selector: '#textContent',

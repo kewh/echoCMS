@@ -51,8 +51,8 @@ The first call to the **item** function will get the most recent item for the sp
 ````php
 <?php
      $yourItem = $get->item('yourTopic', 'yourSubtopic');
-     echo $item['heading'];
-     echo $item['text'];
+     echo $yourItem['heading'];
+     echo $yourItem['text'];
      // see below for list of all data entities available for each item
 ?>
 ````
@@ -306,6 +306,3 @@ pick-a-color | https://github.com/lauren/pick-a-color
 selectize	| https://github.com/selectize/selectize.js
 simplyCountable| https://github.com/aaronrussell/jquery-simply-countable/
 PHPMailer	| https://github.com/PHPMailer/PHPMailer
-
-## Current version
-1.0.2
