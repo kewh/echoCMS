@@ -30,14 +30,14 @@ class router
             $controller = 'auth';
             $method = 'index';
         }
-        if (file_exists(CONFIG_DIR. '/controller/' . $controller . '.php')) {
-            require CONFIG_DIR. '/controller/' . $controller . '.php';
+        if (file_exists('controller/' . $controller . '.php')) {
+            require 'controller/' . $controller . '.php';
         }
         $class = '\\echocms\\' . $controller;
         if (!class_exists($class) || !method_exists($class, $method)) {
             $controller = 'error';
             $method = 'notfound';
-            require CONFIG_DIR. '/controller/' . $controller . '.php';
+            require 'controller/' . $controller . '.php';
         }
         $class = '\\echocms\\' . $controller;
         $class = new $class();

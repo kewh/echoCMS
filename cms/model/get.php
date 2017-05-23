@@ -13,11 +13,22 @@ class getModel
 
     function __construct()
     {
-	      require $_SERVER['DOCUMENT_ROOT'] . '/cms/config/db.php';
-        $this->connCMS = new \PDO('mysql:host=' .$db_host. ';dbname=' .$db_name. ';charset=utf8mb4', $db_user, $db_pass,
-                             array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION));
-        define('URL_content', '//' . $_SERVER['HTTP_HOST'] . '/cms/content/');
+        // The definition of URL and file paths allow for the script including this (get.php)
+        // and the CMS directory to be in same or different (sub)directories
+        define('CONTENT_DIR', substr(__DIR__,0,-5));
+	      require CONTENT_DIR . 'config/db.php';
+        $this->connCMS = new \PDO('mysql:host=' .$db_host. ';dbname=' .$db_name . ';charset=utf8mb4', $db_user, $db_pass, array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION));
         $this->config = $this->getConfig();
+        require CONTENT_DIR . 'config/url.php';
+        if ($config_URL_DIR) $config_URL_DIR =  '/' . $config_URL_DIR;
+        define('CONTENT_URL', '//' . $_SERVER['HTTP_HOST'] . $config_URL_DIR . '/cms/content/');
+
+    error_log ('cms/model/get.php construct. __DIR__: ' . print_r(__DIR__, true) );
+    error_log ('cms/model/get.php construct. $_SERVER[HTTP_HOST]: ' . print_r($_SERVER['HTTP_HOST'], true) );
+    error_log ('cms/model/get.php construct. $config_URL_DIR: ' . print_r($config_URL_DIR, true) );
+    error_log ('cms/model/get.php construct. CONTENT_DIR: ' . print_r(CONTENT_DIR, true) );
+    error_log ('cms/model/get.php construct. CONTENT_URL: ' . print_r(CONTENT_URL, true) );
+
 	  }
 
     /**
@@ -75,7 +86,7 @@ class getModel
             $items[$id] += $this->itemImages($id);
             $items[$id] += $this->itemTags($id);
             if ($items[$id]['download_src'] != null)
-                $items[$id]['download_src'] = URL_content .'downloads/' . $items[$id]['download_src'];
+                $items[$id]['download_src'] = CONTENT_URL .'downloads/' . $items[$id]['download_src'];
             $items[$id]['this'] = '?id='. $id;
             if ($topic) $items[$id]['this'] .= '&topic=' . $topic;
             if ($subtopic) $items[$id]['this'] .= '&subtopic=' . $subtopic;
@@ -182,7 +193,7 @@ class getModel
         $item = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($item) {
             if ($item['download_src'] != null)
-                $item['download_src'] = URL_content . 'downloads/' . $item['download_src'];
+                $item['download_src'] = CONTENT_URL . 'downloads/' . $item['download_src'];
             $item += $this->itemImages($item['id']);
             $item += $this->itemTags($item['id']);
             $item['date_tw'] = $this->date_tw($item['date']);
@@ -317,7 +328,7 @@ class getModel
             $items[$id] += $this->itemTags($id);
 
             if ($items[$id]['download_src'] != null)
-                $items[$id]['download_src'] = URL_content . 'downloads/' . $items[$id]['download_src'];
+                $items[$id]['download_src'] = CONTENT_URL . 'downloads/' . $items[$id]['download_src'];
 
             $items[$id]['this'] = '?id='. $items[$id]['id']. '&tag=' . $tag;
             $items[$id]['prev'] = $this->prevItemForTag($items[$id]['date'], $tag);
@@ -433,7 +444,7 @@ class getModel
         foreach ($items as $item) {
             // insert URL for downloads
             if (!empty($item['download_src']))
-                $items[$item['id']]['download_src'] = URL_content . 'downloads/' . $item['download_src'];
+                $items[$item['id']]['download_src'] = CONTENT_URL . 'downloads/' . $item['download_src'];
             $stmt = $this->connCMS->prepare(
                'SELECT src, alt, seq FROM imagesTable WHERE content_id = ? ORDER BY seq ASC');
             $stmt->execute(array($item['id']));
@@ -459,7 +470,7 @@ class getModel
      */
 	  private function imageDetails($image)
 	  {
-        $url = URL_content . 'images/';
+        $url = CONTENT_URL . 'images/';
         $panorama_2x  = ($this->config['image_sizes_panorama'])  ? 'panorama/2x/' : 'panorama/1x/';
         $panorama_3x  = ($this->config['image_sizes_panorama'])  ? 'panorama/3x/' : 'panorama/1x/';
         $portrait_2x  = ($this->config['image_sizes_portrait'])  ? 'portrait/2x/' : 'portrait/1x/';

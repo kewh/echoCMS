@@ -18,7 +18,7 @@ class get
 	   */
     function download($fileName=null)
     {
-        $filePath = CONFIG_DIR.'/content/downloads/'.$fileName;
+        $filePath = 'content/downloads/'.$fileName;
         if (file_exists($filePath) && substr($filePath,-4) == '.pdf') {
             header("Cache-Control: public");
             header("Content-Description: File Transfer");

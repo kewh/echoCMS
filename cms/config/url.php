@@ -5,8 +5,8 @@
 	 *
 	 */
 
-// sub-directory, or null if cms installed in root directory
+// if cms is installed in root directory keep as null value, otherwise enter sub-directory name
 	  $config_URL_DIR = '';
 
 // fully resolved URL including any sub-directory.
-	  $config_URL = 'http://' . $_SERVER['HTTP_HOST'] . $config_URL_DIR;
+	  $config_URL = 'http://' . $_SERVER['HTTP_HOST'] . '/' . $config_URL_DIR;

@@ -3,8 +3,8 @@
 >EchoCMS is an easy to use Contents Management System intended for developers who create their own Front End code and need a simple, elegant, Responsive-friendly CMS for content input. It does not use templates and is designed to impinge as little as possible on Front End structure and design.
 
 ## Features
-* provides flexible structuring of content to match your website pages.
-* content is simply inserted into your HTML with PHP echo statements,
+* provides flexible structuring of content to match your website pages,
+* introduces no new syntax, requires only simple standard PHP to add content to HTML,
 * full featured text editing,
 * multiple configurable aspect ratios for each image, each individually cropped,
 * configurable image sizes to support Responsive Images, with `srcset` statements generated automatically,
@@ -42,7 +42,7 @@ Content data for each item can also be input on the user input page.
 ## Getting content into your code
 
 #### To start...
-Install echoCMS on your server (see installation section below). Use the .php suffix for all your HTML pages. Then in each of your pages:
+Install echoCMS on your server (see installation section below). Then in each of your pages require **get.php** from the location you installed the cms directory, for example:
 ````php
      <?php require 'cms/model/get.php'; ?>
 ````
@@ -283,12 +283,18 @@ Requires Apache web server with mod_rewrite and PHP version 5.5 or above with GD
 
 #### Installation steps
 
-1. Download echoCMS from [github.com/kewh/echoCMS](https://github.com/kewh/echoCMS), and ftp the cms folder to your website root folder.
+1. Download echoCMS from [github.com/kewh/echoCMS](https://github.com/kewh/echoCMS), and ftp the cms directory to your website.
 1. Navigate to cms/setup/check.php in your browser to check your server configuration is OK.
 1. Setup a database, with a name of your choice, to hold the echoCMS tables. Import the tables from cms/setup/setupDatabase.sql
-1. Edit cms/config/db.php with a text editor and fill in your database connection details and edit cms/config/url.php to fill in your site URL.
-1. Navigate to yourwebsite/cms in your browser and you should be looking at the login page. Login with user: _admin@change.this_ and password: _echoCMS99_ and then select the menu items to change your password and email.
+1. Edit cms/config/db.php with a text editor and fill in your database connection details
+1. Edit cms/config/url.php to fill in your site URL details and the sub-directory name, if you have installed the cms in a sub-directory.
+1. Navigate to the cms directory in your browser and you should be looking at the login page. Login with user: _admin@change.this_ and password: _echoCMS99_ and then select the menu items to change your password and email.
 1. Select the menu item for **configure** and set up your configuration parameters (see the Configuration section above.)
+
+> Note: By default the cms directory is expected to be at the top level of the root directory but it may be placed in a sub-directory. To do this:
+> * insert the sub-directory name in cms/config/url.php as per step 5.
+
+> * make the **require get.php** statements in your website pages point to the actual location of cms (see the **To Start** section above).
 
 ## Dependencies
 
@@ -306,3 +312,6 @@ pick-a-color | https://github.com/lauren/pick-a-color
 selectize	| https://github.com/selectize/selectize.js
 simplyCountable| https://github.com/aaronrussell/jquery-simply-countable/
 PHPMailer	| https://github.com/PHPMailer/PHPMailer
+
+## Current version
+1.0.2

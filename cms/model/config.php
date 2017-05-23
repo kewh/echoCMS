@@ -2,7 +2,7 @@
 /**
  * Model class for system configuration
  *
- * @since 1.0.3
+ * @since 1.0.2
  * @author Keith Wheatley
  * @package echocms\config
  */
@@ -42,7 +42,7 @@ class configModel
         }
         date_default_timezone_set($config['site_timezone']);
 
-        // get topics config items from topics table, add as 2 dim array
+        // get topics config items from topics table, add as 2nd dim array
         $config['topics'] = array();
 		    $stmt = $this->dbh->prepare('SELECT topic FROM topicsTable');
 	      $stmt->execute();

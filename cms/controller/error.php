@@ -16,7 +16,7 @@ class error
 
     function __construct()
     {
-        require CONFIG_DIR. '/model/config.php';
+        require 'model/config.php';
         $this->configModel = new configModel();
         $this->dbh = $this->configModel->setupDbh();
         $this->config = $this->configModel->readConfig();

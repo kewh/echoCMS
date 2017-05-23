@@ -17,13 +17,13 @@ class auth
 
     function __construct()
     {
-        require CONFIG_DIR. '/model/config.php';
+        require 'model/config.php';
         $this->configModel = new configModel();
         $this->dbh = $this->configModel->setupDbh();
         $this->config = $this->configModel->readConfig();
-        require "assets/lang/en_GB.php";
+        require 'assets/lang/en_GB.php';
         $this->lang = $msg;
-        require CONFIG_DIR. "/model/auth.php";
+        require 'model/auth.php';
         $this->authModel = new authModel($this->dbh, $this->config, $this->lang);
     }
 
