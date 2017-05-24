@@ -136,6 +136,8 @@ Or if you want a single image for a specific item, do something like the followi
          srcset="<?php echo $heading['images']['0']['panorama']['srcset-w'];?>"
          alt="<?php echo    $heading['images']['0']['alt'];?>">
 ````
+> Note that [github.com/kewh/echoCMS-examples](https://github.com/kewh/echoCMS-examples) has examples of how to use echoCMS.
+
 ## Data available for each item
 
 |data|notes|
@@ -291,7 +293,7 @@ Requires Apache web server with mod_rewrite and PHP version 5.5 or above with GD
 1. Navigate to the cms directory in your browser and you should be looking at the login page. Login with user: _admin@change.this_ and password: _echoCMS99_ and then select the menu items to change your password and email.
 1. Select the menu item for **configure** and set up your configuration parameters (see the Configuration section above.)
 
-> Note: By default the cms directory is expected to be at the top level of the root directory but it may be placed in a sub-directory. To do this:
+> Note that by default the cms directory is expected to be at the top level of the root directory but it may be placed in a sub-directory. To do this:
 > * insert the sub-directory name in cms/config/url.php as per step 5.
 
 > * make the **require get.php** statements in your website pages point to the actual location of cms (see the **To Start** section above).
