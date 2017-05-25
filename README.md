@@ -295,7 +295,6 @@ Requires Apache web server with mod_rewrite and PHP version 5.5 or above with GD
 
 > Note that by default the cms directory is expected to be at the top level of the root directory but it may be placed in a sub-directory. To do this:
 > * insert the sub-directory name in cms/config/url.php as per step 5.
-
 > * make the **require get.php** statements in your website pages point to the actual location of cms (see the **To Start** section above).
 
 ## Dependencies
@@ -314,6 +313,3 @@ pick-a-color | https://github.com/lauren/pick-a-color
 selectize	| https://github.com/selectize/selectize.js
 simplyCountable| https://github.com/aaronrussell/jquery-simply-countable/
 PHPMailer	| https://github.com/PHPMailer/PHPMailer
-
-## Current version
-1.0.2
