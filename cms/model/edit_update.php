@@ -400,16 +400,16 @@ class editModelUpdate extends editModel
                 lx1, lx2, ly1, ly2,
                 px1, px2, py1, py2,
                 sx1, sx2, sy1, sy2,
-                height, width, alt, web_images
+                height, width, alt, web_images, prime_aspect_ratio
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
             $array = array(
                 $content_id, $image['src'], $image['seq'],
                 $image['mx1'], $image['mx2'], $image['my1'], $image['my2'],
                 $image['lx1'], $image['lx2'], $image['ly1'], $image['ly2'],
                 $image['px1'], $image['px2'], $image['py1'], $image['py2'],
                 $image['sx1'], $image['sx2'], $image['sy1'], $image['sy2'],
-                $image['height'], $image['width'], $image['alt'], $image['web_images']);
+                $image['height'], $image['width'], $image['alt'], $image['web_images'], $image['prime_aspect_ratio']);
             $stmt->execute($array);
         }
     }
@@ -696,16 +696,16 @@ class editModelUpdate extends editModel
                 lx1, lx2, ly1, ly2,
                 px1, px2, py1, py2,
                 sx1, sx2, sy1, sy2,
-                height, width, alt, web_images
+                height, width, alt, web_images, prime_aspect_ratio
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
             $array = array(
                 $pending_id, $image['src'], $image['seq'],
                 $image['mx1'], $image['mx2'], $image['my1'], $image['my2'],
                 $image['lx1'], $image['lx2'], $image['ly1'], $image['ly2'],
                 $image['px1'], $image['px2'], $image['py1'], $image['py2'],
                 $image['sx1'], $image['sx2'], $image['sy1'], $image['sy2'],
-                $image['height'], $image['width'], $image['alt'], $image['web_images']
+                $image['height'], $image['width'], $image['alt'], $image['web_images'], $image['prime_aspect_ratio']
             );
             $stmt->execute($array);
         }

@@ -114,8 +114,10 @@ class editModelInput extends editModel
             }
             $cropId = $_SESSION['cropId'];
             $_SESSION ['item']['images'][$cropId]['web_images'] = true;
-            if ( isset( $_POST['alt']) )
-                $_SESSION['item']['images'] [$cropId]['alt'] = $_POST['alt'];
+            if ( isset( $_POST['prime_aspect_ratio']) )
+                $_SESSION['item']['images'] [$cropId]['prime_aspect_ratio'] = $_POST['prime_aspect_ratio'];
+						if ( isset( $_POST['alt']) )
+		            $_SESSION['item']['images'] [$cropId]['alt'] = $_POST['alt'];
             $cropCoordsInput = true;
             $_SESSION ['item']['images'] [$cropId]['mx1'] = $_POST['mx1'];
             $_SESSION ['item']['images'] [$cropId]['mx2'] = $_POST['mx2'];
@@ -316,7 +318,7 @@ class editModelInput extends editModel
                 'px1' => $px1, 'px2' => $px2, 'py1' => $py1, 'py2' => $py2,
                 'sx1' => $sx1, 'sx2' => $sx2, 'sy1' => $sy1, 'sy2' => $sy2,
                 'height' => $uncroppedHeight, 'width' => $uncroppedWidth,
-                'alt' => null, 'web_images' => true     );
+                'alt' => null, 'web_images' => true, 'prime_aspect_ratio' => 'landscape'     );
         $_SESSION['item']['images'][] = $image;
     }
 

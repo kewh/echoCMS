@@ -3,7 +3,7 @@
 /**
  * model class for get
  *
- * @since 1.0.2
+ * @since 1.0.5
  * @author Keith Wheatley
  * @package echocms\get
  */
@@ -22,13 +22,13 @@ class getModel
         require CONTENT_DIR . 'config/url.php';
         if ($config_URL_DIR) $config_URL_DIR =  '/' . $config_URL_DIR;
         define('CONTENT_URL', '//' . $_SERVER['HTTP_HOST'] . $config_URL_DIR . '/cms/content/');
-
+/*
     error_log ('cms/model/get.php construct. __DIR__: ' . print_r(__DIR__, true) );
     error_log ('cms/model/get.php construct. $_SERVER[HTTP_HOST]: ' . print_r($_SERVER['HTTP_HOST'], true) );
     error_log ('cms/model/get.php construct. $config_URL_DIR: ' . print_r($config_URL_DIR, true) );
     error_log ('cms/model/get.php construct. CONTENT_DIR: ' . print_r(CONTENT_DIR, true) );
     error_log ('cms/model/get.php construct. CONTENT_URL: ' . print_r(CONTENT_URL, true) );
-
+*/
 	  }
 
     /**
@@ -419,7 +419,7 @@ class getModel
 	  private function itemImages($id)
 	  {
         $stmt = $this->connCMS->prepare(
-           'SELECT src, alt, seq, width FROM imagesTable WHERE content_id = ? ORDER BY seq ASC');
+           'SELECT src, alt, seq, width, prime_aspect_ratio FROM imagesTable WHERE content_id = ? ORDER BY seq ASC');
         $stmt->execute(array($id));
         $images['images'] = array();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -470,6 +470,7 @@ class getModel
      */
 	  private function imageDetails($image)
 	  {
+        //error_log ('cms/model/get.php  imageDetails start. $image : ' . print_r($image, true) );
         $url = CONTENT_URL . 'images/';
         $panorama_2x  = ($this->config['image_sizes_panorama'])  ? 'panorama/2x/' : 'panorama/1x/';
         $panorama_3x  = ($this->config['image_sizes_panorama'])  ? 'panorama/3x/' : 'panorama/1x/';
@@ -479,16 +480,26 @@ class getModel
         $landscape_3x = ($this->config['image_sizes_landscape']) ? 'landscape/3x/': 'landscape/1x/';
         $square_2x    = ($this->config['image_sizes_square'])    ? 'square/2x/'   : 'square/1x/';
         $square_3x    = ($this->config['image_sizes_square'])    ? 'square/3x/'   : 'square/1x/';
+        $image_height_panorama = $this->config['image_width_panorama'] / $this->convertConfigRatio($this->config['image_ratio_panorama']);
+        $image_height_portrait = $this->config['image_width_portrait'] / $this->convertConfigRatio($this->config['image_ratio_portrait']);
+        $image_height_landscape = $this->config['image_width_landscape'] / $this->convertConfigRatio($this->config['image_ratio_landscape']);
+        $image_height_square = $this->config['image_width_square'] / $this->convertConfigRatio($this->config['image_ratio_square']);
 
         $imageDetails = array(
             'panorama' => array ( 'src'=> $url.'panorama/1x/'.$image['src'],
                                   '1x' => $url.'panorama/1x/'.$image['src'],
                                   '2x' => $url.$panorama_2x.$image['src'],
                                   '3x' => $url.$panorama_3x.$image['src'],
+                                  '1x-width' => $this->config['image_width_panorama'],
+                                  '2x-width' => $this->config['image_width_panorama'] *2,
+                                  '3x-width' => $this->config['image_width_panorama'] *3,
+                                  '1x-height' => $image_height_panorama,
+                                  '2x-height' => $image_height_panorama *2,
+                                  '3x-height' => $image_height_panorama *3,
                                   'srcset-w' =>
-                                          $url.'panorama/1x/'.$image['src'] . ' ' . $image['width']  . 'w, ' .
-                                          $url.$panorama_2x.$image['src'] . ' ' .  $image['width']*2 . 'w, ' .
-                                          $url.$panorama_3x.$image['src'] . ' ' .  $image['width']*3 . 'w',
+                                          $url.'panorama/1x/'.$image['src'] . ' ' . $this->config['image_width_panorama']  . 'w, ' .
+                                          $url.$panorama_2x.$image['src'] . ' ' .  $this->config['image_width_panorama'] *2 . 'w, ' .
+                                          $url.$panorama_3x.$image['src'] . ' ' .  $this->config['image_width_panorama'] *3 . 'w',
                                   'srcset-d' =>
                                           $url.'panorama/1x/'.$image['src'] . ', ' .
                                           $url.$panorama_2x.$image['src'] . ' x2, ' .
@@ -498,10 +509,16 @@ class getModel
                                   '1x' => $url.'portrait/1x/'.$image['src'],
                                   '2x' => $url.$portrait_2x.$image['src'],
                                   '3x' => $url.$portrait_3x.$image['src'],
+                                  '1x-width' => $this->config['image_width_portrait'],
+                                  '2x-width' => $this->config['image_width_portrait'] *2,
+                                  '3x-width' => $this->config['image_width_portrait'] *3,
+                                  '1x-height' => $image_height_portrait,
+                                  '2x-height' => $image_height_portrait *2,
+                                  '3x-height' => $image_height_portrait *3,
                                   'srcset-w' =>
-                                          $url.'portrait/1x/'.$image['src']. ' ' .  $image['width']  . 'w, ' .
-                                          $url.$portrait_2x.$image['src'] . ' ' .  $image['width']*2 . 'w, ' .
-                                          $url.$portrait_3x.$image['src'] . ' ' .  $image['width']*3 . 'w',
+                                          $url.'portrait/1x/'.$image['src']. ' ' .  $this->config['image_width_portrait']  . 'w, ' .
+                                          $url.$portrait_2x.$image['src'] . ' ' .  $this->config['image_width_portrait'] *2 . 'w, ' .
+                                          $url.$portrait_3x.$image['src'] . ' ' .  $this->config['image_width_portrait'] *3 . 'w',
                                   'srcset-d' =>
                                           $url.'portrait/1x/'.$image['src'] . ', ' .
                                           $url.$portrait_2x.$image['src']. ' x2, ' .
@@ -511,10 +528,16 @@ class getModel
                                   '1x' => $url.'landscape/1x/'.$image['src'],
                                   '2x' => $url.$landscape_2x.$image['src'],
                                   '3x' => $url.$landscape_3x.$image['src'],
+                                  '1x-width' => $this->config['image_width_landscape'],
+                                  '2x-width' => $this->config['image_width_landscape'] *2,
+                                  '3x-width' => $this->config['image_width_landscape'] *3,
+                                  '1x-height' => $image_height_landscape,
+                                  '2x-height' => $image_height_landscape *2,
+                                  '3x-height' => $image_height_landscape *3,
                                   'srcset-w' =>
-                                          $url.'landscape/1x/'.$image['src'] . ' ' .  $image['width'] . 'w, ' .
-                                          $url.$landscape_2x.$image['src'] . ' ' .  $image['width']*2 . 'w, ' .
-                                          $url.$landscape_3x.$image['src'] . ' ' .  $image['width']*3 . 'w',
+                                          $url.'landscape/1x/'.$image['src'] . ' ' .  $this->config['image_width_landscape'] . 'w, ' .
+                                          $url.$landscape_2x.$image['src'] . ' ' .  $this->config['image_width_landscape'] *2 . 'w, ' .
+                                          $url.$landscape_3x.$image['src'] . ' ' .  $this->config['image_width_landscape'] *3 . 'w',
                                   'srcset-d' =>
                                           $url.'landscape/1x/'.$image['src'] . ', ' .
                                           $url.$landscape_2x.$image['src'] . ' x2, ' .
@@ -524,10 +547,16 @@ class getModel
                                   '1x' => $url.'square/1x/'.$image['src'],
                                   '2x' => $url.$square_2x.$image['src'],
                                   '3x' => $url.$square_3x.$image['src'],
+                                  '1x-width' => $this->config['image_width_square'],
+                                  '2x-width' => $this->config['image_width_square'] *2,
+                                  '3x-width' => $this->config['image_width_square'] *3,
+                                  '1x-height' => $image_height_square,
+                                  '2x-height' => $image_height_square *2,
+                                  '3x-height' => $image_height_square *3,
                                   'srcset-w' =>
-                                          $url.'square/1x/'.$image['src'] . ' ' .  $image['width'] . 'w, ' .
-                                          $url.$square_2x.$image['src'] . ' ' .  $image['width']*2 . 'w, ' .
-                                          $url.$square_3x.$image['src'] . ' ' .  $image['width']*3 . 'w',
+                                          $url.'square/1x/'.$image['src'] . ' ' .  $this->config['image_width_square'] . 'w, ' .
+                                          $url.$square_2x.$image['src'] . ' ' .  $this->config['image_width_square'] *2 . 'w, ' .
+                                          $url.$square_3x.$image['src'] . ' ' .  $this->config['image_width_square'] *3 . 'w',
                                   'srcset-d' =>
                                           $url.'square/1x/'.$image['src'] . ', ' .
                                           $url.$square_2x.$image['src'] . ' x2, ' .
@@ -538,8 +567,28 @@ class getModel
             'alt' => $image['alt'],
             'seq' => $image['seq']
         );
+
+        $prime = array();
+        //error_log ('cms/model/get.php  imageDetails. $image[prime_aspect_ratio] : ' . print_r($image['prime_aspect_ratio'], true) );
+        switch($image['prime_aspect_ratio']) {
+            case 'portrait':
+                $prime ['prime_aspect_ratio']= $imageDetails['portrait'];
+                break;
+            case 'panorama':
+                $prime ['prime_aspect_ratio']= $imageDetails['panorama'];
+                break;
+            case 'square':
+                $prime ['prime_aspect_ratio']= $imageDetails['square'];
+                break;
+            default:
+                $prime ['prime_aspect_ratio']= $imageDetails['landscape'];
+        }
+        $imageDetails += $prime;
+        //error_log ('cms/model/get.php  imageDetails. $prime : ' . print_r($prime, true) );
+        //error_log ('cms/model/get.php  imageDetails. $imageDetails : ' . print_r($imageDetails, true) );
 		    return ($imageDetails);
     }
+
 
     /**
      * Get item tags.
@@ -617,6 +666,26 @@ class getModel
             $displayDate = date($this->config['date_format'], strtotime($str));
 
         return ($displayDate);
+    }
+
+    /**
+     * Converts aspect ratio to float.
+     *
+     * @param string $configRatio config ratio in '9:9' format
+     *
+     * @return float $floatRatio
+     */
+    function convertConfigRatio($configRatio)
+    {
+        if (strpos($configRatio, ':') !== false) {
+            $ratioArray = explode(':', $configRatio);
+            if (isset($ratioArray[1]) && $ratioArray[1] >0 )
+                $floatRatio = $ratioArray[0] / $ratioArray[1];
+            else $floatRatio = 1;
+        }
+        else $floatRatio = 1;
+
+        return $floatRatio;
     }
 }
 

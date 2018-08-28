@@ -35,7 +35,7 @@ Content data for each item can also be input on the user input page.
 
 * `text` is the main text edited into html format, using the outstandingly good TinyMCE editing plugin. The facilities are relatively intuitive; particularly useful are the **_lorem ipsum_** feature which can quickly generate test data, and the **_full screen_** feature, which is useful for items with a lot of text to edit.
 
-* `images` multiple images can be uploaded for each item. Their sequence can be changed by drag and dropping them into the required sequence. Clicking on the **crop** button for an image will bring up a new page where the cropping for each aspect ratio can be defined. The text for the image's `alt` tag can also be entered on this page. The **confirm crop** button must be clicked to record the crop and return to the main data entry page.
+* `images` multiple images can be uploaded for each item. Their sequence can be changed by drag and dropping them into the required sequence. Clicking on the **crop** button for an image will bring up a new page where the cropping for each aspect ratio can be defined. One of the aspect ratios can be selected as the 'prime aspect ratio' for use, for e,g, in slideshows which can display the most appropriate format for each image. The text for the image's `alt` tag can also be entered on this page. The **confirm crop** button must be clicked to record the crop and return to the main data entry page.
 
 * `status` of the item is shown at the top left of the input page. The status can be updated using the **save draft**, **publish** and **take offline** buttons.  The **publish**  process is where the images are created for the website and may take some time depending on the number of images the item has and also on the number and sizes of images defined in the config settings.
 
@@ -159,22 +159,32 @@ Or if you want a single image for a specific item, do something like the followi
 |images|see following for details|
 
 
-## Image data available for each item
-The images array can contain multiple images for each item, each with the following:
+## Data available for each Image
+The images array for an item can contain multiple images. SRC fields are in absolute URL format, dimension fields are integers in pixels.
 
-| format|size|notes|
-|------|------|------|
-|panorama||array containing absolute URLs for following format/sizes:|
-||x1|base size image, as per config setting
-||x2|x2 base size|
-||x3|x3 base size
-||srcset-w|`srcset` text containing 3 image sizes with width descriptors|
-||srcset-d|`srcset` text containing 3 image sizes with density descriptors|
-|portrait|as panorama above||
-|landscape|as above||
-|square|as above||
-|thumbnail||absolute URL of 200x200px square crop|
-|alt||text for image alt tag|
+Each image has the following information:
+
+|data|notes|
+|------|------|
+|thumbnail|src of 200x200px square crop|
+|alt|text for image alt tag|
+
+Each image has the following information for each of the aspect ratios (panorama, portrait, landscape, square and prime_aspect_ratio):
+
+|data|notes|
+|------|------|
+|x1|src for base size image, as per config setting
+|x1-height| height for x1 image
+|x1-width| width for x1 image
+|x2|src for x2 base size|
+|x2-height| height for x2 image
+|x2-width| width for x2 image
+|x3|src for x3 base size
+|x3-height| height for x3 image
+|x3-width| width for x3 image
+|srcset-w|`srcset` text containing 3 image sizes with width descriptors|
+|srcset-d|`srcset` text containing 3 image sizes with density descriptors|
+
 
 ## User authentication
 #### Authentication features

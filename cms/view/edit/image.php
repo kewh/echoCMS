@@ -41,16 +41,29 @@
 
         <div class='col-xs-12 marginBottom'>
 
-            <!-- Background colour picker  ****************** -->
-            <div class='col-xs-12 col-md-1 col-md-offset-3'>
-                <label for='pickAColor' class='control-label pull-left'>bg colour</label><br>
-                <input type='text' value='<?php echo $currentBgColor;?>' name='pickAColor' class='pickAColor form-control pull-left'>
-            </div>
+
 
             <!-- Alt attribute text    *********************** -->
-            <div class='col-xs-12 col-md-5'>
+            <div class='col-xs-12 col-md-5 col-md-offset-1'>
                 <label for='alt' class='control-label pull-left'>alt text </label>
                 <textarea class='alt' name='alt'><?php echo $image['alt']; ?></textarea>
+            </div>
+
+            <!-- prime aspect ratio picker    *********************** -->
+            <div class='col-xs-4 col-xs-offset-2 col-md-offset-0 col-md-2'>
+                <label for='prime_aspect_ratio' class='control-label pull-left'>prime aspect ratio</label>
+                <select class='form-control form-control-lg' name='prime_aspect_ratio'>
+                  <option value='landscape' <?php if ($image['prime_aspect_ratio']=='landscape') echo 'selected'; ?>>landscape</option>
+                  <option value='portrait' <?php if ($image['prime_aspect_ratio']=='portrait') echo 'selected'; ?>>portrait</option>
+                  <option value='panorama' <?php if ($image['prime_aspect_ratio']=='panorama') echo 'selected'; ?>>panorama</option>
+                  <option value='square' <?php if ($image['prime_aspect_ratio']=='square') echo 'selected'; ?>>square</option>
+                </select>
+            </div>
+
+            <!-- Background colour picker  ****************** -->
+            <div class='col-xs-4 col-md-2'>
+                <label for='pickAColor' class='control-label pull-left'>bg colour</label><br>
+                <input type='text' value='<?php echo $currentBgColor;?>' name='pickAColor' class='pickAColor form-control pull-left'>
             </div>
 
         </div>
