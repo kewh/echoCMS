@@ -1,4 +1,4 @@
--- echoCMS version 1.0.2
+-- echoCMS version 1.0.5
 -- https://github.com/kewh/echoCMS
 --
 -- database setup
@@ -181,7 +181,8 @@ CREATE TABLE `imagesTable` (
   `height` int(11) DEFAULT NULL,
   `width` int(11) DEFAULT NULL,
   `alt` varchar(255) DEFAULT NULL,
-  `web_images` tinyint(1) NOT NULL DEFAULT '0'
+  `web_images` tinyint(1) NOT NULL DEFAULT '0',
+  `prime_aspect_ratio` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -241,7 +242,8 @@ CREATE TABLE `pendingImagesTable` (
   `height` int(11) DEFAULT NULL,
   `width` int(11) DEFAULT NULL,
   `alt` varchar(255) DEFAULT NULL,
-  `web_images` tinyint(1) NOT NULL DEFAULT '0'
+  `web_images` tinyint(1) NOT NULL DEFAULT '0',
+  `prime_aspect_ratio` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
