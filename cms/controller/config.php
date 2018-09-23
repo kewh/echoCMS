@@ -3,7 +3,7 @@
  * controller class for config
  *
  *
- * @since 1.0.2
+ * @since 1.0.6
  * @author Keith Wheatley
  * @package echocms\config
  */
@@ -40,6 +40,8 @@ class config
         if (!empty($_POST) || (!empty($_FILES['postedImage']['name']) && $_FILES['postedImage'] ['error'] == 0 )) {
             $configUpdates = $this->configModel->getPostedConfig();
             $this->configModel->updateConfig($configUpdates);
+
+            $this->configModel->updateImagesPrimeRatio($configUpdates);
 
             $subtopics = $this->configModel->getPostedSubtopics();
             $this->configModel->updateConfigSubtopics($subtopics);

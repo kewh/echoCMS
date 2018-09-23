@@ -1,6 +1,6 @@
 ![EchoCMS](https://raw.githubusercontent.com/kewh/echoCMS/master/cms/assets/images/echocmsLogoMd.png)
 
->EchoCMS is an easy to use Contents Management System intended for developers who create their own Front End code and need a simple, elegant, Responsive-friendly CMS for content input. It does not use templates and is designed to impinge as little as possible on Front End structure and design.
+>EchoCMS ia a Contents Management System intended for developers who create their own Front End code and need a simple, elegant, PHP/SQL-based CMS for content input. It does not use templates and is designed to impinge as little as possible on Front End structure and design.
 
 ## Features
 * provides flexible structuring of content to match your website pages,
@@ -8,8 +8,7 @@
 * full featured text editing,
 * multiple configurable aspect ratios for each image, each individually cropped,
 * configurable image sizes to support Responsive Images, with `srcset` statements generated automatically,
-* secure user authentication, using powerful password hashing and attack blocking,
-* built with PHP, MySQL, HTML5, Bootstrap, jQuery, TinyMCE, Jcrop.
+* secure user authentication, using powerful password hashing and attack blocking.
 
 ## Content structure
 
@@ -17,17 +16,26 @@ The basic building block for the content structure is an **item**. Content for e
 
 Each **item** can be assigned to a `topic` and/or a `subtopic`, and can have multiple `tags`. These can then be used to retrieve individual items and/or groups of associated items.
 
-* `topics` and `subtopics` can be picked from dropdown lists, which can be configured by Admin or, if configured to be updatable, added on the user input page.
+Topics and subtopics can be used as you wish - for example topics could be aligned to your page names, subtopics could be HTML5 Semantic Elements or aligned to business entities (e.g. people, project, product, etc)...
 
-* `tags` multiple tags can be entered on the user input page. Tag values are not set by the configuration but are entered on the user input page and, once entered, are available for subsequent items in a dropdown list.
+## Images
+Multiple images can be uploaded for each item. They are generated as web opitimised images in multiple aspect ratios each of which can be individually cropped. The configuration will determine which aspect ratios are generated, plus their dimensions and size.
 
->Note that `topics` and `subtopics` can be used as you wish - for example topics could be aligned to your page names, subtopics could be HTML5 Semantic Elements or aligned to business entities (e.g. people, project, product, etc)...
+The main aspect ratios are `landscape`, `portrait`, `panorama` and `square`.
 
->Note also that, in order to keep things flexible, no content is mandatory. Leave fields blank if you do not need them for selection, display or sequencing.
+For each image one of the main 4 aspect ratios can be selected as the `prime aspect ratio` for use, for example in slideshows, to display the most appropriate format for each image.
+The `collage` image, if configured, is generated from the first 1 to 4 images of an item.
 
 ## Content input
-Content data for each item can also be input on the user input page.
+From the main menu, new items can be created and existing items edited using the same format input page.
+
+* `status` of the item is shown at the top left of the input page. The status can be updated using the **save draft**, **publish** and **take offline** buttons.  The **publish**  process is where the images are created for the website and may take some time depending on the number of images the item has and also on the number and the configured aspect ratios and sizes.
+
 * `date` defaults to the current date but can be updated. It is made available for display in several formats but also determines the sequencing of items, even if not displayed.
+
+* `topics` and `subtopics` can be picked from dropdown lists, which can be defined in the configuration or, if configured to be updatable, added on the user input page.
+
+* `tags` multiple tags can be entered on the user input page. Tag values are not set by the configuration but are entered on the user input page and, once entered, are available for subsequent items in a dropdown list.
 
 * `heading` and `caption` are plain text and can be formatted and used in your code as required.
 
@@ -35,9 +43,9 @@ Content data for each item can also be input on the user input page.
 
 * `text` is the main text edited into html format, using the outstandingly good TinyMCE editing plugin. The facilities are relatively intuitive; particularly useful are the **_lorem ipsum_** feature which can quickly generate test data, and the **_full screen_** feature, which is useful for items with a lot of text to edit.
 
-* `images` multiple images can be uploaded for each item. Their sequence can be changed by drag and dropping them into the required sequence. Clicking on the **crop** button for an image will bring up a new page where the cropping for each aspect ratio can be defined. One of the aspect ratios can be selected as the 'prime aspect ratio' for use, for e,g, in slideshows which can display the most appropriate format for each image. The text for the image's `alt` tag can also be entered on this page. The **confirm crop** button must be clicked to record the crop and return to the main data entry page.
+* `images` multiple images are uploaded individually. The sequence of the images can be changed by drag and drop into the required sequence. The **edit** button for an image will bring up a new page where the cropping for each aspect ratio is defined. One of the aspect ratios can be selected as the **prime aspect ratio**. The text for the image's `alt` tag is entered on this page. The **confirm image settings** button must be clicked to record the crop and return to the main data entry page.
 
-* `status` of the item is shown at the top left of the input page. The status can be updated using the **save draft**, **publish** and **take offline** buttons.  The **publish**  process is where the images are created for the website and may take some time depending on the number of images the item has and also on the number and sizes of images defined in the config settings.
+>Note also that, in order to keep things flexible, no content is mandatory. Leave fields blank if you do not need them for selection, display or sequencing.
 
 ## Getting content into your code
 
@@ -85,7 +93,7 @@ Each item can contain multiple `tags` in an array. A tag can be used by passing 
     <?php $yourItems = $get->itemsByTag($_GET); ?>
 ````
 #### Next and Previous items
-After items have been obtained using one of the above functions, using an item's `next` and `prev` data entities as parameters to the **item** function, will get the next and previous items with the topic/subtopic or tag specified in the previous call, for example:
+After items have been obtained using one of the above functions, using an items `next` and `prev` data entities as parameters to the **item** function, will get the next and previous items with the topic/subtopic or tag specified in the previous call, for example:
 ````php
 <?php
      $yourItem = $get->item($yourItem['next']);
@@ -128,14 +136,21 @@ To use images in your HTML do something like the following (see also the section
         <?php } ?>
     </section>
 ````
+
 Or if you want a single image for a specific item, do something like the following; this example gets an image for the header of  an index page in panorama format using the srcset, which will contain all 3 image sizes with width descriptors, and defining the x2 size as the fallback:
 ````php
-    <?php $header = $get->item("index", "header"); ?>
+    <?php $yourHeader = $get->item("index", "header"); ?>
     ....
-    <img src="<?php echo    $heading['images']['0']['panorama']['2x'];?>"
-         srcset="<?php echo $heading['images']['0']['panorama']['srcset-w'];?>"
-         alt="<?php echo    $heading['images']['0']['alt'];?>">
+    <img src="<?php echo    $yourHeader['images']['0']['panorama']['2x'];?>"
+         srcset="<?php echo $yourHeader['images']['0']['panorama']['srcset-w'];?>"
+         alt="<?php echo    $yourHeader['images']['0']['alt'];?>">
 ````
+
+To use the collage image - (note that only one size is available and the size parameter is not used).
+````php
+    <img src="<?php echo $yourHeader['image']['collage'];?>">
+````  
+
 > Note that [github.com/kewh/echoCMS-examples](https://github.com/kewh/echoCMS-examples) has examples of how to use echoCMS.
 
 ## Data available for each item
@@ -156,20 +171,19 @@ Or if you want a single image for a specific item, do something like the followi
 |prev|link to previous item, in URL query string format|
 |next|link to next item, in URL query string format|
 |this|link to this item, in URL query string format|
+|collage|src of collage image (note: there is 1 per item)|
 |images|see following for details|
 
 
 ## Data available for each Image
-The images array for an item can contain multiple images. SRC fields are in absolute URL format, dimension fields are integers in pixels.
-
-Each image has the following information:
+The images array for an item can contain multiple images. SRC fields are in absolute URL format, dimension fields are integers in pixels. Each image has the following information:
 
 |data|notes|
 |------|------|
 |thumbnail|src of 200x200px square crop|
 |alt|text for image alt tag|
 
-Each image has the following information for each of the aspect ratios (panorama, portrait, landscape, square and prime_aspect_ratio):
+For each image aspect ratios (panorama, portrait, landscape, square and prime_aspect_ratio), the following information is provided:
 
 |data|notes|
 |------|------|

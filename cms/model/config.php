@@ -2,7 +2,7 @@
 /**
  * Model class for system configuration
  *
- * @since 1.0.2
+ * @since 1.0.6
  * @author Keith Wheatley
  * @package echocms\config
  */
@@ -117,6 +117,7 @@ class configModel
         $config['image_create_portrait'] = empty($_POST['image_create_portrait']) ? '0' : '1';
         $config['image_create_panorama'] = empty($_POST['image_create_panorama']) ? '0' : '1';
         $config['image_create_square'] = empty($_POST['image_create_square']) ? '0' : '1';
+        $config['image_create_collage'] = empty($_POST['image_create_collage']) ? '0' : '1';
 
         if ( isset( $_POST['image_ratio_landscape']) )
             $config['image_ratio_landscape'] = $_POST['image_ratio_landscape'];
@@ -135,6 +136,8 @@ class configModel
             $config['image_width_panorama'] = $_POST['image_width_panorama'];
         if ( isset( $_POST['image_width_square']) )
             $config['image_width_square'] = $_POST['image_width_square'];
+        if ( isset( $_POST['image_width_collage']) )
+            $config['image_width_collage'] = $_POST['image_width_collage'];
 
         if ( isset( $_POST['image_quality']) )
             $config['image_quality'] = $_POST['image_quality'];
@@ -248,7 +251,7 @@ class configModel
      */
     function getMaxFileSize()
     {
-        $val = trim(ini_get('post_max_size'));
+        $val = intval(trim(ini_get('post_max_size')));
         $last = strtolower($val[strlen($val)-1]);
         switch($last) {
             case 'g':
@@ -324,6 +327,30 @@ class configModel
             $stmt = $this->dbh->prepare('INSERT INTO subtopicsTable (subtopic) VALUES (?)');
             $array = array($subtopic);
             $stmt->execute($array);
+        }
+    }
+
+    /**
+     *  Update all images with image-prime-ratio inconsistent with current config image_create_xxx settings
+     *
+     */
+    function updateImagesPrimeRatio($config)
+    {
+        if (!$config['image_create_panorama'])  {
+            $stmt = $this->dbh->prepare('UPDATE imagesTable SET prime_aspect_ratio = "" WHERE prime_aspect_ratio = "panorama"');
+            $stmt->execute();
+        }
+        if (!$config['image_create_landscape'])  {
+            $stmt = $this->dbh->prepare('UPDATE imagesTable SET prime_aspect_ratio = "" WHERE prime_aspect_ratio = "landscape"');
+            $stmt->execute();
+        }
+        if (!$config['image_create_portrait'])  {
+            $stmt = $this->dbh->prepare('UPDATE imagesTable SET prime_aspect_ratio = "" WHERE prime_aspect_ratio = "portrait"');
+            $stmt->execute();
+        }
+        if (!$config['image_create_square'])  {
+            $stmt = $this->dbh->prepare('UPDATE imagesTable SET prime_aspect_ratio = "" WHERE prime_aspect_ratio = "square"');
+            $stmt->execute();
         }
     }
 

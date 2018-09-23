@@ -2,7 +2,7 @@
 /**
  * view for edit/image
  *
- * @since 1.0.0
+ * @since 1.0.6
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -36,12 +36,10 @@
 
         <!-- Buttons  ************************************** -->
         <div class='col-xs-12 marginTop marginBottom'>
-            <button class='btn btn-default btn-sm saveButton center-block'>confirm crop</button>
+            <button class='btn btn-default btn-sm saveButton center-block'>confirm image settings</button>
         </div>
 
         <div class='col-xs-12 marginBottom'>
-
-
 
             <!-- Alt attribute text    *********************** -->
             <div class='col-xs-12 col-md-5 col-md-offset-1'>
@@ -53,10 +51,23 @@
             <div class='col-xs-4 col-xs-offset-2 col-md-offset-0 col-md-2'>
                 <label for='prime_aspect_ratio' class='control-label pull-left'>prime aspect ratio</label>
                 <select class='form-control form-control-lg' name='prime_aspect_ratio'>
+                <?php if ($image_create_landscape) {
+                ?>
                   <option value='landscape' <?php if ($image['prime_aspect_ratio']=='landscape') echo 'selected'; ?>>landscape</option>
+                <?php };
+                      if ($image_create_portrait) {
+                ?>
                   <option value='portrait' <?php if ($image['prime_aspect_ratio']=='portrait') echo 'selected'; ?>>portrait</option>
+                <?php };
+                      if ($image_create_panorama) {
+                ?>
                   <option value='panorama' <?php if ($image['prime_aspect_ratio']=='panorama') echo 'selected'; ?>>panorama</option>
+                <?php };
+                      if ($image_create_square) {
+                ?>
                   <option value='square' <?php if ($image['prime_aspect_ratio']=='square') echo 'selected'; ?>>square</option>
+                <?php };
+                ?>
                 </select>
             </div>
 
@@ -70,35 +81,47 @@
 
         <!-- IMAGE cropping areas ***************************** -->
         <div class='col-xs-12'>
+<?php if ($image_create_panorama) {
+?>
             <div class='sm-col-12 col-md-6'>
-                <div class='imageMargins'>
+                <div class='imageMargins'>panorama
                     <img id='uncroppedImagePanorama' class='img-responsive' name='uncroppedImagePanorama'
                         src='<?php echo CONFIG_URL . 'content/images/uncropped/'. $image['src'];?>' alt=''>
-                    </div>
                 </div>
+            </div>
+<?php };
+      if ($image_create_landscape) {
+?>
             <div class='sm-col-12 col-md-6'>
-                <div class='imageMargins'>
+                <div class='imageMargins'>landscape
                     <img id='uncroppedImageLand' class='img-responsive' name='uncroppedImageLand'
                         src='<?php echo CONFIG_URL . 'content/images/uncropped/'. $image['src'];?>' alt=''>
                 </div>
             </div>
+<?php };
+      if ($image_create_portrait) {
+?>
             <div class='sm-col-12 col-md-6'>
-                <div class='imageMargins'>
+                <div class='imageMargins'>portrait
                     <img id='uncroppedImagePort' class='img-responsive' name='uncroppedImagePort'
                         src='<?php echo CONFIG_URL . 'content/images/uncropped/'. $image['src'];?>' alt=''>
                 </div>
             </div>
+<?php };
+       if ($image_create_square) {
+?>
             <div class='sm-col-12 col-md-6'>
-                <div class='imageMargins'>
+                <div class='imageMargins'>square
                     <img id='uncroppedImageSquare' class='img-responsive' name='uncroppedImageSquare'
                         src='<?php echo CONFIG_URL . 'content/images/uncropped/'. $image['src'];?>' alt=''>
                 </div>
             </div>
         </div>
+ <?php }; ?>
 
         <!-- Buttons  ************************************** -->
         <div class='col-xs-12 marginTop marginBottom'>
-            <button class='btn btn-default btn-sm saveButton center-block'>confirm crop</button>
+            <button class='btn btn-default btn-sm saveButton center-block'>confirm image settings</button>
         </div>
     </form>
 </div>
@@ -138,8 +161,10 @@ $(document).ready(function() {
     // IMAGE CROPPING
     // see http://stackoverflow.com/questions/13648162/using-jcrop-on-responsive-images
 
-    //  CROPPING - PANORAMA version of image
     var jcrop_api, boundx, boundy;
+
+<?php if ($image_create_panorama) { ?>
+    //  CROPPING - PANORAMA version of image
     $('#uncroppedImagePanorama').Jcrop({
         onSelect:   getCoordsPanorama,
         onChange:   getCoordsPanorama,
@@ -174,7 +199,9 @@ $(document).ready(function() {
         $('#mx2').val(Math.round(c.x2));
         $('#my2').val(Math.round(c.y2));
     }
-
+<?php };
+      if ($image_create_landscape) {
+?>
     //  CROPPING - LANDSCAPE VERSION OF IMAGE
     $('#uncroppedImageLand').Jcrop({
         onSelect:   getCoordsLand,
@@ -210,7 +237,9 @@ $(document).ready(function() {
         $('#lx2').val(Math.round(c.x2));
         $('#ly2').val(Math.round(c.y2));
     }
-
+<?php };
+      if ($image_create_portrait) {
+?>
     //  CROPPING - PORTRAIT VERSION OF IMAGE
     $('#uncroppedImagePort').Jcrop({
         onSelect:   getCoordsPort,
@@ -247,7 +276,9 @@ $(document).ready(function() {
         $('#px2').val(Math.round(c.x2));
         $('#py2').val(Math.round(c.y2));
     }
-
+<?php };
+      if ($image_create_square) {
+?>
     //  CROPPING - SQUARE VERSION OF IMAGE
     $('#uncroppedImageSquare').Jcrop({
         onSelect:   getCoordsSquare,
@@ -284,6 +315,7 @@ $(document).ready(function() {
         $('#sx2').val(Math.round(c.x2));
         $('#sy2').val(Math.round(c.y2));
     }
+<?php }; ?>
 
     //  COLOR PICKER
     $('.pickAColor').pickAColor({

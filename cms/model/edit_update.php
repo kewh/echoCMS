@@ -2,7 +2,7 @@
 /**
  * model class for edit
  *
- * @since 1.0.2
+ * @since 1.0.6
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -140,6 +140,7 @@ class editModelUpdate extends editModel
         $this->createContentTags ($_SESSION['item']['id'], $_SESSION['item']['tags']);
         $this->createContentTerms ($_SESSION['item']['id'], $_SESSION['item']['heading']);
         $this->createWebsiteImages ($_SESSION['item']['images']);
+        $this->createCollageImage ($_SESSION['item']['images']);
         $this->createContentImages ($_SESSION['item']['id'], $_SESSION['item']['images']);
     }
 
@@ -160,6 +161,7 @@ class editModelUpdate extends editModel
         $this->createContentTags ($_SESSION['item']['id'], $_SESSION['item']['tags']);
         $this->createContentTerms ($_SESSION['item']['id'], $_SESSION['item']['heading']);
         $this->createWebsiteImages ($_SESSION['item']['images']);
+        $this->createCollageImage ($_SESSION['item']['images']);
         $this->createContentImages ($_SESSION['item']['id'], $_SESSION['item']['images']);
     }
 
@@ -485,7 +487,7 @@ class editModelUpdate extends editModel
                         'image_ratio' => $this->convertConfigRatio($this->config['image_ratio_square']),
                         'image_sizes' => $this->config['image_sizes_square'],
                         'image_width' => $this->config['image_width_square'],
-                    ),
+                    )
                 );
 
                 // create images for the aspect ratios and sizes required for this input image
@@ -520,6 +522,74 @@ class editModelUpdate extends editModel
             }
         }
     }
+
+
+    /**
+     * Create a collage image
+     *
+     * Create a Collage image from up to 4 images for an item
+     *
+     * @param array $images
+     * @param string $folder defaults to 'images'.
+     *
+     * Note: array $c contains parameters that control the layout of images on collage
+     *     The three levels of the array are used for:
+     *       1. number of images for collage
+     *       2. image number
+     *       3. placement on collage (dst_x, dst_y, src_x, src_y, dst_w, dst_h, src_w, src_h)
+     *
+     * @return void
+     */
+     function createCollageImage($images, $folder='images')
+     {
+          // set up parameters for imagecopyresampled:
+          $ws = $this->config['image_width_square'];
+          $wd = $this->config['image_width_collage'];
+          $params = array();
+
+          //                        dst_x      dst_y      src_x      src_y      dst_w      dst_h       src_w      src_h
+
+          // 1 image - 1 big square images
+          $params[1][0] = array(        0,         0,         0,         0,       $wd,       $wd,        $ws,       $ws);
+
+          // 2 images - 2 portrait images
+          $params[2][0] = array(        0,         0, ($ws/2)-4,         0, ($wd/2)-4,       $wd,  ($ws/2)-4,       $ws);
+          $params[2][1] = array(($wd/2)+4,         0, ($ws/4)-2,         0, ($wd/2)-4,       $wd,  ($ws/2)-4,       $ws);
+
+          // 3 images - 1 landscape and 2 square images
+          $params[3][0] = array(        0,         0,         0,         0, ($wd/2)-4, ($wd/2)-4,        $ws,       $ws);
+          $params[3][1] = array(($wd/2)+4,         0,         0,         0, ($wd/2)-4, ($wd/2)-4,        $ws,       $ws);
+          $params[3][2] = array(        0, ($wd/2)+4,         0, ($ws/4)-2,       $wd, ($wd/2)-4,        $ws, ($ws/2)-4);
+
+          // 4 images - 4 square images
+          $params[4][0] = array(        0,         0,         0,         0, ($wd/2)-4, ($wd/2)-4,        $ws,       $ws);
+          $params[4][1] = array(($wd/2)+4,         0,         0,         0, ($wd/2)-4, ($wd/2)-4,        $ws,       $ws);
+          $params[4][2] = array(        0, ($wd/2)+4,         0,         0, ($wd/2)-4, ($wd/2)-4,        $ws,       $ws);
+          $params[4][3] = array(($wd/2)+4, ($wd/2)+4,         0,         0, ($wd/2)-4, ($wd/2)-4,        $ws,       $ws);
+
+          $images = array_slice($images, 0, 4);
+          $img_count = count($images);
+          if ($img_count > 0) $collageSrc = $images[0]['src']; // collage image has the same name as the first image
+          set_time_limit(30); // resets default 30secs time limit back to zero
+          $d = $this->config['image_width_collage'];
+          $image_dst = imagecreatetruecolor($d, $d)
+              or $this->reportError('cms/model/edit_update createCollageImage image: '. $images[0]['src'].'  Problem with imagecreatetruecolor');
+          $white = imagecolorallocate($image_dst, 255, 255, 255);
+          imagefill($image_dst, 0, 0, $white);
+          foreach ($images as $image) {
+              $temp_src = imagecreatefromjpeg(CONFIG_DIR.'/content/images/square/1x/' . $image['src']);
+              $p = $params[$img_count][$image['seq']];
+              imagecopyresampled($image_dst, $temp_src, $p[0], $p[1], $p[2], $p[3], $p[4], $p[5], $p[6], $p[7])
+                  or $this->reportError('cms/model/edit_update createCollageImage image: '. $image['src'].'  Problem with imagecopyresampled');
+          }
+
+          $dst_URL = CONFIG_DIR.'/content/'.$folder.'/collage/' . $collageSrc;
+          imagejpeg($image_dst, $dst_URL, $this->config['image_quality'])
+              or $this->reportError('cms/model/edit_update createCollageImage image: '. $collageSrc.'  Problem with imagejpeg writing collage image');
+
+          imagedestroy($image_dst);
+
+        }
 
     /**
      * Create a pending item on database.

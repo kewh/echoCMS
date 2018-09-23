@@ -2,7 +2,7 @@
 /**
  * model class for admin
  *
- * @since 1.0.0
+ * @since 1.0.6
  * @author Keith Wheatley
  * @package echocms\admin
  */
@@ -60,7 +60,7 @@ class adminModel
             '/landscape/1x', '/portrait/1x', '/panorama/1x', '/square/1x',
             '/landscape/2x', '/portrait/2x', '/panorama/2x', '/square/2x',
             '/landscape/3x', '/portrait/3x', '/panorama/3x', '/square/3x',
-            '/thumbnail', '/uncropped', '/original',);
+            '/thumbnail', '/uncropped', '/original', '/collage');
         foreach ($subFolders as $subFolder) {
             if (!mkdir($tempFolder . $subFolder)) {
                 $this->reportError('cms/model/edit_update.php recreateImages. Failed to create folder: '. $tempFolder . $subFolder);
@@ -80,7 +80,10 @@ class adminModel
                     error_log('model/edit_update recreateImages. copy to uncropped failed');
                 if (!copy(CONFIG_DIR.'/content/images/thumbnail/'.$image['src'], $tempFolder.'/thumbnail/'.$image['src']))
                     error_log('model/edit_update recreateImages. copy to thumbnail failed');
-                $this->editUpdate->createWebsiteImages(array($image), 'backups/'.$baseFolder);
+            }
+            if (count($images) >0) {
+                $this->editUpdate->createWebsiteImages($images, 'backups/'.$baseFolder);
+                $this->editUpdate->createCollageImage($images, 'backups/'.$baseFolder);
             }
         }
 
@@ -102,7 +105,8 @@ class adminModel
 
         // move newly created images to live images directory
         $this->removeDirectory(CONFIG_DIR.'/content/images');
-        rename($tempFolder, CONFIG_DIR.'/content/images');
+        rename($tempFolder, CONFIG_DIR.'/content/images')
+            or error_log('model/edit_update recreateImages. rename and move of temp to live folder failed');
         $this->eventMessage('PROCESS COMPLETE - new images created.', 100);
     }
 
@@ -118,7 +122,7 @@ class adminModel
     {
         $d = array('message' => $message , 'progress' => $progress);
         echo "data: " . json_encode($d) . PHP_EOL . PHP_EOL;
-        //ob_flush();
+        ob_flush();
         flush();
     }
 

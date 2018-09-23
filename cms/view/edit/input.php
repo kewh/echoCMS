@@ -188,7 +188,7 @@
                 <img class='img-responsive' style='width: 100%;' src='<?php echo CONFIG_URL;?>content/images/thumbnail/<?php echo $image['src'];?>?nocache=<?php time();?>' alt='' >
                 <input class='imgSeq' id='seq<?php echo $i;?>' type='hidden' name='imgSeq<?php echo $i;?>' value='<?php echo $i;?>' >
                 <div class='buttons imageButtons imageMargins text-center'>
-                    <button type='button' class='btn btn-default btn-xs cropImage'   data-id='<?php echo $i;?>'>&nbsp;crop&nbsp;</button>
+                    <button type='button' class='btn btn-default btn-xs cropImage'   data-id='<?php echo $i;?>'>&nbsp;edit&nbsp;</button>
                     <button type='button' class='btn btn-default btn-xs deleteImage' data-id='<?php echo $i;?>'>delete</button>
                     <?php if (count($item['images']) > 1) { ?>
                         <span class='glyphicon glyphicon-knight pull-right large '>&nbsp;</span>
@@ -211,7 +211,7 @@
 // Check Posted Image
 function checkImage()
     {
-        var maxSize = '<?php echo $postMaxSize; ?>';
+        var maxSize = <?php echo $postMaxSize; ?>;
         maxSizeMB = maxSize / 1048576;
         var maxSizeMB = maxSizeMB.toFixed(2);
         var size = 0;

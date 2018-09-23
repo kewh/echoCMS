@@ -3,7 +3,7 @@
  * controller class for edit
  *
  *
- * @since 1.0.2
+ * @since 1.0.6
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -174,6 +174,11 @@ class edit
         $image_ratio_landscape =  $this->editInput->convertConfigRatio($this->config['image_ratio_landscape']);
         $image_ratio_portrait =  $this->editInput->convertConfigRatio($this->config['image_ratio_portrait']);
         $image_ratio_square =  $this->editInput->convertConfigRatio($this->config['image_ratio_square']);
+
+        $image_create_panorama =  $this->config['image_create_panorama'];
+        $image_create_landscape = $this->config['image_create_landscape'];
+        $image_create_portrait =  $this->config['image_create_portrait'];
+        $image_create_square =    $this->config['image_create_square'];
 
         if (empty($_SESSION['currentBgColor']))
             $currentBgColor = $this->config['image_bg_crop'];

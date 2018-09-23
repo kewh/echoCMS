@@ -2,7 +2,7 @@
 /**
  * view for config/editConfig
  *
- * @since 1.0.2
+ * @since 1.0.6
  * @author Keith Wheatley
  * @package echocms\config
  */
@@ -220,6 +220,26 @@
                 </div>
             </div>
 
+            <!-- image_ratio_collage     ********************************************** -->
+           <div class='col-xs-12'>
+                <div class='col-xs-2 form-group-heading text-right'>
+                    collage
+                </div>
+                <div class='col-xs-2 form-group'>
+                    <input name='image_create_collage' id='image_create_collage' type='checkbox' class='form-control no-top-margin'
+                    <?php if ($config['image_create_collage']) echo ' checked'; ?>>
+                    <label for='image_create_collage' class='control-label pull-right'></label>
+                </div>
+                <div class='col-xs-3 form-group'>
+                    <input name='image_ratio_collage' type='text' pattern='[1-9]+\:[1-9]+' data-error='use format 99:99' class='form-control text-center'  disabled value='1:1<?php //echo $config['image_ratio_collage']; ?>'>
+                    <div class='help-block with-errors'></div>
+                </div>
+                <div class='col-xs-3 form-group'>
+                    <input name='image_width_collage' type='text' pattern='^[1-9][0-9]*$' data-error='numeric only' class='form-control text-center' value='<?php echo $config['image_width_collage']; ?>'>
+                    <div class='help-block with-errors'></div>
+                </div>
+            </div>
+
         </div>
         </fieldset>
     </div>
@@ -415,7 +435,7 @@ function checkImage()
     ];
 
 $(document).ready(function() {
-
+/*
 // Store values of checkboxes in local storage, to keep state if page is reloaded
     var checkboxValues = JSON.parse(localStorage.getItem('checkboxValues')) || {};
     $.each(checkboxValues, function(key, value) {
@@ -427,7 +447,7 @@ $(document).ready(function() {
       });
       localStorage.setItem('checkboxValues', JSON.stringify(checkboxValues));
     });
-
+*/
 
 // Form validation ==================================================
     $('#inputForm').validator({

@@ -2,7 +2,7 @@
 /**
  * view for auth/manageUsers
  *
- * @since 1.0.0
+ * @since 1.0.6
  * @author Keith Wheatley
  * @package echocms
  */
@@ -15,8 +15,8 @@
             <th>registered</th>
             <th>last login</th>
             <th>last IP</th>
-            <th class='text-center'>remember me<br> cookie</th>
-            <th><span class='pull-right'>active</span></th>
+            <th class='text-center'>remember me<br>cookie set</th>
+            <th class='text-center' >activate</th>
         </tr>
     </thead>
     <tbody>
@@ -28,20 +28,16 @@
             <td><?php echo date( 'd M Y', strtotime( $user['dt'])); ?></td>
             <td><?php echo date( 'd M Y &\nb\sp; H:i', strtotime( $user['last_dt'])); ?></td>
             <td><?php echo $user['last_ip']; ?></td>
-            <td class='text-center'><span class='<?php if ($user['ip']) echo 'glyphicon glyphicon-ok text-success'; ?>'</span> </td>
-            <td class='text-center'>
-                <?php if ($user['isactive']) { ?>
-                    <span class='glyphicon glyphicon-ok text-success'</span>
-                <?php } else {?>
-                    <span class='glyphicon glyphicon-remove text-danger'</span>
-                <?php } ?>
-            </td>
+            <td class='text-center'><span class='large <?php if ($user['ip']) echo 'glyphicon glyphicon-ok text-success'; ?>'</span> </td>
+
             <td class='activation text-center'>
-            <?php if ($_SESSION['isLoggedEmail'] != $user['email']) {
+                <?php if ($_SESSION['isLoggedEmail'] === $user['email']) { ?>
+                    <span class='glyphicon glyphicon-ok large text-success'</span>
+                    <?php } else {
                     if ($user['isactive']) { ?>
-                        <a class='pull-left' href='<?php echo CONFIG_URL; ?>auth/manageUsers/0/<?php echo $user['id'];?>'><span class='glyphicon glyphicon-minus-sign text-danger'</span></a>
+                        <a href='<?php echo CONFIG_URL; ?>auth/manageUsers/0/<?php echo $user['id'];?>'><span class='glyphicon glyphicon-ok large text-success'</span></a>
                     <?php } else { ?>
-                    <a class='pull-left' href='<?php echo CONFIG_URL; ?>auth/manageUsers/1/<?php echo $user['id'];?>'><span class='glyphicon glyphicon-plus-sign text-success'</span></a>
+                    <a href='<?php echo CONFIG_URL; ?>auth/manageUsers/1/<?php echo $user['id'];?>'><span class='glyphicon glyphicon-remove large text-danger'</span></a>
                 <?php } } ?>
             </td>
         </tr>

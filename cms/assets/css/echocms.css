@@ -1,6 +1,6 @@
 /**
  * @package echocms
- * @since 1.0.3
+ * @since 1.0.6
  * @author Keith Wheatley
  *
  * Minified with YUI Compressor at http://refresh-sf.com BUT switch off clean-CSS advanced settings
@@ -218,7 +218,7 @@ input {
     font-family: inherit;
 }
 .glyphicon.large {
-    font-size: 130%;
+    font-size: 20px;
     padding-top: 4px;
 }
 .glyphicon:before{
@@ -322,6 +322,7 @@ input[type=radio]:checked + label:after {
 .imageMargins {
     padding-top:15px;
     padding-bottom:15px;
+    text-align: center;
 }
 .imagePortraitCrop {
     padding: 0 40px 0 40px;
@@ -454,12 +455,12 @@ body, textarea,
 }
 .activation a span{
     transition: .3s all;
-    font-size: 22px;
+
 }
 .activation a span:hover{
-    transform: rotate(-45deg);
-    -webkit-transform: rotate(-45deg);
-    -ms-transform: rotate(-45deg);
+    transform: rotate(+45deg);
+    -webkit-transform: rotate(+45deg);
+    -ms-transform: rotate(+45deg);
 }
 
 /**

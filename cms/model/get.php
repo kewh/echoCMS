@@ -3,7 +3,7 @@
 /**
  * model class for get
  *
- * @since 1.0.5
+ * @since 1.0.6
  * @author Keith Wheatley
  * @package echocms\get
  */
@@ -84,6 +84,7 @@ class getModel
             $id = $row['id'];
 			      $items[$id] = $row;
             $items[$id] += $this->itemImages($id);
+            $items[$id] += $this->itemCollage($id);
             $items[$id] += $this->itemTags($id);
             if ($items[$id]['download_src'] != null)
                 $items[$id]['download_src'] = CONTENT_URL .'downloads/' . $items[$id]['download_src'];
@@ -195,6 +196,7 @@ class getModel
             if ($item['download_src'] != null)
                 $item['download_src'] = CONTENT_URL . 'downloads/' . $item['download_src'];
             $item += $this->itemImages($item['id']);
+            $item += $this->itemCollage($id);
             $item += $this->itemTags($item['id']);
             $item['date_tw'] = $this->date_tw($item['date']);
             $item['date_display'] = date($this->config['date_format'], strtotime( $item['date'] ));
@@ -325,6 +327,7 @@ class getModel
             $id = $row['id'];
 			      $items[$id] = $row;
             $items[$id] += $this->itemImages($id);
+            $items[$id] += $this->itemCollage($id);
             $items[$id] += $this->itemTags($id);
 
             if ($items[$id]['download_src'] != null)
@@ -426,7 +429,32 @@ class getModel
             $images['images'][] = $this->imageDetails($row);
         }
 
+        //error_log ('cms/model/get.php  itemImages. $images: ' . print_r($images, true) );
 		    return ($images);
+    }
+
+    /**
+     * Get item collage
+     *
+     * Get collage image data from database for a single specified item
+     *
+     * @param integer $id
+     *
+     * @return array $collage
+     */
+	  private function itemCollage($id)
+	  {
+        $stmt = $this->connCMS->prepare(
+           'SELECT src FROM imagesTable WHERE content_id = ? AND seq = 0');
+        $stmt->execute(array($id));
+        $collage['collage'] = array();
+        if ($stmt->rowCount() > 0) {
+          $collage_src = $stmt->fetch(\PDO::FETCH_ASSOC)['src'];
+          $collage['collage']['src'] = CONTENT_URL .'images/collage/'.$collage_src;
+        }
+
+        //error_log ('cms/model/get.php  itemCollage. $collage: ' . print_r($collage, true) );
+		    return ($collage);
     }
 
     /**

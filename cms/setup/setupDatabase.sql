@@ -1,4 +1,4 @@
--- echoCMS version 1.0.5
+-- echoCMS version 1.0.6
 -- https://github.com/kewh/echoCMS
 --
 -- database setup
@@ -32,6 +32,7 @@ INSERT INTO `config` (`setting`, `value`) VALUES
 ('email_notifications_on', '1'),
 ('image_bg_crop', 'fc8e5f'),
 ('image_bg_opacity', '0.8'),
+('image_create_collage', '1'),
 ('image_create_landscape', '1'),
 ('image_create_panorama', '1'),
 ('image_create_portrait', '1'),
@@ -45,6 +46,7 @@ INSERT INTO `config` (`setting`, `value`) VALUES
 ('image_sizes_panorama', '1'),
 ('image_sizes_portrait', '1'),
 ('image_sizes_square', '1'),
+('image_width_collage', '600'),
 ('image_width_landscape', '600'),
 ('image_width_panorama', '900'),
 ('image_width_portrait', '450'),
@@ -182,7 +184,8 @@ CREATE TABLE `imagesTable` (
   `width` int(11) DEFAULT NULL,
   `alt` varchar(255) DEFAULT NULL,
   `web_images` tinyint(1) NOT NULL DEFAULT '0',
-  `prime_aspect_ratio` varchar(20) DEFAULT NULL
+  `prime_aspect_ratio` char(9) DEFAULT NULL
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -243,7 +246,7 @@ CREATE TABLE `pendingImagesTable` (
   `width` int(11) DEFAULT NULL,
   `alt` varchar(255) DEFAULT NULL,
   `web_images` tinyint(1) NOT NULL DEFAULT '0',
-  `prime_aspect_ratio` varchar(20) DEFAULT NULL
+  `prime_aspect_ratio` char(9) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
