@@ -2,7 +2,7 @@
 /**
  * view for common/header
  *
- * @since 1.0.0
+ * @since 1.0.7
  * @author Keith Wheatley
  * @package echocms
  */
@@ -18,13 +18,13 @@
     <meta name='robots' content='noindex'>
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'>
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css' integrity='sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp' crossorigin='anonymous'>
-    <link rel='stylesheet' href='http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css'>
-    <link rel='stylesheet' href='http://jcrop-cdn.tapmodo.com/v0.9.12/css/jquery.Jcrop.css'>
+    <link rel='stylesheet' href='https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css'>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/tapmodo/Jcrop@0.9.12/css/jquery.Jcrop.min.css'>
     <link rel='stylesheet' href='<?php echo CONFIG_URL; ?>assets/css/selectize.bootstrap3.css'>
     <link rel='stylesheet' href='<?php echo CONFIG_URL; ?>assets/css/pick-a-color-1.2.3.min.css'>
     <link rel='stylesheet' href='<?php echo CONFIG_URL; ?>assets/css/echocms.css'>
     <!-- jQuery needed here because various page specific scripts are loaded before footer -->
-    <script src='http://code.jquery.com/jquery-1.11.2.min.js'></script>
+    <script src='https://code.jquery.com/jquery-1.11.2.min.js'></script>
 
     <script>
 /*

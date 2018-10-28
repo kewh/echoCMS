@@ -2,7 +2,7 @@
 /**
  * view for edit/input
  *
- * @since 1.0.3
+ * @since 1.0.7
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -202,8 +202,8 @@
     </div>
 </form>
 </div>
-<script src='http://code.jquery.com/ui/1.12.1/jquery-ui.min.js'></script>
-<script src='//cdn.tinymce.com/4/tinymce.min.js'></script>
+<script src='https://code.jquery.com/ui/1.12.1/jquery-ui.min.js'></script>
+<script src='https://cdn.tinymce.com/4/tinymce.min.js'></script>
 <script src='<?php echo CONFIG_URL; ?>assets/js/tinymce/plugins/lorumipsum/plugin.min.js'></script>
 <script src='<?php echo CONFIG_URL; ?>assets/js/selectize.min.js'></script>
 <script src='<?php echo CONFIG_URL; ?>assets/js/jquery.simplyCountable.js'></script>

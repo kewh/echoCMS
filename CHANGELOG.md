@@ -1,5 +1,8 @@
 ## CHANGE LOG
 
+## v.1.0.7 &nbsp;&nbsp;&nbsp;28 Oct 2018
+* changed to SSL-friendly CDNs for Jcrop and jquery-ui
+
 ## v.1.0.6 &nbsp;&nbsp;&nbsp;23 Sep 2018
 * added facility to generate optional collage image as a new aspect ratio type
 * automatically change setting of all images when a Prime Aspect Ratio config setting is removed.

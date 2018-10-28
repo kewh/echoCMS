@@ -2,7 +2,7 @@
 /**
  * view for edit/image
  *
- * @since 1.0.6
+ * @since 1.0.7
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -125,7 +125,7 @@
         </div>
     </form>
 </div>
-<script src='http://jcrop-cdn.tapmodo.com/v0.9.12/js/jquery.Jcrop.js'></script>
+<script src='https://cdn.jsdelivr.net/gh/tapmodo/Jcrop@0.9.12/js/jquery.Jcrop.min.js'></script>
 <script src='<?php echo CONFIG_URL; ?>assets/js/tinycolor-0.9.15.min.js'></script>
 <script src='<?php echo CONFIG_URL; ?>assets/js/pick-a-color-1.2.3.min.js'></script>
 
