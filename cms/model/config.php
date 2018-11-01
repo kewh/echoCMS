@@ -2,7 +2,7 @@
 /**
  * Model class for system configuration
  *
- * @since 1.0.6
+ * @since 1.0.8
  * @author Keith Wheatley
  * @package echocms\config
  */
@@ -111,12 +111,14 @@ class configModel
         $config['image_sizes_landscape'] = empty($_POST['image_sizes_landscape']) ? '0' : '1';
         $config['image_sizes_portrait'] = empty($_POST['image_sizes_portrait']) ? '0' : '1';
         $config['image_sizes_panorama'] = empty($_POST['image_sizes_panorama']) ? '0' : '1';
+        $config['image_sizes_fluid'] = empty($_POST['image_sizes_fluid']) ? '0' : '1';
         $config['image_sizes_square'] = empty($_POST['image_sizes_square']) ? '0' : '1';
 
         $config['image_create_landscape'] = empty($_POST['image_create_landscape']) ? '0' : '1';
         $config['image_create_portrait'] = empty($_POST['image_create_portrait']) ? '0' : '1';
         $config['image_create_panorama'] = empty($_POST['image_create_panorama']) ? '0' : '1';
         $config['image_create_square'] = empty($_POST['image_create_square']) ? '0' : '1';
+        $config['image_create_fluid'] = empty($_POST['image_create_fluid']) ? '0' : '1';
         $config['image_create_collage'] = empty($_POST['image_create_collage']) ? '0' : '1';
 
         if ( isset( $_POST['image_ratio_landscape']) )
@@ -138,6 +140,9 @@ class configModel
             $config['image_width_square'] = $_POST['image_width_square'];
         if ( isset( $_POST['image_width_collage']) )
             $config['image_width_collage'] = $_POST['image_width_collage'];
+
+        if ( isset( $_POST['image_width_fluid']) )
+            $config['image_width_fluid'] = $_POST['image_width_fluid'];
 
         if ( isset( $_POST['image_quality']) )
             $config['image_quality'] = $_POST['image_quality'];

@@ -1,5 +1,9 @@
 ## CHANGE LOG
 
+## v.1.0.8 &nbsp;&nbsp;&nbsp;1 Nov 2018
+* added Fluid aspect ratio image type.
+* minor corrections and code upgrades
+
 ## v.1.0.7 &nbsp;&nbsp;&nbsp;28 Oct 2018
 * changed to SSL-friendly CDNs for Jcrop and jquery-ui
 

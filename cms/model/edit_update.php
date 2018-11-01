@@ -2,7 +2,7 @@
 /**
  * model class for edit
  *
- * @since 1.0.6
+ * @since 1.0.8
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -21,7 +21,7 @@ class editModelUpdate extends editModel
     {
         switch ($_SESSION['item']['status']) {
             case 'live':
-             if ($_SESSION['item']['pending_id'] !='')
+                if ($_SESSION['item']['pending_id'] !='')
                     $this->reportError('model/edit_update.php saveItem logic error - update attempted for a live item with existing update pending. SESSION data: ' . print_r($_SESSION, true));
                 $_SESSION['item']['status'] = 'update';
                 $_SESSION['item']['content_id'] = $_SESSION['item']['id'];
@@ -43,7 +43,7 @@ class editModelUpdate extends editModel
                 $this->createPendingItem();
                 break;
             default;
-                 $this->reportError('model/edit_update function: saveItem. Error: invalid item Status is: '.print_r($_SESSION['item']['status'],true));
+                $this->reportError('model/edit_update function: saveItem. Error: invalid item Status is: '.print_r($_SESSION['item']['status'],true));
         }
     }
 
@@ -402,20 +402,24 @@ class editModelUpdate extends editModel
                 lx1, lx2, ly1, ly2,
                 px1, px2, py1, py2,
                 sx1, sx2, sy1, sy2,
-                height, width, alt, web_images, prime_aspect_ratio
+                fx1, fx2, fy1, fy2,
+                height, width, height_fluid, width_fluid,
+                alt, web_images, prime_aspect_ratio
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
             $array = array(
                 $content_id, $image['src'], $image['seq'],
                 $image['mx1'], $image['mx2'], $image['my1'], $image['my2'],
                 $image['lx1'], $image['lx2'], $image['ly1'], $image['ly2'],
                 $image['px1'], $image['px2'], $image['py1'], $image['py2'],
                 $image['sx1'], $image['sx2'], $image['sy1'], $image['sy2'],
-                $image['height'], $image['width'], $image['alt'], $image['web_images'], $image['prime_aspect_ratio']);
+                $image['fx1'], $image['fx2'], $image['fy1'], $image['fy2'],
+                $image['height'], $image['width'], $image['height_fluid'], $image['width_fluid'],
+                $image['alt'], $image['web_images'], $image['prime_aspect_ratio']
+            );
             $stmt->execute($array);
         }
     }
-
 
     /**
      * Create website images.
@@ -434,13 +438,6 @@ class editModelUpdate extends editModel
             $image_number++;
             if ($image['web_images'] || substr($folder,0,7) == 'backups') {
                 $_SESSION ['item']['images'][$image_number]['web_images'] = '0';
-                ini_set('memory_limit', '1024M');
-
-                // setup variables for source image from original image input
-                list($originalWidth, $originalHeight, $type) = getimagesize(CONFIG_DIR.'/content/images/original/'.$image['src']);
-                list($uncroppedWidth, $uncroppedHeight) = getimagesize(CONFIG_DIR.'/content/images/uncropped/'.$image['src']);
-                if (! $image_from_src = imagecreatefromjpeg(CONFIG_DIR.'/content/images/original/'.$image['src']))
-                    $this->reportError('cms/model/edit_update createWebsiteImages Problem with imagecreatefromjpeg, image src: '. $image['src']);
 
                 // set up array of parameters of the aspect ratios and sizes to be created for this image
                 $images_to_create = array(
@@ -451,9 +448,9 @@ class editModelUpdate extends editModel
                         'y2' => $image['ly2'],
                         'aspect' => 'landscape',
                         'image_create' => $this->config['image_create_landscape'],
-                        'image_ratio' => $this->convertConfigRatio($this->config['image_ratio_landscape']),
                         'image_sizes' => $this->config['image_sizes_landscape'],
                         'image_width' => $this->config['image_width_landscape'],
+                        'image_height' => $this->config['image_width_landscape'] / $this->convertConfigRatio($this->config['image_ratio_landscape']),
                     ),
                     'portrait' => array (
                         'x1' => $image['px1'],
@@ -462,9 +459,9 @@ class editModelUpdate extends editModel
                         'y2' => $image['py2'],
                         'aspect' => 'portrait',
                         'image_create' => $this->config['image_create_portrait'],
-                        'image_ratio' => $this->convertConfigRatio($this->config['image_ratio_portrait']),
                         'image_sizes' => $this->config['image_sizes_portrait'],
                         'image_width' => $this->config['image_width_portrait'],
+                        'image_height' => $this->config['image_width_portrait'] / $this->convertConfigRatio($this->config['image_ratio_portrait']),
                     ),
                     'panorama' => array (
                         'x1' => $image['mx1'],
@@ -473,9 +470,9 @@ class editModelUpdate extends editModel
                         'y2' => $image['my2'],
                         'aspect' => 'panorama',
                         'image_create' => $this->config['image_create_panorama'],
-                        'image_ratio' => $this->convertConfigRatio($this->config['image_ratio_panorama']),
                         'image_sizes' => $this->config['image_sizes_panorama'],
                         'image_width' => $this->config['image_width_panorama'],
+                        'image_height' => $this->config['image_width_panorama'] / $this->convertConfigRatio($this->config['image_ratio_panorama']),
                     ),
                     'square' => array (
                         'x1' => $image['sx1'],
@@ -484,11 +481,29 @@ class editModelUpdate extends editModel
                         'y2' => $image['sy2'],
                         'aspect' => 'square',
                         'image_create' => $this->config['image_create_square'],
-                        'image_ratio' => $this->convertConfigRatio($this->config['image_ratio_square']),
                         'image_sizes' => $this->config['image_sizes_square'],
                         'image_width' => $this->config['image_width_square'],
+                        'image_height' => $this->config['image_width_square'] / $this->convertConfigRatio($this->config['image_ratio_square']),
+                    ),
+                    'fluid' => array (
+                        'x1' => $image['fx1'],
+                        'x2' => $image['fx2'],
+                        'y1' => $image['fy1'],
+                        'y2' => $image['fy2'],
+                        'aspect' => 'fluid',
+                        'image_create' => $this->config['image_create_fluid'],
+                        'image_sizes' => $this->config['image_sizes_fluid'],
+                        'image_width' => $image['width_fluid'],
+                        'image_height' => $image['height_fluid'],
                     )
                 );
+
+                // setup source image from original image input
+                ini_set('memory_limit', '1024M');
+                list($originalWidth, $originalHeight, $type) = getimagesize(CONFIG_DIR.'/content/images/original/'.$image['src']);
+                list($uncroppedWidth, $uncroppedHeight) = getimagesize(CONFIG_DIR.'/content/images/uncropped/'.$image['src']);
+                $image_from_src = imagecreatefromjpeg(CONFIG_DIR.'/content/images/original/'.$image['src'])
+                    or $this->reportError('cms/model/edit_update createWebsiteImages Problem with imagecreatefromjpeg, image src: '. $image['src']);
 
                 // create images for the aspect ratios and sizes required for this input image
                 foreach ($images_to_create as $i) {
@@ -502,16 +517,16 @@ class editModelUpdate extends editModel
                             $orig_y2 = round ($originalWidth * ( $i['y2'] / $uncroppedWidth));
                             $dst_URL = CONFIG_DIR.'/content/'.$folder.'/'. $i['aspect'].'/'. $size .'x/' . $image['src'];
                             $width  = $i['image_width'] * $size;
-                            $height = ($i['image_width'] / $i['image_ratio']) * $size;
-                            if (!$image_dst = imagecreatetruecolor( $width , $height ))
-                                $this->reportError('cms/model/edit_update createWebsiteImages '. $i['aspect'].' image. Problem with imagecreatetruecolor');
+                            $height = $i['image_height'] * $size;
+                            $image_dst = imagecreatetruecolor( $width , $height )
+                                or $this->reportError('cms/model/edit_update createWebsiteImages '. $i['aspect'].' image. Problem with imagecreatetruecolor');
 
-                            if (!imagecopyresampled( $image_dst, $image_from_src, 0, 0, $orig_1x, $orig_y1,
-                                                     $width, $height, ($orig_2x - $orig_1x), ($orig_y2 - $orig_y1)))
-                                $this->reportError('cms/model/edit_update createWebsiteImages '. $i['aspect'].' image. Problem with imagecopyresampled');
+                            imagecopyresampled( $image_dst, $image_from_src, 0, 0, $orig_1x, $orig_y1,
+                                                     $width, $height, ($orig_2x - $orig_1x), ($orig_y2 - $orig_y1))
+                                or $this->reportError('cms/model/edit_update createWebsiteImages '. $i['aspect'].' image. Problem with imagecopyresampled');
 
-                            if (!imagejpeg($image_dst, $dst_URL , $this->config['image_quality']))
-                                $this->reportError('cms/model/edit_update createWebsiteImages '. $i['aspect'].' image. Problem with imagejpeg');
+                            imagejpeg($image_dst, $dst_URL , $this->config['image_quality'])
+                                or $this->reportError('cms/model/edit_update createWebsiteImages '. $i['aspect'].' image. Problem with imagejpeg');
 
                             imagedestroy($image_dst);
                             $size = $size + 1;
@@ -766,16 +781,20 @@ class editModelUpdate extends editModel
                 lx1, lx2, ly1, ly2,
                 px1, px2, py1, py2,
                 sx1, sx2, sy1, sy2,
-                height, width, alt, web_images, prime_aspect_ratio
+                fx1, fx2, fy1, fy2,
+                height, width, height_fluid, width_fluid,
+                alt, web_images, prime_aspect_ratio
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
             $array = array(
                 $pending_id, $image['src'], $image['seq'],
                 $image['mx1'], $image['mx2'], $image['my1'], $image['my2'],
                 $image['lx1'], $image['lx2'], $image['ly1'], $image['ly2'],
                 $image['px1'], $image['px2'], $image['py1'], $image['py2'],
                 $image['sx1'], $image['sx2'], $image['sy1'], $image['sy2'],
-                $image['height'], $image['width'], $image['alt'], $image['web_images'], $image['prime_aspect_ratio']
+                $image['fx1'], $image['fx2'], $image['fy1'], $image['fy2'],
+                $image['height'], $image['width'], $image['height_fluid'], $image['width_fluid'],
+                $image['alt'], $image['web_images'], $image['prime_aspect_ratio']
             );
             $stmt->execute($array);
         }

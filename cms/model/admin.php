@@ -2,7 +2,7 @@
 /**
  * model class for admin
  *
- * @since 1.0.6
+ * @since 1.0.8
  * @author Keith Wheatley
  * @package echocms\admin
  */
@@ -56,10 +56,10 @@ class adminModel
             $this->reportError('cms/model/edit_update.php recreateImages. Failed to create folder: '. $tempFolder);
         }
         $subFolders = array (
-            '/landscape',    '/portrait',    '/panorama',    '/square',
-            '/landscape/1x', '/portrait/1x', '/panorama/1x', '/square/1x',
-            '/landscape/2x', '/portrait/2x', '/panorama/2x', '/square/2x',
-            '/landscape/3x', '/portrait/3x', '/panorama/3x', '/square/3x',
+            '/landscape',    '/portrait',    '/panorama',    '/square'   , '/fluid',
+            '/landscape/1x', '/portrait/1x', '/panorama/1x', '/square/1x', '/fluid/1x',
+            '/landscape/2x', '/portrait/2x', '/panorama/2x', '/square/2x', '/fluid/2x',
+            '/landscape/3x', '/portrait/3x', '/panorama/3x', '/square/3x', '/fluid/3x',
             '/thumbnail', '/uncropped', '/original', '/collage');
         foreach ($subFolders as $subFolder) {
             if (!mkdir($tempFolder . $subFolder)) {

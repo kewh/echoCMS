@@ -3,7 +3,7 @@
 /**
  * model class for get
  *
- * @since 1.0.6
+ * @since 1.0.8
  * @author Keith Wheatley
  * @package echocms\get
  */
@@ -21,7 +21,8 @@ class getModel
         $this->config = $this->getConfig();
         require CONTENT_DIR . 'config/url.php';
         if ($config_URL_DIR) $config_URL_DIR =  '/' . $config_URL_DIR;
-        define('CONTENT_URL', '//' . $_SERVER['HTTP_HOST'] . $config_URL_DIR . '/cms/content/');
+        define('CONTENT_URL', 'cms/content/');
+        //define('CONTENT_URL', '//' . $_SERVER['HTTP_HOST'] . $config_URL_DIR . '/cms/content/');
 /*
     error_log ('cms/model/get.php construct. __DIR__: ' . print_r(__DIR__, true) );
     error_log ('cms/model/get.php construct. $_SERVER[HTTP_HOST]: ' . print_r($_SERVER['HTTP_HOST'], true) );
@@ -422,7 +423,7 @@ class getModel
 	  private function itemImages($id)
 	  {
         $stmt = $this->connCMS->prepare(
-           'SELECT src, alt, seq, width, prime_aspect_ratio FROM imagesTable WHERE content_id = ? ORDER BY seq ASC');
+           'SELECT src, alt, seq, prime_aspect_ratio, width_fluid, height_fluid FROM imagesTable WHERE content_id = ? ORDER BY seq ASC');
         $stmt->execute(array($id));
         $images['images'] = array();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -474,7 +475,7 @@ class getModel
             if (!empty($item['download_src']))
                 $items[$item['id']]['download_src'] = CONTENT_URL . 'downloads/' . $item['download_src'];
             $stmt = $this->connCMS->prepare(
-               'SELECT src, alt, seq FROM imagesTable WHERE content_id = ? ORDER BY seq ASC');
+               'SELECT src, alt, seq, prime_aspect_ratio, width_fluid, height_fluid FROM imagesTable WHERE content_id = ? ORDER BY seq ASC');
             $stmt->execute(array($item['id']));
             $images['images'] = array();
             while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -508,6 +509,8 @@ class getModel
         $landscape_3x = ($this->config['image_sizes_landscape']) ? 'landscape/3x/': 'landscape/1x/';
         $square_2x    = ($this->config['image_sizes_square'])    ? 'square/2x/'   : 'square/1x/';
         $square_3x    = ($this->config['image_sizes_square'])    ? 'square/3x/'   : 'square/1x/';
+        $fluid_2x    = ($this->config['image_sizes_fluid'])    ? 'fluid/2x/'   : 'fluid/1x/';
+        $fluid_3x    = ($this->config['image_sizes_fluid'])    ? 'fluid/3x/'   : 'fluid/1x/';
         $image_height_panorama = $this->config['image_width_panorama'] / $this->convertConfigRatio($this->config['image_ratio_panorama']);
         $image_height_portrait = $this->config['image_width_portrait'] / $this->convertConfigRatio($this->config['image_ratio_portrait']);
         $image_height_landscape = $this->config['image_width_landscape'] / $this->convertConfigRatio($this->config['image_ratio_landscape']);
@@ -590,6 +593,25 @@ class getModel
                                           $url.$square_2x.$image['src'] . ' x2, ' .
                                           $url.$square_3x.$image['src'] . ' x3'),
 
+            'fluid' => array (   'src'=> $url.'fluid/1x/'.$image['src'],
+                                  '1x' => $url.'fluid/1x/'.$image['src'],
+                                  '2x' => $url.$fluid_2x.$image['src'],
+                                  '3x' => $url.$fluid_3x.$image['src'],
+                                  '1x-width' => $image['width_fluid'],
+                                  '2x-width' => $image['width_fluid'] *2,
+                                  '3x-width' => $image['width_fluid'] *3,
+                                  '1x-height' => $image['height_fluid'],
+                                  '2x-height' => $image['height_fluid'] *2,
+                                  '3x-height' => $image['height_fluid'] *3,
+                                  'srcset-w' =>
+                                          $url.'fluid/1x/'.$image['src'] . ' ' .  $image['width_fluid'] . 'w, ' .
+                                          $url.$fluid_2x.$image['src'] . ' ' .  $image['width_fluid'] *2 . 'w, ' .
+                                          $url.$fluid_3x.$image['src'] . ' ' .  $image['width_fluid'] *3 . 'w',
+                                  'srcset-d' =>
+                                          $url.'fluid/1x/'.$image['src'] . ', ' .
+                                          $url.$fluid_2x.$image['src'] . ' x2, ' .
+                                          $url.$fluid_3x.$image['src'] . ' x3'),
+
             'thumbnail' => $url.'thumbnail/'.$image['src'],
             'uncropped' => $url.'uncropped/'.$image['src'],
             'alt' => $image['alt'],
@@ -600,20 +622,23 @@ class getModel
         //error_log ('cms/model/get.php  imageDetails. $image[prime_aspect_ratio] : ' . print_r($image['prime_aspect_ratio'], true) );
         switch($image['prime_aspect_ratio']) {
             case 'portrait':
-                $prime ['prime_aspect_ratio']= $imageDetails['portrait'];
+                $prime ['prime']= $imageDetails['portrait'];
                 break;
             case 'panorama':
-                $prime ['prime_aspect_ratio']= $imageDetails['panorama'];
+                $prime ['prime']= $imageDetails['panorama'];
                 break;
             case 'square':
-                $prime ['prime_aspect_ratio']= $imageDetails['square'];
+                $prime ['prime']= $imageDetails['square'];
+                break;
+            case 'fluid':
+                $prime ['prime']= $imageDetails['fluid'];
                 break;
             default:
-                $prime ['prime_aspect_ratio']= $imageDetails['landscape'];
+                $prime ['prime']= $imageDetails['landscape'];
         }
         $imageDetails += $prime;
         //error_log ('cms/model/get.php  imageDetails. $prime : ' . print_r($prime, true) );
-        //error_log ('cms/model/get.php  imageDetails. $imageDetails : ' . print_r($imageDetails, true) );
+        //error_log ('cms/model/get.php  imageDetails. $imageDetails: ' . print_r($imageDetails, true) );
 		    return ($imageDetails);
     }
 

@@ -3,7 +3,7 @@
  * controller class for edit
  *
  *
- * @since 1.0.6
+ * @since 1.0.8
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -179,6 +179,7 @@ class edit
         $image_create_landscape = $this->config['image_create_landscape'];
         $image_create_portrait =  $this->config['image_create_portrait'];
         $image_create_square =    $this->config['image_create_square'];
+        $image_create_fluid =    $this->config['image_create_fluid'];
 
         if (empty($_SESSION['currentBgColor']))
             $currentBgColor = $this->config['image_bg_crop'];

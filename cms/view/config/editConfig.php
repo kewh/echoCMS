@@ -2,7 +2,7 @@
 /**
  * view for config/editConfig
  *
- * @since 1.0.6
+ * @since 1.0.8
  * @author Keith Wheatley
  * @package echocms\config
  */
@@ -122,7 +122,6 @@
                 <div class='col-xs-2 form-group-heading text-right form-group-margin-top'>
                     landscape
                 </div>
-
                 <div class='col-xs-2 form-group'>
                     <input name='image_create_landscape' id='image_create_landscape' type='checkbox' class='form-control'
                     <?php if ($config['image_create_landscape']) echo ' checked'; ?>>
@@ -141,7 +140,7 @@
                 <div class='col-xs-2 form-group'>
                     <input name='image_sizes_landscape' id='image_sizes_landscape' type='checkbox' class='form-control'
                     <?php if ($config['image_sizes_landscape']) echo ' checked'; ?>>
-                    <label for='image_sizes_landscape' class='control-label'>2 &amp; 3x<br></label>
+                    <label for='image_sizes_landscape' class='control-label'>2x &amp; 3x<br></label>
                 </div>
             </div>
 
@@ -217,6 +216,30 @@
                     <input name='image_sizes_square' id='image_sizes_square' type='checkbox' class='form-control no-top-margin'
                     <?php if ($config['image_sizes_square']) echo ' checked'; ?>>
                     <label for='image_sizes_square' class='control-label'></label>
+                </div>
+            </div>
+
+            <!-- image_ratio_fluid     ********************************************** -->
+           <div class='col-xs-12'>
+                <div class='col-xs-2 form-group-heading text-right'>
+                    fluid
+                </div>
+                <div class='col-xs-2 form-group'>
+                    <input name='image_create_fluid' id='image_create_fluid' type='checkbox' class='form-control no-top-margin'
+                    <?php if ($config['image_create_fluid']) echo ' checked'; ?>>
+                    <label for='image_create_fluid' class='control-label pull-right'></label>
+                </div>
+                <div class='col-xs-3 form-group'>
+
+                </div>
+                <div class='col-xs-3 form-group'>
+                    <input name='image_width_fluid' type='text' pattern='^[1-9][0-9]*$' data-error='numeric only' class='form-control text-center' value='<?php echo $config['image_width_fluid']; ?>'>
+                    <div class='help-block with-errors'></div>
+                </div>
+                <div class='col-xs-2 form-group'>
+                    <input name='image_sizes_fluid' id='image_sizes_fluid' type='checkbox' class='form-control no-top-margin'
+                    <?php if ($config['image_sizes_fluid']) echo ' checked'; ?>>
+                    <label for='image_sizes_fluid' class='control-label'></label>
                 </div>
             </div>
 

@@ -2,7 +2,7 @@
 /**
  * view for auth/manageAccess
  *
- * @since 1.0.0
+ * @since 1.0.8
  * @author Keith Wheatley
  * @package echocms
  */
@@ -12,20 +12,19 @@
     <thead class='header-title'>
         <tr>
             <th>IP</th>
-            <th>date</th>
-            <th>login</th>
+            <th>login date</th>
+            <th>userid</th>
         </tr>
     </thead>
     <tbody>
-    <?php $lastAttempt['ip'] = null;
-          $lastAttempt['date'] = null;
+    <?php
         foreach ($attempts as $attempt) { ?>
         <tr class='action'>
-            <td><?php if ($attempt['ip'] != $lastAttempt['ip']) echo $attempt['ip']; ?> </td>
+            <td><?php echo $attempt['ip']; ?> </td>
             <td><?php echo date( 'd M Y &\nb\sp; H:i', strtotime( $attempt['date'])); ?></td>
             <td <?php if ($attempt['email'] == 'failed access attempt') echo 'class="text-danger"';?>><?php echo $attempt['email'];?> </td>
         </tr>
-    <?php $lastAttempt = $attempt;} ?>
+    <?php } ?>
     </tbody>
 </table>
 &nbsp;<br>

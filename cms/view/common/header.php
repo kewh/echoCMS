@@ -2,7 +2,7 @@
 /**
  * view for common/header
  *
- * @since 1.0.7
+ * @since 1.0.8
  * @author Keith Wheatley
  * @package echocms
  */
@@ -25,14 +25,6 @@
     <link rel='stylesheet' href='<?php echo CONFIG_URL; ?>assets/css/echocms.css'>
     <!-- jQuery needed here because various page specific scripts are loaded before footer -->
     <script src='https://code.jquery.com/jquery-1.11.2.min.js'></script>
-
-    <script>
-/*
-        var $site_url = '<?php //echo CONFIG_URL; ?>';
-        var $status = '<?php //if (isset ($item['details']['status'])) echo $item['details']['status']; else echo '';?>';
-*/
-    </script>
-
 </head>
 <body>
 <!-- MODALS  ****************************************************** -->

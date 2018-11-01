@@ -1,4 +1,4 @@
--- echoCMS version 1.0.6
+-- echoCMS version 1.0.8
 -- https://github.com/kewh/echoCMS
 --
 -- database setup
@@ -180,6 +180,12 @@ CREATE TABLE `imagesTable` (
   `sx2` int(11) DEFAULT NULL,
   `sy1` int(11) DEFAULT NULL,
   `sy2` int(11) DEFAULT NULL,
+  `fx1` int(11) DEFAULT NULL,
+  `fx2` int(11) DEFAULT NULL,
+  `fy1` int(11) DEFAULT NULL,
+  `fy2` int(11) DEFAULT NULL,
+  `height_fluid` int(11) DEFAULT NULL,
+  `width_fluid` int(11) DEFAULT NULL,
   `height` int(11) DEFAULT NULL,
   `width` int(11) DEFAULT NULL,
   `alt` varchar(255) DEFAULT NULL,
@@ -242,6 +248,12 @@ CREATE TABLE `pendingImagesTable` (
   `sx2` int(11) DEFAULT NULL,
   `sy1` int(11) DEFAULT NULL,
   `sy2` int(11) DEFAULT NULL,
+  `fx1` int(11) DEFAULT NULL,
+  `fx2` int(11) DEFAULT NULL,
+  `fy1` int(11) DEFAULT NULL,
+  `fy2` int(11) DEFAULT NULL,
+  `height_fluid` int(11) DEFAULT NULL,
+  `width_fluid` int(11) DEFAULT NULL,
   `height` int(11) DEFAULT NULL,
   `width` int(11) DEFAULT NULL,
   `alt` varchar(255) DEFAULT NULL,

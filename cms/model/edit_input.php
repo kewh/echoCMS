@@ -2,7 +2,7 @@
 /**
  * model class for edit
  *
- * @since 1.0.2
+ * @since 1.0.8
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -39,8 +39,8 @@ class editModelInput extends editModel
             $_SESSION['item']['heading'] = htmlentities($_POST['heading']);
         if ( isset( $_POST['caption']) )
             $_SESSION['item']['caption'] = htmlentities($_POST['caption']);
-        if ( isset( $_POST['dateDisplay']) )
-            $_SESSION['item']['date'] =   date( 'Y-m-d', strtotime($_POST['dateDisplay']) ) . date( ' H:i:s'); // Timestamp to SQL format
+        if ( isset( $_POST['dateDisplay']) && date( 'Y-m-d', strtotime($_SESSION['item']['date'])) != date( 'Y-m-d', strtotime($_POST['dateDisplay'])))
+            $_SESSION['item']['date'] =   date( 'Y-m-d', strtotime($_POST['dateDisplay'])) . date( ' H:i:s'); // Timestamp to SQL format
         if ( isset( $_POST['text']) )
             $_SESSION['item']['text'] = htmlentities($_POST['text']);
         if (isset( $_POST['deleteDownload']) && $_POST['deleteDownload'] != '' ) {
@@ -72,7 +72,7 @@ class editModelInput extends editModel
         elseif (isset($_SESSION['item']['download_src'])
                     && $_SESSION['item']['download_src'] != null
                     && $_SESSION['item']['download_name'] == null) {
-            $_SESSION['item']['download_name'] =  substr($_SESSION['item']['download_src'], 0, -4);
+            $_SESSION['item']['download_name'] =  substr($_SESSION['item']['download_src'], 0, strpos($_SESSION['item']['download_src'], "."));
         }
 
         return($_SESSION['item']);
@@ -90,6 +90,25 @@ class editModelInput extends editModel
     {
         $_SESSION['scrollToImages'] = false;
 
+				//  process incoming image
+        if ( !empty($_FILES['postedImage']['error']) && $_FILES['postedImage'] ['error'] == 0     ) {
+            $this->reportError('cms/model/edit_input.php. Failed image load. Maximum file size is: '. getMaxFileSize() . '. Posted error code is: '. $_FILES['postedImage'] ['error'] );
+        }
+        if ( !empty($_FILES['postedImage']['name']) && $_FILES['postedImage'] ['error'] != 0    ) {
+            $this->reportError('cms/model/edit_input.php Posted image error. FILES PostedImage name is: ' . $_FILES['postedImage']['name'] . ' Posted error code is: ' . $_FILES['postedImage'] ['error'], 0);
+        }
+        if ( !empty($_FILES['postedImage']['name']) && $_FILES['postedImage'] ['error'] == 0   ) {
+            $image_posted = $_FILES['postedImage']['tmp_name'];
+            $newImage = $_FILES['postedImage']['name'];
+            $newImage = str_replace(' ','-',$newImage);
+            $newImage = preg_replace('/[^A-Za-z0-9\-]/', '', $newImage);
+            $newImage = date( 'Y-m-d-H-i-s-') . $newImage;
+            $newImage = $newImage . '.jpg'; //note: all files are stored as JPGs
+            $this->processNewImage($image_posted, $newImage);
+            $this->createThumbnail(end($_SESSION['item']['images']));
+            $_SESSION['scrollToImages'] = true;
+        }
+
         //  Process request to delete an image
         if (isset( $_POST['deleteImageId']) && $_POST['deleteImageId'] != null) {
             unset ($_SESSION['item']['images'] [$_POST['deleteImageId']]);
@@ -106,18 +125,23 @@ class editModelInput extends editModel
             });
         }
 
+        // Check id of image to see if we have input from controller/image.php
+				if ($_SESSION['cropId'] == null) {
+						return($_SESSION['item']['images']);
+				}
+				$cropId = $_SESSION['cropId'];
+
+        // Process incoming alt
+				if ( isset( $_POST['alt']) )
+						$_SESSION['item']['images'] [$cropId]['alt'] = $_POST['alt'];
+
+        // Process incoming prime_aspect_ratio setting
+				if ( isset( $_POST['prime_aspect_ratio']) )
+						$_SESSION['item']['images'] [$cropId]['prime_aspect_ratio'] = $_POST['prime_aspect_ratio'];
+
         //  Process incoming cropping coordinates
         if ( isset ($_POST['mx1'] ) && $_POST['mx1'] != null ) {
-            if ($_SESSION['cropId'] == null) {
-                $this->reportError('cms/model/edit_input getImages. Logic error. Posted crop coords but no SESSION cropId');
-                return;
-            }
-            $cropId = $_SESSION['cropId'];
             $_SESSION ['item']['images'][$cropId]['web_images'] = true;
-            if ( isset( $_POST['prime_aspect_ratio']) )
-                $_SESSION['item']['images'] [$cropId]['prime_aspect_ratio'] = $_POST['prime_aspect_ratio'];
-						if ( isset( $_POST['alt']) )
-		            $_SESSION['item']['images'] [$cropId]['alt'] = $_POST['alt'];
             $cropCoordsInput = true;
             $_SESSION ['item']['images'] [$cropId]['mx1'] = $_POST['mx1'];
             $_SESSION ['item']['images'] [$cropId]['mx2'] = $_POST['mx2'];
@@ -135,29 +159,25 @@ class editModelInput extends editModel
             $_SESSION ['item']['images'] [$cropId]['sx2'] = $_POST['sx2'];
             $_SESSION ['item']['images'] [$cropId]['sy1'] = $_POST['sy1'];
             $_SESSION ['item']['images'] [$cropId]['sy2'] = $_POST['sy2'];
+						$_SESSION ['item']['images'] [$cropId]['fx1'] = $_POST['fx1'];
+            $_SESSION ['item']['images'] [$cropId]['fx2'] = $_POST['fx2'];
+            $_SESSION ['item']['images'] [$cropId]['fy1'] = $_POST['fy1'];
+            $_SESSION ['item']['images'] [$cropId]['fy2'] = $_POST['fy2'];
+
+						// set up height and width for the fluid image
+            $image =& $_SESSION ['item']['images'] [$cropId];
+						if (($image['fx2'] - $image['fx1']) > ($image['fy2'] - $image['fy1'])) {
+								$longestSide = $image['width_fluid'] = $this->config['image_width_fluid'];
+								$image['height_fluid'] = floor((($image['fy2'] - $image['fy1']) / ($image['fx2'] - $image['fx1']) ) * $longestSide);
+						}
+						else{
+								$longestSide = $image['height_fluid'] = $this->config['image_width_fluid'];
+								$image['width_fluid'] = floor((($image['fx2'] - $image['fx1']) / ($image['fy2'] - $image['fy1']) ) * $longestSide);
+						}
 
             $croppedImage = $_SESSION ['item']['images'] [$cropId];
             $this->createThumbnail($croppedImage);
             $_SESSION['cropId'] = null;
-            $_SESSION['scrollToImages'] = true;
-        }
-
-        //  process incoming image
-        if ( !empty($_FILES['postedImage']['error']) && $_FILES['postedImage'] ['error'] == 0     ) {
-            $this->reportError('cms/model/edit_input.php. Failed image load. Maximum file size is: '. getMaxFileSize() . '. Posted error code is: '. $_FILES['postedImage'] ['error'] );
-        }
-        if ( !empty($_FILES['postedImage']['name']) && $_FILES['postedImage'] ['error'] != 0    ) {
-            $this->reportError('cms/model/edit_input.php Posted image error. FILES PostedImage name is: ' . $_FILES['postedImage']['name'] . ' Posted error code is: ' . $_FILES['postedImage'] ['error'], 0);
-        }
-        if ( !empty($_FILES['postedImage']['name']) && $_FILES['postedImage'] ['error'] == 0   ) {
-            $image_posted = $_FILES['postedImage']['tmp_name'];
-            $newImage = $_FILES['postedImage']['name'];
-            $newImage = str_replace(' ','-',$newImage);
-            $newImage = preg_replace('/[^A-Za-z0-9\-]/', '', $newImage);
-            $newImage = date( 'Y-m-d-H-i-s-') . $newImage;
-            $newImage = $newImage . '.jpg'; //note: all files are stored as JPGs
-            $this->processNewImage($image_posted, $newImage);
-            $this->createThumbnail(end($_SESSION['item']['images']));
             $_SESSION['scrollToImages'] = true;
         }
 
@@ -189,45 +209,47 @@ class editModelInput extends editModel
 
         // STORE ORIGINAL IMAGE, as a jpg
         set_time_limit(120); // resets default time limit back to zero
-        if ( !$image_dst = imagecreatetruecolor($postedWidth, $postedHeight))
-            $this->reportError('cms/model/edit_input processNewImage Store Original. Problem with imagecreatetruecolor');
+        $image_dst = imagecreatetruecolor($postedWidth, $postedHeight)
+            or $this->reportError('cms/model/edit_input processNewImage Store Original. Problem with imagecreatetruecolor');
 
         if ($type == IMAGETYPE_PNG) {
-            if ( !$color = imagecolorallocatealpha($image_dst, 255, 255, 255, 127))
-                $this->reportError('cms/model/edit_input.php processNewImage. Store Original. Problem with imagecolorallocatealpha');
-            if ( !$ok = imagefill($image_dst, 0, 0, $color))
-                $this->reportError('cms/model/edit_input.php processNewImage. Store Original. Problem with imagefill');
+            $color = imagecolorallocatealpha($image_dst, 255, 255, 255, 127)
+                or $this->reportError('cms/model/edit_input.php processNewImage. Store Original. Problem with imagecolorallocatealpha');
+            imagefill($image_dst, 0, 0, $color)
+                or $this->reportError('cms/model/edit_input.php processNewImage. Store Original. Problem with imagefill');
         }
 
-        if ( !imagecopyresampled($image_dst, $image_src, 0, 0, 0, 0, $postedWidth, $postedHeight, $postedWidth, $postedHeight))
-            $this->reportError('cms/model/edit_input processNewImage Store Original. Problem with imagecopyresampled');
-        if ( !imagejpeg($image_dst, CONFIG_DIR.'/content/images/original/'.$newImage , 100))
-            $this->reportError('cms/model/edit_input processNewImage Store Original. Problem with imagejpeg');
+        imagecopyresampled($image_dst, $image_src, 0, 0, 0, 0, $postedWidth, $postedHeight, $postedWidth, $postedHeight)
+            or $this->reportError('cms/model/edit_input processNewImage Store Original. Problem with imagecopyresampled');
+        imagejpeg($image_dst, CONFIG_DIR.'/content/images/original/'.$newImage , 100)
+            or $this->reportError('cms/model/edit_input processNewImage Store Original. Problem with imagejpeg');
         imagedestroy($image_dst);
 
-        // STORE RESIZED image (used for on screen cropping)
+        // STORE RESIZED image with same aspect ratio as original (used for on screen cropping)
         set_time_limit(120);
+
         // set longest side to 600 and keep aspect ratio
-        if ($postedWidth >= $postedHeight)
-            {
-                $uncroppedWidth = 600;
-                $uncroppedHeight = floor ((600/ $postedWidth) * $postedHeight);
-            }
+        if ($postedWidth >= $postedHeight) {
+            $uncroppedWidth = 600;
+            $uncroppedHeight = floor ((600/ $postedWidth) * $postedHeight);
+        }
         else{
-                $uncroppedHeight = 600;
-                $uncroppedWidth = floor ((600/ $postedHeight) * $postedWidth);
-            }
+            $uncroppedHeight = 600;
+            $uncroppedWidth = floor ((600/ $postedHeight) * $postedWidth);
+        }
 
-        if ( !$image_from_src = imagecreatefromjpeg(CONFIG_DIR.'/content/images/original/'.$newImage))
-            $this->reportError('cms/model/edit_input processNewImage. Store Resized. Problem with imagecreatefromjpeg');
+        $image_from_src = imagecreatefromjpeg(CONFIG_DIR.'/content/images/original/'.$newImage)
+            or $this->reportError('cms/model/edit_input processNewImage. Store Resized. Problem with imagecreatefromjpeg');
 
-        if ( !$image_dst = imagecreatetruecolor($uncroppedWidth, $uncroppedHeight))
-            $this->reportError('cms/model/edit_input processNewImage Store Resized. Problem with imagecreatetruecolor');
+        $image_dst = imagecreatetruecolor($uncroppedWidth, $uncroppedHeight)
+            or $this->reportError('cms/model/edit_input processNewImage Store Resized. Problem with imagecreatetruecolor');
 
-        if ( !imagecopyresampled($image_dst, $image_from_src, 0, 0, 0, 0, $uncroppedWidth, $uncroppedHeight, $postedWidth, $postedHeight))
-            $this->reportError('cms/model/edit_input processNewImage Store Resized. Problem with imagecopyresampled');
-        if ( !imagejpeg($image_dst, CONFIG_DIR.'/content/images/uncropped/'.$newImage , 80))
-            $this->reportError('cms/model/edit_input processNewImage Store Resized. Problem with imagejpeg');
+        imagecopyresampled($image_dst, $image_from_src, 0, 0, 0, 0, $uncroppedWidth, $uncroppedHeight, $postedWidth, $postedHeight)
+            or $this->reportError('cms/model/edit_input processNewImage Store Resized. Problem with imagecopyresampled');
+
+        imagejpeg($image_dst, CONFIG_DIR.'/content/images/uncropped/'.$newImage , 80)
+            or $this->reportError('cms/model/edit_input processNewImage Store Resized. Problem with imagejpeg');
+
         imagedestroy($image_dst);
 
         // calculate default cropping coordinates for a new image
@@ -308,17 +330,26 @@ class editModelInput extends editModel
             $sy2 = $m + $h;
         }
 
+        // coordinates for fluid image
+				$fx1 = 0;
+				$fx2 = $uncroppedWidth;
+				$fy1 = 0;
+				$fy2 = $uncroppedHeight;
+
         // add new image to session data
         $imageSeq = count($_SESSION['item']['images']);
         $image = array(
-                'src' => $newImage,
-                'seq' => $imageSeq,
-                'mx1' => $mx1, 'mx2' => $mx2, 'my1' => $my1, 'my2' => $my2,
-                'lx1' => $lx1, 'lx2' => $lx2, 'ly1' => $ly1, 'ly2' => $ly2,
-                'px1' => $px1, 'px2' => $px2, 'py1' => $py1, 'py2' => $py2,
-                'sx1' => $sx1, 'sx2' => $sx2, 'sy1' => $sy1, 'sy2' => $sy2,
-                'height' => $uncroppedHeight, 'width' => $uncroppedWidth,
-                'alt' => null, 'web_images' => true, 'prime_aspect_ratio' => 'landscape'     );
+		        'src' => $newImage,
+		        'seq' => $imageSeq,
+		        'mx1' => $mx1, 'mx2' => $mx2, 'my1' => $my1, 'my2' => $my2,
+		        'lx1' => $lx1, 'lx2' => $lx2, 'ly1' => $ly1, 'ly2' => $ly2,
+		        'px1' => $px1, 'px2' => $px2, 'py1' => $py1, 'py2' => $py2,
+		        'sx1' => $sx1, 'sx2' => $sx2, 'sy1' => $sy1, 'sy2' => $sy2,
+		        'fx1' => $fx1, 'fx2' => $fx2, 'fy1' => $fy1, 'fy2' => $fy2,
+		        'height' => $uncroppedHeight, 'width' => $uncroppedWidth,
+		        'height_fluid' => $uncroppedHeight, 'width_fluid' => $uncroppedWidth,
+		        'alt' => null, 'web_images' => true, 'prime_aspect_ratio' => 'landscape'
+        );
         $_SESSION['item']['images'][] = $image;
     }
 
@@ -334,27 +365,17 @@ class editModelInput extends editModel
 	   */
 	  private function createThumbnail($image)
     {
-        // set longest side to 200 and use 'square' aspect ratio
-        $image_ratio = $this->convertConfigRatio($this->config['image_ratio_square']);
-        if ($image_ratio > 1)
-            {
-                $thumbWidth = 200;
-                $thumbHeight = floor ((200 / $image_ratio));
-            }
-        else{
-                $thumbHeight = 200;
-                $thumbWidth = floor ((200 * $image_ratio));
-            }
+        $width = $height = 200;
         ini_set('memory_limit', '1024M');
         set_time_limit(120);
-        if (! $image_src = imagecreatefromjpeg(CONFIG_DIR.'/content/images/uncropped/'.$image['src']))
-            $this->reportError('cms/model/edit_input createThumbnail. Problem with imagecreatefromjpeg');
-        if (! $image_dst = imagecreatetruecolor($thumbWidth, $thumbHeight))
-            $this->reportError('cms/model/edit_input createThumbnail. Problem with imagecreatetruecolor');
-        if (! imagecopyresampled ($image_dst, $image_src, 0, 0, $image['sx1'], $image['sy1'], $thumbWidth, $thumbHeight,($image['sx2'] - $image['sx1']), ($image['sy2'] - $image['sy1'])))
-            $this->reportError('cms/model/edit_input createThumbnail. Problem with imagecopyresampled');
-        if (! imagejpeg($image_dst, CONFIG_DIR.'/content/images/thumbnail/'.$image['src'] , 90))
-            $this->reportError('cms/model/edit_input createThumbnail. Problem with imagejpeg');
+        $image_src = imagecreatefromjpeg(CONFIG_DIR.'/content/images/uncropped/'.$image['src'])
+            or $this->reportError('cms/model/edit_input createThumbnail. Problem with imagecreatefromjpeg');
+        $image_dst = imagecreatetruecolor($width, $height)
+            or $this->reportError('cms/model/edit_input createThumbnail. Problem with imagecreatetruecolor');
+        imagecopyresampled ($image_dst, $image_src, 0, 0, $image['sx1'], $image['sy1'], $width, $height,($image['sx2'] - $image['sx1']), ($image['sy2'] - $image['sy1']))
+            or $this->reportError('cms/model/edit_input createThumbnail. Problem with imagecopyresampled');
+        imagejpeg($image_dst, CONFIG_DIR.'/content/images/thumbnail/'.$image['src'] , 90)
+            or $this->reportError('cms/model/edit_input createThumbnail. Problem with imagejpeg');
         imagedestroy($image_dst);
     }
 
@@ -418,7 +439,7 @@ class editModelInput extends editModel
             $item['images'] = $this->getContentImages($itemId);
             $item['content_id'] = null;
         }
-        else $this->reportError('model/edit_input setupExistingItem: unexpected status for item');
+        else $this->reportError('model/edit_input setupExistingItem: unexpected status: '.$status.' for itemId: '.$itemId);
 
         return($item);
     }
@@ -432,6 +453,7 @@ class editModelInput extends editModel
     {
         $val = trim(ini_get('post_max_size'));
         $last = strtolower($val[strlen($val)-1]);
+        $val = intval($val);
         switch($last) {
             case 'g':
                 $val *= 1024;

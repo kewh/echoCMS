@@ -2,7 +2,7 @@
 /**
  * model class for edit
  *
- * @since 1.0.2
+ * @since 1.0.8
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -38,16 +38,15 @@ class editModel
 	  }
 
     /**
-     *  Gets a list of ids for Pending items, excluding 'offline' items
+     *  Gets a list of ids for Pending items
      *
      * @return array $items
 	   */
     function getPendingItemsList()
 	  {
-        $status = 'offline';
         $items = array();
-		    $stmt = $this->dbh->prepare('SELECT id FROM pendingItemsTable WHERE status != ?');
-		    $stmt->execute(array($status));
+		    $stmt = $this->dbh->prepare('SELECT id FROM pendingItemsTable');
+		    $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 			      $items[] =  $row['id'];
 		    }
@@ -415,7 +414,7 @@ class editModel
      */
 	  public function reportError($message)
 	  {
-        //error_log ('cms/model/auth.php  reportError session data: ' . print_r($_SESSION, true) );
+        //error_log ('cms/model/edit.php  reportError session data: ' . print_r($message, true) );
         header('location: ' . CONFIG_URL. 'error/notify' );
         exit();
 	  }

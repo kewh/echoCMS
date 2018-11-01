@@ -2,7 +2,7 @@
 /**
  * model class for user authentication
  *
- * @since 1.0.0
+ * @since 1.0.8
  * @author Keith Wheatley
  * @package echocms\auth
  */
@@ -141,9 +141,8 @@ class authModel
     function getUsers()
     {
         $stmt = $this->dbh->prepare(
-        'SELECT users.*, sessions.ip, requests.expire FROM users
-         LEFT JOIN sessions ON users.id=sessions.uid
-         LEFT JOIN requests ON users.id=requests.uid');
+        'SELECT users.*, sessions.ip FROM users
+         LEFT JOIN sessions ON users.id=sessions.uid');
         $stmt->execute();
         $users = array();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {

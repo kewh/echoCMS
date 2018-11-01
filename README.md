@@ -21,9 +21,9 @@ Topics and subtopics can be used as you wish - for example topics could be align
 ## Images
 Multiple images can be uploaded for each item. They are generated as web opitimised images in multiple aspect ratios each of which can be individually cropped. The configuration will determine which aspect ratios are generated, plus their dimensions and size.
 
-The main aspect ratios are `landscape`, `portrait`, `panorama` and `square`.
+The main aspect ratios are `landscape`, `portrait`, `panorama`, `square` and fluid.
 
-For each image one of the main 4 aspect ratios can be selected as the `prime aspect ratio` for use, for example in slideshows, to display the most appropriate format for each image.
+For each image one of the main aspect ratios can be selected as the `prime aspect ratio` for use, for example in slideshows, to display the most appropriate format for each image.
 The `collage` image, if configured, is generated from the first 1 to 4 images of an item.
 
 ## Content input
@@ -183,7 +183,7 @@ The images array for an item can contain multiple images. SRC fields are in abso
 |thumbnail|src of 200x200px square crop|
 |alt|text for image alt tag|
 
-For each image aspect ratios (panorama, portrait, landscape, square and prime_aspect_ratio), the following information is provided:
+For each image aspect ratios (panorama, portrait, landscape, square, fluid and prime_aspect_ratio), the following information is provided:
 
 |data|notes|
 |------|------|
@@ -272,9 +272,9 @@ The authentication model is designed for a single Admin managing multiple Users 
 
 * `quality` : image quality in the range 0 to 100 determines the quality of the JPGs created for the website. All images are created as JPGs irrespective of their original format (JPG, PNG, GIF). The quality parameter ranges from 0 (lower quality, smaller file, faster page loading) to 100 (best quality, biggest file). The default setting is 80.
 
-* `image formats` : there are 4 image aspect ratio formats – landscape, portrait, panorama or square - each of which can be de-selected if not required so that server disk space is reduced and processing time for image generation is reduced (images are created when “go live” button is pressed on the edit item page).
+* `image formats` : Each of the image aspect ratio formats – landscape, portrait, panorama, square and fluid - can be de-selected if not required so that server disk space is reduced and processing time for image generation is reduced (images are created when “go live” button is pressed on the edit item page).
 
-* `aspect ratio` : for each image format the aspect ratio can be defined in the format “width:height” where width and height are in the range 1-99.
+* `aspect ratio` : for each image format (except for fluid) the aspect ratio is defined in the format “width:height” where width and height are in the range 1-99.
 >Note that aspect ratios are flexible - and not even confined to the names given to them.
 
 * `base width` : is a value in pixels used to define the width of each image of type 1x, and multiplied by 2 or 3 for images of types 2x and 3x.

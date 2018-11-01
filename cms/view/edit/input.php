@@ -2,7 +2,7 @@
 /**
  * view for edit/input
  *
- * @since 1.0.7
+ * @since 1.0.8
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -147,7 +147,8 @@
                     </label>
                     <?php if ($isDL) echo "
                     <button type='button' class='btn btn-default btn-xs deleteDownload'> delete </button>
-                    <textarea class='downloadTitle' name='downloadTitle'>" . $item['download_name'] . "</textarea>";
+                    <textarea class='downloadTitle' name='downloadTitle'>" . $item['download_name'] . "</textarea>
+                    (file: " . $item['download_src'] . ")";
                     ?>
                     <span class='textareaCounter counter3 pull-right'></span>
 
@@ -344,7 +345,6 @@ $(document).ready(function() {
 
 // SET UP TEXTAREA EDIT
     tinymce.init({
-        content_css : '<?php echo CONFIG_URL_DIR . '/cms/assets/css/echocms.css';?>',
         plugins : 'lorumipsum advlist autolink code fullscreen paste preview link lists table textcolor',
         paste_as_text: true,
         selector: '#textContent',

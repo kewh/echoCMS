@@ -2,7 +2,7 @@
 /**
  * view for edit/image
  *
- * @since 1.0.7
+ * @since 1.0.8
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -32,6 +32,11 @@
         <input id='sy1' type='hidden' name='sy1' value='<?php echo $image['sy1'];?>' >
         <input id='sy2' type='hidden' name='sy2' value='<?php echo $image['sy2'];?>' >
 
+        <input id='fx1' type='hidden' name='fx1' value='<?php echo $image['fx1'];?>' >
+        <input id='fx2' type='hidden' name='fx2' value='<?php echo $image['fx2'];?>' >
+        <input id='fy1' type='hidden' name='fy1' value='<?php echo $image['fy1'];?>' >
+        <input id='fy2' type='hidden' name='fy2' value='<?php echo $image['fy2'];?>' >
+
         <input id='currentBgColor' type='hidden' name='currentBgColor' value='<?php echo $currentBgColor;?>'>
 
         <!-- Buttons  ************************************** -->
@@ -51,22 +56,37 @@
             <div class='col-xs-4 col-xs-offset-2 col-md-offset-0 col-md-2'>
                 <label for='prime_aspect_ratio' class='control-label pull-left'>prime aspect ratio</label>
                 <select class='form-control form-control-lg' name='prime_aspect_ratio'>
-                <?php if ($image_create_landscape) {
-                ?>
-                  <option value='landscape' <?php if ($image['prime_aspect_ratio']=='landscape') echo 'selected'; ?>>landscape</option>
-                <?php };
-                      if ($image_create_portrait) {
-                ?>
-                  <option value='portrait' <?php if ($image['prime_aspect_ratio']=='portrait') echo 'selected'; ?>>portrait</option>
-                <?php };
-                      if ($image_create_panorama) {
-                ?>
-                  <option value='panorama' <?php if ($image['prime_aspect_ratio']=='panorama') echo 'selected'; ?>>panorama</option>
-                <?php };
-                      if ($image_create_square) {
-                ?>
-                  <option value='square' <?php if ($image['prime_aspect_ratio']=='square') echo 'selected'; ?>>square</option>
-                <?php };
+                <?php
+                    if ($image_create_landscape) {
+                        echo"<option value='landscape'";
+                        if ($image['prime_aspect_ratio']=='landscape')
+                            echo " selected";
+                        echo ">landscape</option>";
+                    };
+                    if ($image_create_portrait) {
+                        echo"<option value='portrait'";
+                        if ($image['prime_aspect_ratio']=='portrait')
+                            echo " selected";
+                        echo ">portrait</option>";
+                    };
+                    if ($image_create_panorama) {
+                        echo"<option value='panorama'";
+                        if ($image['prime_aspect_ratio']=='panorama')
+                            echo " selected";
+                        echo ">panorama</option>";
+                    };
+                    if ($image_create_square) {
+                        echo"<option value='square'";
+                        if ($image['prime_aspect_ratio']=='square')
+                            echo " selected";
+                        echo ">square</option>";
+                    };
+                    if ($image_create_fluid) {
+                        echo"<option value='fluid'";
+                        if ($image['prime_aspect_ratio']=='fluid')
+                            echo " selected";
+                        echo ">fluid</option>";
+                    };
                 ?>
                 </select>
             </div>
@@ -116,8 +136,17 @@
                         src='<?php echo CONFIG_URL . 'content/images/uncropped/'. $image['src'];?>' alt=''>
                 </div>
             </div>
-        </div>
+<?php };
+        if ($image_create_fluid) {
+?>
+            <div class='sm-col-12 col-md-6'>
+                <div class='imageMargins'>fluid
+                    <img id='uncroppedImageFluid' class='img-responsive' name='uncroppedImageFluid'
+                        src='<?php echo CONFIG_URL . 'content/images/uncropped/'. $image['src'];?>' alt=''>
+                </div>
+            </div>
  <?php }; ?>
+        </div>
 
         <!-- Buttons  ************************************** -->
         <div class='col-xs-12 marginTop marginBottom'>
@@ -147,13 +176,13 @@
     var $sx2 =   '<?php echo $image["sx2"];?>';
     var $sy1 =   '<?php echo $image["sy1"];?>';
     var $sy2 =   '<?php echo $image["sy2"];?>';
+    var $fx1 =   '<?php echo $image["fx1"];?>';
+    var $fx2 =   '<?php echo $image["fx2"];?>';
+    var $fy1 =   '<?php echo $image["fy1"];?>';
+    var $fy2 =   '<?php echo $image["fy2"];?>';
     var $width = '<?php echo $image["width"];?>';
     var $height= '<?php echo $image["height"];?>';
 
-    var $image_ratio_panorama   = '<?php echo $image_ratio_panorama;?>';
-    var $image_ratio_landscape  = '<?php echo $image_ratio_landscape;?>';
-    var $image_ratio_portrait   = '<?php echo $image_ratio_portrait;?>';
-    var $image_ratio_square     = '<?php echo $image_ratio_square;?>';
     var $image_bg_opacity       = '<?php echo $this->config["image_bg_opacity"];?>';
 
 $(document).ready(function() {
@@ -169,7 +198,7 @@ $(document).ready(function() {
         onSelect:   getCoordsPanorama,
         onChange:   getCoordsPanorama,
         setSelect:   [ $mx1, $my1, $mx2, $my2 ],
-        aspectRatio: $image_ratio_panorama,
+        aspectRatio: '<?php echo $image_ratio_panorama;?>',
         allowSelect: false,
         bgColor: '<?php echo "#".$currentBgColor;?>',
         minSize: [100,100],
@@ -179,7 +208,7 @@ $(document).ready(function() {
         },function(){
             var bounds = this.getBounds();
             boundx = bounds[0];
-            boundy = bounds[$image_ratio_panorama];
+            boundy = bounds['<?php echo $image_ratio_panorama;?>'];
             apiPanorama = this;
     });
     function getCoordsPanorama(c)
@@ -207,7 +236,7 @@ $(document).ready(function() {
         onSelect:   getCoordsLand,
         onChange:   getCoordsLand,
         setSelect:   [ $lx1, $ly1, $lx2, $ly2 ],
-        aspectRatio: $image_ratio_landscape,
+        aspectRatio: '<?php echo $image_ratio_landscape;?>',
         allowSelect: false,
         bgColor: '<?php echo "#".$currentBgColor;?>',
         minSize: [100,100],
@@ -217,7 +246,7 @@ $(document).ready(function() {
         },function(){
             var bounds = this.getBounds();
             boundx = bounds[0];
-            boundy = bounds[$image_ratio_landscape];
+            boundy = bounds['<?php echo $image_ratio_landscape;?>'];
             apiLand = this;
     });
     function getCoordsLand(c)
@@ -245,7 +274,7 @@ $(document).ready(function() {
         onSelect:   getCoordsPort,
         onChange:   getCoordsPort,
         setSelect:   [ $px1, $py1, $px2, $py2 ],
-        aspectRatio: $image_ratio_portrait,
+        aspectRatio: '<?php echo $image_ratio_portrait;?>',
         allowSelect: false,
         bgColor: '<?php echo "#".$currentBgColor;?>',
         minSize: [100,100],
@@ -255,7 +284,7 @@ $(document).ready(function() {
         },function(){
             var bounds = this.getBounds();
             boundx = bounds[0];
-            boundy = bounds[$image_ratio_portrait];
+            boundy = bounds['<?php echo $image_ratio_portrait;?>'];
             apiPort = this;
     });
     function getCoordsPort(c)
@@ -284,7 +313,7 @@ $(document).ready(function() {
         onSelect:   getCoordsSquare,
         onChange:   getCoordsSquare,
         setSelect:   [ $sx1, $sy1, $sx2, $sy2 ],
-        aspectRatio: $image_ratio_square,
+        aspectRatio: '<?php echo $image_ratio_square;?>',
         allowSelect: false,
         bgColor: '<?php echo "#".$currentBgColor;?>',
         minSize: [100,100],
@@ -294,7 +323,7 @@ $(document).ready(function() {
         },function(){
             var bounds = this.getBounds();
             boundx = bounds[0];
-            boundy = bounds[$image_ratio_square];
+            boundy = bounds['<?php echo $image_ratio_square;?>'];
             apiSquare = this;
     });
     function getCoordsSquare(c)
@@ -315,6 +344,41 @@ $(document).ready(function() {
         $('#sx2').val(Math.round(c.x2));
         $('#sy2').val(Math.round(c.y2));
     }
+<?php };
+      if ($image_create_fluid) {
+?>
+    //  CROPPING - FLUID VERSION OF IMAGE
+    $('#uncroppedImageFluid').Jcrop({
+        onSelect:   getCoordsFluid,
+        onChange:   getCoordsFluid,
+        setSelect:   [ $fx1, $fy1, $fx2, $fy2 ],
+        //aspectRatio: '<?php //echo $image_ratio_fluid;?>',
+        allowSelect: false,
+        bgColor: '<?php echo "#".$currentBgColor;?>',
+        minSize: [100,100],
+        handleOpacity: 0.9,
+        bgOpacity: $image_bg_opacity,
+        trueSize: [$width,$height]
+    });
+    function getCoordsFluid(c)
+    {
+        if (parseInt(c.w) > 0){
+            var rx = $width / c.w;
+            var ry = $height / c.h;
+
+            $('#uncroppedImageFluid').css({
+                width: Math.round(rx * boundx) + 'px',
+                height: Math.round(ry * boundy) + 'px',
+                marginLeft: '-' + Math.round(rx * c.x) + 'px',
+                marginTop: '-' + Math.round(ry * c.y) + 'px'
+            });
+        }
+        $('#fx1').val(Math.round(c.x));
+        $('#fy1').val(Math.round(c.y));
+        $('#fx2').val(Math.round(c.x2));
+        $('#fy2').val(Math.round(c.y2));
+    }
+
 <?php }; ?>
 
     //  COLOR PICKER
@@ -326,13 +390,16 @@ $(document).ready(function() {
     });
 
     $('.pickAColor').on('change', function (){
-        var $newColor = $(this).val();    // format for pickAColor
-        $('#currentBgColor').val($newColor);
-        var $newColorHex = '#'+$newColor; // format for jCrop
-        apiPanorama.setOptions({ bgColor: $newColorHex});
-        apiPort.setOptions({ bgColor: $newColorHex});
-        apiLand.setOptions({ bgColor: $newColorHex});
-        apiSquare.setOptions({ bgColor: $newColorHex});
+        var newColor = $(this).val();    // format for pickAColor
+        $('#currentBgColor').val(newColor);
+        var newColorHex = '#'+newColor; // format for jCrop
+        <?php
+        if ($image_create_portrait) echo "apiPort.setOptions({ bgColor: newColorHex});";
+        if ($image_create_panorama) echo "apiPanorama.setOptions({ bgColor: newColorHex});";
+        if ($image_create_landscape) echo "apiLand.setOptions({ bgColor: newColorHex});";
+        if ($image_create_square) echo "apiSquare.setOptions({ bgColor: newColorHex});";
+        if ($image_create_fluid) echo "apiFluid.setOptions({ bgColor: newColorHex});";
+        ?>
     });
 
     // Button Actions
