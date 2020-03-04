@@ -2,7 +2,7 @@
 /**
  * view for config/editConfig
  *
- * @since 1.0.8
+ * @since 1.0.9
  * @author Keith Wheatley
  * @package echocms\config
  */
@@ -233,7 +233,7 @@
 
                 </div>
                 <div class='col-xs-3 form-group'>
-                    <input name='image_width_fluid' type='text' pattern='^[1-9][0-9]*$' data-error='numeric only' class='form-control text-center' value='<?php echo $config['image_width_fluid']; ?>'>
+                    <input name='image_maxside_fluid' type='text' pattern='^[1-9][0-9]*$' data-error='numeric only' class='form-control text-center' value='<?php echo $config['image_maxside_fluid']; ?>'>
                     <div class='help-block with-errors'></div>
                 </div>
                 <div class='col-xs-2 form-group'>
@@ -405,9 +405,7 @@
 // Check Posted Image
 function checkImage()
     {
-        var maxSize = '<?php echo $postMaxSize; ?>';
-        maxSizeMB = maxSize / 1048576;
-        var maxSizeMB = maxSizeMB.toFixed(2);
+        var postMaxSize = '<?php echo $postMaxSize; ?>';
         var size = 0;
         var sizeMB = 0;
         // check file size (if the HTML5 Files API is supported)
@@ -416,15 +414,15 @@ function checkImage()
             size = document.getElementById('postedImage').files[0].size;
             sizeMB = size / 1048576;
             sizeMB = sizeMB.toFixed(2);
-            if (size >= maxSize)
+            if (sizeMB >= postMaxSize)
             {
-                alert ('Image is too big to load, size is ' + sizeMB + 'MB but maximum allowed by server is ' + maxSizeMB + 'MB');
+                alert ('Image is too big to load, size is ' + sizeMB + 'MB but maximum allowed by server is ' + postMaxSize + 'MB');
                 document.forms.inputForm.postedImage.value = null;
                 return false;
             }
         }
         else
-            {alert ('Unable to check your file size with this browser but maximum allowed by the server is: ' + maxSizeMB +'MB');
+            {alert ('Unable to check your file size with this browser but maximum allowed by the server is: ' + postMaxSize +'MB');
             }
         // check for correct file type
         var img = document.forms.inputForm.postedImage.value;

@@ -2,7 +2,7 @@
 /**
  * model class for edit
  *
- * @since 1.0.8
+ * @since 1.0.9
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -167,11 +167,11 @@ class editModelInput extends editModel
 						// set up height and width for the fluid image
             $image =& $_SESSION ['item']['images'] [$cropId];
 						if (($image['fx2'] - $image['fx1']) > ($image['fy2'] - $image['fy1'])) {
-								$longestSide = $image['width_fluid'] = $this->config['image_width_fluid'];
+								$longestSide = $image['width_fluid'] = $this->config['image_maxside_fluid'];
 								$image['height_fluid'] = floor((($image['fy2'] - $image['fy1']) / ($image['fx2'] - $image['fx1']) ) * $longestSide);
 						}
 						else{
-								$longestSide = $image['height_fluid'] = $this->config['image_width_fluid'];
+								$longestSide = $image['height_fluid'] = $this->config['image_maxside_fluid'];
 								$image['width_fluid'] = floor((($image['fx2'] - $image['fx1']) / ($image['fy2'] - $image['fy1']) ) * $longestSide);
 						}
 
@@ -194,7 +194,7 @@ class editModelInput extends editModel
      *
      * @return void
 	   */
-	  private function processNewImage($image_posted, $newImage)
+	  function processNewImage($image_posted, $newImage)
     {
         ini_set('memory_limit', '1024M');
         list($postedWidth, $postedHeight, $type) = getimagesize($image_posted);
@@ -336,6 +336,16 @@ class editModelInput extends editModel
 				$fy1 = 0;
 				$fy2 = $uncroppedHeight;
 
+			// set width and height for fluid image, using original aspect ratio scaled to config maxside fluid.
+	 		 if ($postedWidth >= $postedHeight) {
+	 				 $fluidWidth = $this->config['image_maxside_fluid'];
+	 				 $fluidHeight = floor (($this->config['image_maxside_fluid']/ $postedWidth) * $postedHeight);
+	 		 }
+	 		 else{
+				  $fluidHeight = $this->config['image_maxside_fluid'];
+				  $fluidWidth = floor (($this->config['image_maxside_fluid']/ $postedHeight) * $postedWidth);
+	 		 }
+
         // add new image to session data
         $imageSeq = count($_SESSION['item']['images']);
         $image = array(
@@ -347,7 +357,7 @@ class editModelInput extends editModel
 		        'sx1' => $sx1, 'sx2' => $sx2, 'sy1' => $sy1, 'sy2' => $sy2,
 		        'fx1' => $fx1, 'fx2' => $fx2, 'fy1' => $fy1, 'fy2' => $fy2,
 		        'height' => $uncroppedHeight, 'width' => $uncroppedWidth,
-		        'height_fluid' => $uncroppedHeight, 'width_fluid' => $uncroppedWidth,
+		        'height_fluid' => $fluidHeight, 'width_fluid' => $fluidWidth,
 		        'alt' => null, 'web_images' => true, 'prime_aspect_ratio' => 'landscape'
         );
         $_SESSION['item']['images'][] = $image;
@@ -363,7 +373,7 @@ class editModelInput extends editModel
      *
      * @return void
 	   */
-	  private function createThumbnail($image)
+	  function createThumbnail($image)
     {
         $width = $height = 200;
         ini_set('memory_limit', '1024M');

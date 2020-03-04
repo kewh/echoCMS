@@ -1,8 +1,11 @@
 ## CHANGE LOG
 
+## v.1.0.9 &nbsp;&nbsp;&nbsp;4 Mar 2020
+* Add max side config item for Fluid aspect ratio image type
+* correction to sizing of fluid images.
+
 ## v.1.0.8 &nbsp;&nbsp;&nbsp;1 Nov 2018
-* added Fluid aspect ratio image type.
-* minor corrections and code upgrades
+* Added Fluid aspect ratio image type
 
 ## v.1.0.7 &nbsp;&nbsp;&nbsp;28 Oct 2018
 * changed to SSL-friendly CDNs for Jcrop and jquery-ui
@@ -13,7 +16,6 @@
 * tidied up layout of config manage users page
 
 ## v.1.0.5 &nbsp;&nbsp;&nbsp;29 Aug 2018
-
 * image height and width added for each aspect ratio.
 * Prime Aspect Ratio added to denote favoured aspect ratio for each image.
 * database columns added for Prime Aspect Ratio in setup

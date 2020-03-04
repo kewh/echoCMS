@@ -2,7 +2,7 @@
 /**
  * model class for edit
  *
- * @since 1.0.8
+ * @since 1.0.6
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -140,7 +140,8 @@ class editModelUpdate extends editModel
         $this->createContentTags ($_SESSION['item']['id'], $_SESSION['item']['tags']);
         $this->createContentTerms ($_SESSION['item']['id'], $_SESSION['item']['heading']);
         $this->createWebsiteImages ($_SESSION['item']['images']);
-        $this->createCollageImage ($_SESSION['item']['images']);
+        if ($this->config['image_create_collage'])
+            $this->createCollageImage ($_SESSION['item']['images']);
         $this->createContentImages ($_SESSION['item']['id'], $_SESSION['item']['images']);
     }
 
@@ -518,6 +519,7 @@ class editModelUpdate extends editModel
                             $dst_URL = CONFIG_DIR.'/content/'.$folder.'/'. $i['aspect'].'/'. $size .'x/' . $image['src'];
                             $width  = $i['image_width'] * $size;
                             $height = $i['image_height'] * $size;
+
                             $image_dst = imagecreatetruecolor( $width , $height )
                                 or $this->reportError('cms/model/edit_update createWebsiteImages '. $i['aspect'].' image. Problem with imagecreatetruecolor');
 

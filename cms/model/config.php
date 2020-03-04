@@ -2,7 +2,7 @@
 /**
  * Model class for system configuration
  *
- * @since 1.0.8
+ * @since 1.0.9
  * @author Keith Wheatley
  * @package echocms\config
  */
@@ -141,8 +141,8 @@ class configModel
         if ( isset( $_POST['image_width_collage']) )
             $config['image_width_collage'] = $_POST['image_width_collage'];
 
-        if ( isset( $_POST['image_width_fluid']) )
-            $config['image_width_fluid'] = $_POST['image_width_fluid'];
+        if ( isset( $_POST['image_maxside_fluid']) )
+            $config['image_maxside_fluid'] = $_POST['image_maxside_fluid'];
 
         if ( isset( $_POST['image_quality']) )
             $config['image_quality'] = $_POST['image_quality'];
@@ -256,17 +256,10 @@ class configModel
      */
     function getMaxFileSize()
     {
-        $val = intval(trim(ini_get('post_max_size')));
-        $last = strtolower($val[strlen($val)-1]);
-        switch($last) {
-            case 'g':
-                $val *= 1024;
-            case 'm':
-                $val *= 1024;
-            case 'k':
-             $val *= 1024;
-              }
-        $postMaxSize = $val;
+        $val = ini_get('post_max_size');
+        if (strtolower($val[strlen($val)-1]) != 'm')
+            $this->reportError('cms/model/config.php getMaxFileSize. post_max_size is '.$val.' and not in Mb');
+        $postMaxSize = intval(trim($val));
 
         return($postMaxSize);
     }
