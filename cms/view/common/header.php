@@ -2,7 +2,7 @@
 /**
  * view for common/header
  *
- * @since 1.0.8
+ * @since 1.0.10
  * @author Keith Wheatley
  * @package echocms
  */
@@ -100,6 +100,8 @@
                             <li role='presentation'><a href='<?php echo CONFIG_URL; ?>auth/manageAccess'>access log</a></li>
                             <li role='presentation'><a href='<?php echo CONFIG_URL; ?>admin/recreateImages'>recreate images</a></li>
                             <li role='presentation'><a href='<?php echo CONFIG_URL; ?>admin/manageBackups'>backup images</a></li>
+                            <li role='presentation'><a href='<?php echo CONFIG_URL; ?>admin/bulkLoadImages'>bulk load images</a></li>
+
                         </ul>
                     </li>
                 <?php  } ?>

@@ -2,7 +2,7 @@
 /**
  * model class for edit
  *
- * @since 1.0.6
+ * @since 1.0.8
  * @author Keith Wheatley
  * @package echocms\edit
  */

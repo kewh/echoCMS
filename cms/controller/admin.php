@@ -3,7 +3,7 @@
  * controller class for admin
  *
  *
- * @since 1.0.0
+ * @since 1.0.10
  * @author Keith Wheatley
  * @package echocms\admin
  */
@@ -30,6 +30,44 @@ class admin
         $this->admin = new adminModel($this->dbh, $this->config);
     }
 
+        /**
+         *  Manage bulk load images.
+         *
+         * Presents page where user can request to bulkload item data and images to cms.
+         *
+         * Note: This operation uses SSE (Server Sent Events) to monitor progress. The JavaScript in
+         *       view/admin/bulkLoadImages fires a call to controller/admin/bulkLoadImages which uses
+    	   *       model/admin/bulkLoadImages to recreate data and sends events to the browser to
+         *       report on progress.
+    	   */
+        function bulkLoadImages()
+        {
+            if (!$this->authModel->isLogged('admin')) {
+                 $this->authModel->accessDenied();
+                 exit();
+            }
+            $menu = 'admin';
+
+            require CONFIG_DIR. '/view/common/header.php';
+            require CONFIG_DIR. '/view/admin/bulkLoadImages.php';
+            require CONFIG_DIR. '/view/common/footer.php';
+        }
+
+        /**
+         *  bulkLoadImagesSSE
+    	   *
+         *  This is the EventSource called by SSE(server sent event). See note on SSE in bulkLoadImages method.
+    	   */
+        function bulkLoadImagesSSE()
+        {
+            if (!$this->authModel->isLogged('admin')) {
+                $this->authModel->accessDenied();
+                exit();
+            }
+            $config = $this->config = $this->configModel->readConfig();
+            $result = $this->admin->bulkLoadImages();
+        }
+
     /**
      *  Manage recreate images.
      *
@@ -42,7 +80,7 @@ class admin
 	   */
     function recreateImages()
     {
-        if (!$this->authModel->isLogged('admin')) {
+       if (!$this->authModel->isLogged('admin')) {
             $this->authModel->accessDenied();
             exit();
         }

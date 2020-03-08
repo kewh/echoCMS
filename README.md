@@ -225,6 +225,7 @@ The authentication model is designed for a single Admin managing multiple Users 
 * List access log
 * Recreate images (usually after an image configuration setting has been updated)
 * Backup images
+* Bulk Load Images
 
 ###### Logged-in User
 * Access to CMS functions

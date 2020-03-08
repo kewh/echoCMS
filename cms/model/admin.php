@@ -2,7 +2,7 @@
 /**
  * model class for admin
  *
- * @since 1.0.8
+ * @since 1.0.10
  * @author Keith Wheatley
  * @package echocms\admin
  */
@@ -20,9 +20,166 @@ class adminModel
         $this->config = $config;
         require CONFIG_DIR. '/model/edit.php';
         $this->edit = new editModel($this->dbh, $this->config);
+        require CONFIG_DIR. '/model/edit_input.php';
+        $this->editInput = new editModelInput($this->dbh, $this->config);
         require CONFIG_DIR. '/model/edit_update.php';
         $this->editUpdate = new editModelUpdate($this->dbh, $this->config);
     }
+
+    /**
+     * bulkLoadImages
+     * Loops through item folders in the bulkload folder and adds item data and images to cms.
+     * Users SSE(server sent event). See note on SSE in controller/admin/recreateImages.
+     */
+    function bulkLoadImages()
+    {
+      header('Content-Type: text/event-stream');
+      header('Cache-Control: no-cache');
+        $items = $this->bulkLoadSetup();
+        $this->bulkLoadAdd($items);
+        $this->bulkLoadEnd();
+        $this->eventMessage('Bulk Load complete', 100);
+    }
+
+    /**
+     * bulkLoadSetup
+     *         Loop through bulk item folders -
+     *         add data to array of items
+     */
+    private function bulkLoadSetup()
+    {
+        $this->eventMessage('setting up item data from bulkload folder', 2);
+        $items = array();
+        // get item data from the bulkload folder
+        if ($handle = opendir("bulkload")) {
+            while ( false !== ($folder = readdir($handle)))
+            {
+                If ( substr ($folder,0,1) != '.') // exclude system files starting with '.'
+                {
+                    // parse folder name from format yyyy-mm-dd_topic_subtopic_header
+                    $exploded = explode("_", $folder);
+                    if (count($exploded) != 4 && count_chars($folder,1)[95] != 3) //4 parameters with 3 underscores (i.e. ASCII 95)
+                        $this->eventMessage('ERROR: invalid folder name: '.$folder, 100);
+
+                    // date
+                    $date = trim($exploded[0]);
+                    $d = date_create_from_format('Y-m-d', $date);
+                    if (!$d || $d->format('Y-m-d') !== $date)
+                        $this->eventMessage('ERROR: invalid date in folder name: '.$folder, 100);
+                    $date = $date . ' 00:00:01';
+
+                    // topic
+                    $topic = trim($exploded[1]);
+                    $topics = $this->editInput->getTopicsList();
+                    if (!in_array($topic, $topics) && !$this->config['topics_updatable']) {
+                        $this->eventMessage('config set to topic "not updatable" but attempting to add new topic: '.$topic, 99);
+                        $this->eventMessage('ERROR: bulk load cancelled ', 100);
+                    }
+
+                    // subtopic
+                    $subtopic = trim($exploded[2]);
+                    $subtopics = $this->editInput->getSubtopicsList();
+                    if (!in_array($subtopic, $subtopics) && !$this->config['subtopics_updatable']) {
+                        $this->eventMessage('config set to subtopic "not updatable" but attempting to add new subtopic: '.$subtopic, 99);
+                        $this->eventMessage('ERROR: bulk load cancelled ', 100);
+                    }
+
+                    // heading
+                    $heading = trim($exploded[3]);
+
+                    // get the names of images in the item folder
+                    $images = array();
+                    if ($handle2 = opendir('bulkload/'.$folder)) {
+                        while (false !== ($file = readdir($handle2))) {
+                            $url = 'bulkload/'.$folder.'/'.$file;
+                            if (
+                                $file != "." && $file != ".." && $file != ".DS_Store"  // check this first or error thrown by exif_imagetype
+                                && substr($file, 0, 1) != "T"
+                                && substr($file,-3) != "txt"
+                                &&  exif_imagetype($url) === IMAGETYPE_JPEG )
+                                    // not thumbnail, JPG, or system files starting with '.'
+                                {
+                                    $num = preg_replace('/[^0-9]/', '', $file);
+                                    $images[$num] =  $file;
+                                }
+                        }
+                        closedir($handle2);
+                    }
+                    ksort ($images);
+                    $item = array();
+                    $item['folder'] = $folder;
+                    $item['topic'] = $topic;
+                    $item['subtopic'] = $subtopic;
+                    $item['heading'] = $heading;
+                    $item['date'] = $date;
+                    $item['images'] = $images;
+                    $items[] = $item;
+                }
+            }
+            closedir($handle);
+        }
+        else $this->eventMessage('ERROR: failed to open directory bulkload: ', 100);
+        $this->eventMessage('&nbsp&nbsp setup item data completed. Total items: '.count($items), 4);
+        return($items);
+    }
+
+    /**
+     * bulkLoadAdd
+     *         Loop through array of loaded items
+     *         and add data to cms
+     */
+    private function bulkLoadAdd($items)
+    {
+        $this->eventMessage('adding items to cms images folder and database.', 6);
+        $cnt=0; $percent = 10;
+
+        foreach ($items as $item) {
+            ++$cnt;
+            $percent += floor(round(90 / count($items)));
+            if ($percent>99)$percent=99;
+            $this->eventMessage('&nbsp&nbsp adding: '.$item['heading']. ' - item: '.$cnt, $percent);
+            $_SESSION['item'] = $this->editInput->setupNewItem();
+            $_SESSION['item']['topic'] = $item['topic'];
+            $_SESSION['item']['subtopic'] = $item['subtopic'];
+            $_SESSION['item']['heading'] = $item['heading'];
+            $_SESSION['item']['date'] = $item['date'];
+
+            foreach ($item['images'] as $image) {
+                $this->eventMessage(' &nbsp;&nbsp; &nbsp; image: '.$image, 50);
+                $image_posted = 'bulkload/'.$item['folder'].'/'.$image;;
+                $newImage = $image;
+                $newImage = str_replace(' ','-',$newImage);
+                $newImage = preg_replace('/[^A-Za-z0-9\-]/', '-', $newImage);
+                $newImage = date( 'Y-m-d-H-i-s-') . $newImage;
+                $newImage = $newImage . '.jpg'; //note: all files are stored as JPGs
+                $this->editInput->processNewImage($image_posted, $newImage);
+                $this->editInput->createThumbnail(end($_SESSION['item']['images']));
+            }
+            $this->editUpdate->publishItem();
+        }
+        $this->eventMessage(' &nbsp&nbsp adding items complete.', $percent);
+    }
+
+    /**
+    *     bulkLoadEnd
+    *     copies bulkload input folders to 'bulkloaded' folder
+    *
+    */
+    private function bulkLoadEnd()
+    {
+        $this->eventMessage('copying bulkload input folders to bulkloaded folder', 95);
+        $src = CONFIG_DIR.'/bulkload/';
+        $dst = CONFIG_DIR.'/bulkloaded/bulkloaded-' . date('Y-m-d-h-i-s');
+        if ($this->copyDirectory($src, $dst)) {
+            $this->removeDirectory($src);
+            if (!mkdir($src))
+                $this->reportError('cms/model/admin.php bulkLoadEnd. mkdir - Failed to create directory: '. $src);
+            $this->eventMessage(' &nbsp&nbsp copying folders complete', 99);
+        }
+        else
+            $this->eventMessage('ERROR - cms content created OK but failed to copy to bulkloaded folder: '. $src, 100);
+    }
+
     /**
      * Recreate images directory, with sub-directories and images for live and pending items.
      * Users SSE(server sent event). See note on SSE in controller/admin/recreateImages.

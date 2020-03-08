@@ -1,7 +1,10 @@
 ## CHANGE LOG
 
+## v.1.0.9 &nbsp;&nbsp;&nbsp;8 Mar 2020
+* added Load Bulk Images function to Admin
+
 ## v.1.0.9 &nbsp;&nbsp;&nbsp;4 Mar 2020
-* Add max side config item for Fluid aspect ratio image type
+* added max side config item for Fluid aspect ratio image type
 * correction to sizing of fluid images.
 
 ## v.1.0.8 &nbsp;&nbsp;&nbsp;1 Nov 2018
