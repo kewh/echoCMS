@@ -1,6 +1,6 @@
 ## CHANGE LOG
 
-## v.1.0.9 &nbsp;&nbsp;&nbsp;8 Mar 2020
+## v.1.0.10 &nbsp;&nbsp;&nbsp;8 Mar 2020
 * added Load Bulk Images function to Admin
 
 ## v.1.0.9 &nbsp;&nbsp;&nbsp;4 Mar 2020
