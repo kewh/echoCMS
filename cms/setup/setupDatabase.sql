@@ -1,4 +1,4 @@
--- echoCMS version 1.0.9
+-- echoCMS version 1.0.11
 -- https://github.com/kewh/echoCMS
 --
 -- database setup
@@ -38,7 +38,8 @@ INSERT INTO `config` (`setting`, `value`) VALUES
 ('image_create_portrait', '1'),
 ('image_create_square', '1'),
 ('image_create_fluid', '1'),
-('image_quality', '75'),
+('image_quality', '80'),
+('image_quality_original', '90'),
 ('image_ratio_landscape', '4:3'),
 ('image_ratio_panorama', '3:1'),
 ('image_ratio_portrait', '3:4'),
@@ -54,6 +55,7 @@ INSERT INTO `config` (`setting`, `value`) VALUES
 ('image_width_portrait', '450'),
 ('image_width_square', '500'),
 ('image_maxside_fluid', '500'),
+('image_maxside_original', '3000'),
 ('ip_ban_attempts', '8'),
 ('ip_ban_minutes', '5'),
 ('mail_charset', 'UTF-8'),

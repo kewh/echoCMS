@@ -2,7 +2,7 @@
 /**
  * view for config/editConfig
  *
- * @since 1.0.9
+ * @since 1.0.11
  * @author Keith Wheatley
  * @package echocms\config
  */
@@ -264,6 +264,28 @@
             </div>
 
         </div>
+        </fieldset>
+    </div>
+
+    <!-- ORIGINAL IMAGE   ************************************************** -->
+    <div class='row'>
+        <fieldset>
+        <legend>store original image</legend>
+
+        <!-- image_quality     ********************************************** -->
+        <div class='form-group col-xs-4 col-sm-2 col-sm-offset-1'>
+            <label for='image_quality_original' class='control-label'>quality</label>
+            <input name='image_quality_original' type='text' pattern='^[1-9][0-9]?$|^100$' data-error='1-100' class='form-control text-center' value='<?php echo $config['image_quality_original']; ?>'>
+            <div class='help-block with-errors'></div>
+        </div>
+
+        <!-- image_maxside_original     ********************************************** -->
+        <div class='form-group col-xs-3 col-sm-2'>
+            <label for='image_quality_original' class='control-label'>longest side max</label>
+            <input name='image_maxside_original' type='text' pattern='^[1-9][0-9]*$' data-error='numeric only' class='form-control text-center' value='<?php echo $config['image_maxside_original']; ?>'>
+            <div class='help-block with-errors'></div>
+        </div>
+
         </fieldset>
     </div>
 

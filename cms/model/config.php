@@ -2,7 +2,7 @@
 /**
  * Model class for system configuration
  *
- * @since 1.0.9
+ * @since 1.0.11
  * @author Keith Wheatley
  * @package echocms\config
  */
@@ -148,6 +148,11 @@ class configModel
             $config['image_quality'] = $_POST['image_quality'];
         if ( isset( $_POST['image_bg_crop']) )
             $config['image_bg_crop'] = $_POST['image_bg_crop'];
+
+        if ( isset( $_POST['image_quality_original']) )
+            $config['image_quality_original'] = $_POST['image_quality_original'];
+        if ( isset( $_POST['image_maxside_original']) )
+            $config['image_maxside_original'] = $_POST['image_maxside_original'];
 
         // Email settings
         $config['email_notifications_on'] = empty($_POST['email_notifications_on']) ? '0' : '1';

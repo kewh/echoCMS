@@ -2,7 +2,7 @@
 /**
  * model class for edit
  *
- * @since 1.0.9
+ * @since 1.0.11
  * @author Keith Wheatley
  * @package echocms\edit
  */
@@ -209,7 +209,29 @@ class editModelInput extends editModel
 
         // STORE ORIGINAL IMAGE, as a jpg
         set_time_limit(120); // resets default time limit back to zero
-        $image_dst = imagecreatetruecolor($postedWidth, $postedHeight)
+
+				if ($postedWidth >= $postedHeight){
+				    if ($postedWidth > $this->config['image_maxside_original']){
+				        $postedWidthResized = $this->config['image_maxside_original'];
+                $postedHeightResized = floor (($this->config['image_maxside_original'] / $postedWidth) * $postedHeight);
+				    }
+				    else {
+				        $postedWidthResized = $postedWidth;
+				        $postedHeightResized = $postedHeight;
+				    }
+				}
+				else {
+						if ($postedHeight > $this->config['image_maxside_original']){
+								$postedHeightResized = $this->config['image_maxside_original'];
+                $postedWidthResized = floor (($this->config['image_maxside_original'] / $postedHeight) * $postedWidth);
+						}
+						else {
+								$postedWidthResized = $postedWidth;
+								$postedHeightResized = $postedHeight;
+						}
+				}
+
+        $image_dst = imagecreatetruecolor($postedWidthResized, $postedHeightResized)
             or $this->reportError('cms/model/edit_input processNewImage Store Original. Problem with imagecreatetruecolor');
 
         if ($type == IMAGETYPE_PNG) {
@@ -219,9 +241,9 @@ class editModelInput extends editModel
                 or $this->reportError('cms/model/edit_input.php processNewImage. Store Original. Problem with imagefill');
         }
 
-        imagecopyresampled($image_dst, $image_src, 0, 0, 0, 0, $postedWidth, $postedHeight, $postedWidth, $postedHeight)
+        imagecopyresampled($image_dst, $image_src, 0, 0, 0, 0, $postedWidthResized, $postedHeightResized, $postedWidth, $postedHeight)
             or $this->reportError('cms/model/edit_input processNewImage Store Original. Problem with imagecopyresampled');
-        imagejpeg($image_dst, CONFIG_DIR.'/content/images/original/'.$newImage , 100)
+        imagejpeg($image_dst, CONFIG_DIR.'/content/images/original/'.$newImage , $this->config['image_quality_original'])
             or $this->reportError('cms/model/edit_input processNewImage Store Original. Problem with imagejpeg');
         imagedestroy($image_dst);
 
@@ -229,13 +251,13 @@ class editModelInput extends editModel
         set_time_limit(120);
 
         // set longest side to 600 and keep aspect ratio
-        if ($postedWidth >= $postedHeight) {
+        if ($postedWidthResized >= $postedHeightResized) {
             $uncroppedWidth = 600;
-            $uncroppedHeight = floor ((600/ $postedWidth) * $postedHeight);
+            $uncroppedHeight = floor ((600/ $postedWidthResized) * $postedHeightResized);
         }
         else{
             $uncroppedHeight = 600;
-            $uncroppedWidth = floor ((600/ $postedHeight) * $postedWidth);
+            $uncroppedWidth = floor ((600/ $postedHeightResized) * $postedWidthResized);
         }
 
         $image_from_src = imagecreatefromjpeg(CONFIG_DIR.'/content/images/original/'.$newImage)
@@ -244,7 +266,7 @@ class editModelInput extends editModel
         $image_dst = imagecreatetruecolor($uncroppedWidth, $uncroppedHeight)
             or $this->reportError('cms/model/edit_input processNewImage Store Resized. Problem with imagecreatetruecolor');
 
-        imagecopyresampled($image_dst, $image_from_src, 0, 0, 0, 0, $uncroppedWidth, $uncroppedHeight, $postedWidth, $postedHeight)
+        imagecopyresampled($image_dst, $image_from_src, 0, 0, 0, 0, $uncroppedWidth, $uncroppedHeight, $postedWidthResized, $postedHeightResized)
             or $this->reportError('cms/model/edit_input processNewImage Store Resized. Problem with imagecopyresampled');
 
         imagejpeg($image_dst, CONFIG_DIR.'/content/images/uncropped/'.$newImage , 80)

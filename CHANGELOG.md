@@ -1,5 +1,8 @@
 ## CHANGE LOG
 
+## v.1.0.11 &nbsp;&nbsp;&nbsp;12 Mar 2020
+* added max size and quality for original images
+
 ## v.1.0.10 &nbsp;&nbsp;&nbsp;8 Mar 2020
 * added Load Bulk Images function to Admin
 
