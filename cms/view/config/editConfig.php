@@ -270,22 +270,27 @@
     <!-- ORIGINAL IMAGE   ************************************************** -->
     <div class='row'>
         <fieldset>
-        <legend>store original image</legend>
-
-        <!-- image_quality     ********************************************** -->
-        <div class='form-group col-xs-4 col-sm-2 col-sm-offset-1'>
-            <label for='image_quality_original' class='control-label'>quality</label>
-            <input name='image_quality_original' type='text' pattern='^[1-9][0-9]?$|^100$' data-error='1-100' class='form-control text-center' value='<?php echo $config['image_quality_original']; ?>'>
-            <div class='help-block with-errors'></div>
+        <legend>original image</legend>
+        <div class='col-xs-12'>
+            <div class='form-group col-xs-3 col-sm-2 col-xs-offset-1 text-center'>
+                <label for='image_quality_original' class='control-label'>quality</label>
+                <input name='image_quality_original' type='text' pattern='^[1-9][0-9]?$|^100$' data-error='1-100' class='form-control text-center' value='<?php echo $config['image_quality_original']; ?>'>
+                <div class='help-block with-errors'></div>
+            </div>
+            <div class='col-xs-3 form-group-heading text-right form-group-margin-top'>
+                resize
+            </div>
+            <div class='col-xs-1 form-group'>
+                <input name='image_resize_original' id='image_resize_original' type='checkbox' class='form-control'
+                <?php if ($config['image_resize_original']) echo ' checked'; ?>>
+                <label for='image_resize_original' class='control-label pull-left'><br></label>
+            </div>
+            <div class='form-group col-xs-3 col-sm-2 form-group-sm-margin text-center'>
+                <label for='image_maxside_original' class='control-label'>longest side</label>
+                <input name='image_maxside_original' type='text' pattern='^[1-9][0-9]*$' data-error='numeric only' class='form-control text-center' value='<?php echo $config['image_maxside_original']; ?>'>
+                <div class='help-block with-errors'></div>
+            </div>
         </div>
-
-        <!-- image_maxside_original     ********************************************** -->
-        <div class='form-group col-xs-3 col-sm-2'>
-            <label for='image_quality_original' class='control-label'>longest side max</label>
-            <input name='image_maxside_original' type='text' pattern='^[1-9][0-9]*$' data-error='numeric only' class='form-control text-center' value='<?php echo $config['image_maxside_original']; ?>'>
-            <div class='help-block with-errors'></div>
-        </div>
-
         </fieldset>
     </div>
 
@@ -350,6 +355,7 @@
             <input name='site_email' type='email' data-error='invalid email' class='form-control' value='<?php echo $config['site_email']; ?>'>
             <div class='help-block with-errors'></div>
         </div>
+        </fieldset>
     </div>
 
     <!-- SMTP settings  ************************************************** -->
@@ -464,7 +470,6 @@ function checkImage()
             $('#inputForm').submit();
         }
     }
-
 
 // Array of valid timezones used to check for valid form input
     var $timezones = [

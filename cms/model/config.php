@@ -149,6 +149,7 @@ class configModel
         if ( isset( $_POST['image_bg_crop']) )
             $config['image_bg_crop'] = $_POST['image_bg_crop'];
 
+        $config['image_resize_original'] = empty($_POST['image_resize_original']) ? '0' : '1';
         if ( isset( $_POST['image_quality_original']) )
             $config['image_quality_original'] = $_POST['image_quality_original'];
         if ( isset( $_POST['image_maxside_original']) )

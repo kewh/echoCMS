@@ -210,37 +210,30 @@ class editModelInput extends editModel
         // STORE ORIGINAL IMAGE, as a jpg
         set_time_limit(120); // resets default time limit back to zero
 
-				if ($postedWidth >= $postedHeight){
-				    if ($postedWidth > $this->config['image_maxside_original']){
-				        $postedWidthResized = $this->config['image_maxside_original'];
-                $postedHeightResized = floor (($this->config['image_maxside_original'] / $postedWidth) * $postedHeight);
-				    }
-				    else {
-				        $postedWidthResized = $postedWidth;
-				        $postedHeightResized = $postedHeight;
-				    }
-				}
-				else {
-						if ($postedHeight > $this->config['image_maxside_original']){
-								$postedHeightResized = $this->config['image_maxside_original'];
-                $postedWidthResized = floor (($this->config['image_maxside_original'] / $postedHeight) * $postedWidth);
+        if ($this->config['image_resize_original']) {
+						if ($postedWidth >= $postedHeight){
+						    $postedWidthResized = $this->config['image_maxside_original'];
+			          $postedHeightResized = floor (($this->config['image_maxside_original'] / $postedWidth) * $postedHeight);
 						}
 						else {
-								$postedWidthResized = $postedWidth;
-								$postedHeightResized = $postedHeight;
+						    $postedHeightResized = $this->config['image_maxside_original'];
+			          $postedWidthResized = floor (($this->config['image_maxside_original'] / $postedHeight) * $postedWidth);
 						}
 				}
+				else {
+					  $postedHeightResized = $postedHeight;
+					  $postedWidthResized = $postedWidth;
+				}
 
-        $image_dst = imagecreatetruecolor($postedWidthResized, $postedHeightResized)
-            or $this->reportError('cms/model/edit_input processNewImage Store Original. Problem with imagecreatetruecolor');
+	      $image_dst = imagecreatetruecolor($postedWidthResized, $postedHeightResized)
+	          or $this->reportError('cms/model/edit_input processNewImage Store Original. Problem with imagecreatetruecolor');
 
-        if ($type == IMAGETYPE_PNG) {
-            $color = imagecolorallocatealpha($image_dst, 255, 255, 255, 127)
-                or $this->reportError('cms/model/edit_input.php processNewImage. Store Original. Problem with imagecolorallocatealpha');
-            imagefill($image_dst, 0, 0, $color)
-                or $this->reportError('cms/model/edit_input.php processNewImage. Store Original. Problem with imagefill');
-        }
-
+	      if ($type == IMAGETYPE_PNG) {
+	          $color = imagecolorallocatealpha($image_dst, 255, 255, 255, 127)
+	              or $this->reportError('cms/model/edit_input.php processNewImage. Store Original. Problem with imagecolorallocatealpha');
+	          imagefill($image_dst, 0, 0, $color)
+	              or $this->reportError('cms/model/edit_input.php processNewImage. Store Original. Problem with imagefill');
+	      }
         imagecopyresampled($image_dst, $image_src, 0, 0, 0, 0, $postedWidthResized, $postedHeightResized, $postedWidth, $postedHeight)
             or $this->reportError('cms/model/edit_input processNewImage Store Original. Problem with imagecopyresampled');
         imagejpeg($image_dst, CONFIG_DIR.'/content/images/original/'.$newImage , $this->config['image_quality_original'])

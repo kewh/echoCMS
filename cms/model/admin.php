@@ -370,7 +370,9 @@ class adminModel
         $result = $zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
         if ($result != true) reportError('Failed to create ZIP archive. zipImages. result: ' . $result);
         $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dirPath),\RecursiveIteratorIterator::LEAVES_ONLY);
-        foreach ($files as $name => $file)
+        set_time_limit(0);
+
+       foreach ($files as $name => $file)
         {
             if (!$file->isDir()) // directories are added automatically)
             {
