@@ -3,7 +3,7 @@
 /**
  * model class for get
  *
- * @since 1.0.8
+ * @since 1.0.12
  * @author Keith Wheatley
  * @package echocms\get
  */
@@ -62,8 +62,9 @@ class getModel
      *
      * @return array $items
      */
-	  public function items($topic = NULL, $subtopic = NULL)
-	  {
+     public function items($topic = NULL, $subtopic = NULL, $order = 'DESC')
+ 	   {
+        if ($order != 'DESC' AND $order != 'ASC') $order = 'DESC';
         if (strtolower($topic) == 'all') $topic = NULL;
         if (strtolower($subtopic) == 'all') $subtopic = NULL;
         if ($subtopic AND !$topic)
@@ -78,7 +79,7 @@ class getModel
         }
         $stmt = $this->connCMS->prepare(
             'SELECT id, date, heading, topic, subtopic, caption, text, download_src, download_name
-            FROM itemsTable ' . $sql .' ORDER BY date DESC');
+            FROM itemsTable ' . $sql .' ORDER BY date ' . $order);
         $stmt->execute();
         $items = array();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {

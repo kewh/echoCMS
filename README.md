@@ -65,9 +65,9 @@ The first call to the **item** function will get the most recent item for the sp
 ?>
 ````
 #### To get multiple items
-Use the **items** function (note the plural) to get an array of all items for a specified topic and/or subtopic (or use null or 'all' to get items for all topics or subtopics). Then do something like the following to loop around the array and echo the data:
+Use the **items** function (note the plural) to get an array of all items for a specified topic and/or subtopic (or use null or 'all' to get items for all topics or subtopics). Set third parameter to 'DESC' or 'ASC' to define date order; default is 'DESC'. Then do something like the following to loop around the array and echo the data:
 ````php
-    <?php $yourItems = $get->items('yourTopic','yourSubtopic');?>
+    <?php $yourItems = $get->items('yourTopic','yourSubtopic', 'ASC');?>
 
     <section>
         <?php foreach ($yourItems as $yourItem) { ?>
