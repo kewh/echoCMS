@@ -2,7 +2,7 @@
 /**
  * view for common/header
  *
- * @since 1.0.10
+ * @since 1.0.13
  * @author Keith Wheatley
  * @package echocms
  */
@@ -89,22 +89,23 @@
                         </ul>
                     </li>
 
-                 <?php if ($_SESSION['isLoggedAdmin']){ ?>
+
                     <li role='presentation' class='dropdown pull-right <?php if ($menu == 'admin') echo 'active';?>'>
                         <a class='dropdown-toggle' data-toggle='dropdown' href='#' role='button' aria-haspopup='true' aria-expanded='false'>
                           <span class='glyphicon glyphicon-cog'></span><span class='hidden-xs'><small> admin </small></span><span class='caret'></span>
                         </a>
                         <ul class='dropdown-menu'>
+                            <li role='presentation'><a href='<?php echo CONFIG_URL; ?>admin/manageBackups'>backups</a></li>
+                          <?php if ($_SESSION['isLoggedAdmin']){ ?>
                             <li role='presentation'><a href='<?php echo CONFIG_URL; ?>config/editConfig'>configure</a></li>
                             <li role='presentation'><a href='<?php echo CONFIG_URL; ?>auth/manageUsers'>users</a></li>
                             <li role='presentation'><a href='<?php echo CONFIG_URL; ?>auth/manageAccess'>access log</a></li>
                             <li role='presentation'><a href='<?php echo CONFIG_URL; ?>admin/recreateImages'>recreate images</a></li>
-                            <li role='presentation'><a href='<?php echo CONFIG_URL; ?>admin/manageBackups'>backup images</a></li>
                             <li role='presentation'><a href='<?php echo CONFIG_URL; ?>admin/bulkLoadImages'>bulk load images</a></li>
-
+                          <?php  } ?>
                         </ul>
                     </li>
-                <?php  } ?>
+
                 </ul>
           <?php } else { ?>
                 <ul class='nav nav-tabs'>

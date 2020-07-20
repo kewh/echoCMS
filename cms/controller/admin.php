@@ -3,7 +3,7 @@
  * controller class for admin
  *
  *
- * @since 1.0.10
+ * @since 1.0.13
  * @author Keith Wheatley
  * @package echocms\admin
  */
@@ -116,7 +116,7 @@ class admin
 	   */
     function manageBackups()
     {
-        if (!$this->authModel->isLogged('admin')) {
+        if (!$this->authModel->isLogged()) {
             $this->authModel->accessDenied();
             exit();
         }
@@ -136,9 +136,34 @@ class admin
      *
      *
 	   */
+    function createDatabaseBackup()
+    {
+        if (!$this->authModel->isLogged()) {
+            $this->authModel->accessDenied();
+            exit();
+        }
+        $config = $this->config = $this->configModel->readConfig();
+        $menu = 'admin';
+
+
+        $this->admin->createDatabaseBackup();
+
+        $backups = $this->admin->listBackups();
+
+        require CONFIG_DIR. '/view/common/header.php';
+        require CONFIG_DIR. '/view/admin/manageBackups.php';
+        require CONFIG_DIR. '/view/common/footer.php';
+    }
+
+    /**
+     *  Create image backup archive.
+     *
+     *
+     *
+	   */
     function createImageBackup()
     {
-        if (!$this->authModel->isLogged('admin')) {
+        if (!$this->authModel->isLogged()) {
             $this->authModel->accessDenied();
             exit();
         }
@@ -146,7 +171,7 @@ class admin
         $menu = 'admin';
 
         $src = CONFIG_DIR.'/content/images';
-        $dst = CONFIG_DIR.'/content/backups/images-' . date('Y-m-d-H-i-s');
+        $dst = CONFIG_DIR.'/content/backups/' . date('Y-m-d-H-i-s').'-images';
         $this->admin->copyDirectory($src, $dst);
 
         $backups = $this->admin->listBackups();
@@ -157,14 +182,14 @@ class admin
     }
 
     /**
-     *  Delete image backup archive.
+     *  Delete backup archive.
      *
      *
      *
 	   */
-    function deleteImageBackup($backup)
+    function deleteBackupArchive($backup)
     {
-        if (!$this->authModel->isLogged('admin')) {
+        if (!$this->authModel->isLogged()) {
             $this->authModel->accessDenied();
             exit();
         }
@@ -182,9 +207,7 @@ class admin
     }
 
     /**
-     *  Restore image backup to live, after movung live images to backup.
-     *
-     *
+     *  Restore image backup to live, after moving live images to backup.
      *
 	   */
     function restoreImageBackup($backup)
@@ -216,7 +239,7 @@ class admin
 	   */
     function downloadImageBackup($dir)
     {
-        if (!$this->authModel->isLogged('admin')) {
+        if (!$this->authModel->isLogged()) {
             $this->authModel->accessDenied();
             exit();
         }

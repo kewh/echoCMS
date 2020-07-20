@@ -9,4 +9,4 @@
 	  $config_URL_DIR = '';
 
 // fully resolved URL including any sub-directory.
-	  $config_URL = 'http://' . $_SERVER['HTTP_HOST'] . '/' . $config_URL_DIR;
+		$config_URL = 'https://' . $_SERVER['HTTP_HOST'] . '/' . $config_URL_DIR;

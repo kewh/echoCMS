@@ -224,14 +224,15 @@ The authentication model is designed for a single Admin managing multiple Users 
 * List user logins and banned IPs
 * List access log
 * Recreate images (usually after an image configuration setting has been updated)
-* Backup images
 * Bulk Load Images
+* Backup Images and Database
 
 ###### Logged-in User
 * Access to CMS functions
 * Change password
 * Change email address
 * Logout
+* Backup Images and Database
 
 ## Configuration
 

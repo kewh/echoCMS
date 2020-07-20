@@ -1,5 +1,8 @@
 ## CHANGE LOG
 
+## v.1.0.13 &nbsp;&nbsp;&nbsp;20 Jul 2020
+* allow non-Admin user to create and delete backups of images and database
+
 ## v.1.0.12 &nbsp;&nbsp;&nbsp;16 Apr 2020
 * add order parameter to $get->items function to allow for 'DESC' and 'ASC'
 

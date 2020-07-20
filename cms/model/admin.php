@@ -2,11 +2,14 @@
 /**
  * model class for admin
  *
- * @since 1.0.10
+ * @since 1.0.13
  * @author Keith Wheatley
  * @package echocms\admin
  */
 namespace echocms;
+
+use \MySQLDump;
+use \mysqli;
 
 class adminModel
 {
@@ -24,6 +27,27 @@ class adminModel
         $this->editInput = new editModelInput($this->dbh, $this->config);
         require CONFIG_DIR. '/model/edit_update.php';
         $this->editUpdate = new editModelUpdate($this->dbh, $this->config);
+    }
+
+    /**
+     * createDatabaseBackup
+     * Creates a new folder with backup file of all database tables
+     * Uses MySQLDump (see https://github.com/dg/MySQL-dump)
+     */
+    function createDatabaseBackup()
+    {
+      require CONFIG_DIR . '/assets/MySQLDump/MySQLDump.php';
+      require CONFIG_DIR . '/config/db.php';
+
+      $folder = date('Y-m-d-H-i-s-').'database';
+      $folderPath = CONFIG_DIR.'/content/backups/'.$folder;
+      if (!mkdir($folderPath)) {
+          $this->reportError('cms/model/admin.php. Failed to create folder for database backup: '. $folderPath);
+      }
+      $MySQLDump = new MySQLDump(new mysqli($db_host, $db_user, $db_pass, $db_name));
+      $filename = $folderPath.'/'.$db_name.'.sql';
+      $handle =  fopen($filename, 'wb');
+      $MySQLDump->write($handle);
     }
 
     /**
@@ -187,19 +211,21 @@ class adminModel
      */
     function recreateImages()
     {
+        // set headers for SSE stream
         header('Content-Type: text/event-stream');
         header('Cache-Control: no-cache');
+        header("Access-Control-Allow-Origin: *");
+
+        // backup images file
         $progressPercent = 0;
         $imagesCount = $this->countImages();
         if (empty($imagesCount)) $imagesCount = 1;
         $backupDate = date('Y-m-d-H-i-s');
-
-        // backup images file
         $this->eventMessage('Backup in progress', 5);
         $src = CONFIG_DIR.'/content/images';
-        $dst = CONFIG_DIR.'/content/backups/images-' . $backupDate;
+        $dst = CONFIG_DIR.'/content/backups/' . $backupDate.'-images';
         if ($this->copyDirectory($src, $dst))
-            $this->eventMessage('Backup complete to directory:  images-'. $backupDate, 9);
+            $this->eventMessage('Backup complete to directory: '.$backupDate.'-images', 9);
         else
             $this->eventMessage('Backing up images FAILED, did not proceed with recreate images', 100);
 
@@ -265,6 +291,7 @@ class adminModel
         rename($tempFolder, CONFIG_DIR.'/content/images')
             or error_log('model/edit_update recreateImages. rename and move of temp to live folder failed');
         $this->eventMessage('PROCESS COMPLETE - new images created.', 100);
+
     }
 
     /**
@@ -279,6 +306,7 @@ class adminModel
     {
         $d = array('message' => $message , 'progress' => $progress);
         echo "data: " . json_encode($d) . PHP_EOL . PHP_EOL;
+        echo PHP_EOL;
         ob_flush();
         flush();
     }
@@ -314,7 +342,7 @@ class adminModel
     function listBackups() {
         $objects = scandir(CONFIG_DIR.'/content/backups');
         foreach ($objects as $key => $value) {
-            if (!is_dir(CONFIG_DIR.'/content/backups/'.$value) || strtolower(substr($value, 0, 6)) != 'images') {
+            if (!is_dir(CONFIG_DIR.'/content/backups/'.$value) || (strtolower(substr($value, 20, 6)) != 'images' && strtolower(substr($value, 20, 8)) != 'database')) {
                 unset($objects[$key]);
             }
         }
@@ -369,22 +397,22 @@ class adminModel
         $zip = new \ZipArchive();
         $result = $zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
         if ($result != true) reportError('Failed to create ZIP archive. zipImages. result: ' . $result);
+
+        /* ref: https://stackoverflow.com/questions/4914750/how-to-zip-a-whole-folder-using-php */
         $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dirPath),\RecursiveIteratorIterator::LEAVES_ONLY);
         set_time_limit(0);
-
-       foreach ($files as $name => $file)
-        {
-            if (!$file->isDir()) // directories are added automatically)
-            {
+        foreach ($files as $name => $file) {
+            if (!$file->isDir()) { // directories are added automatically)
                 $filePath = $file->getRealPath();
                 $relativePath = substr($filePath, strlen($dirPath) + 1);
                 $zip->addFile($filePath, $relativePath);
             }
         }
+
         if (!$zip->close())
             reportError('Failed to close ZIP archive.');
-
         return $zipPath;
+
     }
 
     /**

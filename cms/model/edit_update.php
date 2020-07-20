@@ -559,54 +559,55 @@ class editModelUpdate extends editModel
      */
      function createCollageImage($images, $folder='images')
      {
-          // set up parameters for imagecopyresampled:
-          $ws = $this->config['image_width_square'];
-          $wd = $this->config['image_width_collage'];
-          $params = array();
+          if ( $this->config['image_create_collage'] && count($images) > 0) {
+              // set up parameters for imagecopyresampled:
+              $ws = $this->config['image_width_square'];
+              $wd = $this->config['image_width_collage'];
+              $params = array();
 
-          //                        dst_x      dst_y      src_x      src_y      dst_w      dst_h       src_w      src_h
+              //                        dst_x      dst_y      src_x      src_y      dst_w      dst_h       src_w      src_h
 
-          // 1 image - 1 big square images
-          $params[1][0] = array(        0,         0,         0,         0,       $wd,       $wd,        $ws,       $ws);
+              // 1 image - 1 big square images
+              $params[1][0] = array(        0,         0,         0,         0,       $wd,       $wd,        $ws,       $ws);
 
-          // 2 images - 2 portrait images
-          $params[2][0] = array(        0,         0, ($ws/2)-4,         0, ($wd/2)-4,       $wd,  ($ws/2)-4,       $ws);
-          $params[2][1] = array(($wd/2)+4,         0, ($ws/4)-2,         0, ($wd/2)-4,       $wd,  ($ws/2)-4,       $ws);
+              // 2 images - 2 portrait images
+              $params[2][0] = array(        0,         0, ($ws/2)-4,         0, ($wd/2)-4,       $wd,  ($ws/2)-4,       $ws);
+              $params[2][1] = array(($wd/2)+4,         0, ($ws/4)-2,         0, ($wd/2)-4,       $wd,  ($ws/2)-4,       $ws);
 
-          // 3 images - 1 landscape and 2 square images
-          $params[3][0] = array(        0,         0,         0,         0, ($wd/2)-4, ($wd/2)-4,        $ws,       $ws);
-          $params[3][1] = array(($wd/2)+4,         0,         0,         0, ($wd/2)-4, ($wd/2)-4,        $ws,       $ws);
-          $params[3][2] = array(        0, ($wd/2)+4,         0, ($ws/4)-2,       $wd, ($wd/2)-4,        $ws, ($ws/2)-4);
+              // 3 images - 1 landscape and 2 square images
+              $params[3][0] = array(        0,         0,         0,         0, ($wd/2)-4, ($wd/2)-4,        $ws,       $ws);
+              $params[3][1] = array(($wd/2)+4,         0,         0,         0, ($wd/2)-4, ($wd/2)-4,        $ws,       $ws);
+              $params[3][2] = array(        0, ($wd/2)+4,         0, ($ws/4)-2,       $wd, ($wd/2)-4,        $ws, ($ws/2)-4);
 
-          // 4 images - 4 square images
-          $params[4][0] = array(        0,         0,         0,         0, ($wd/2)-4, ($wd/2)-4,        $ws,       $ws);
-          $params[4][1] = array(($wd/2)+4,         0,         0,         0, ($wd/2)-4, ($wd/2)-4,        $ws,       $ws);
-          $params[4][2] = array(        0, ($wd/2)+4,         0,         0, ($wd/2)-4, ($wd/2)-4,        $ws,       $ws);
-          $params[4][3] = array(($wd/2)+4, ($wd/2)+4,         0,         0, ($wd/2)-4, ($wd/2)-4,        $ws,       $ws);
+              // 4 images - 4 square images
+              $params[4][0] = array(        0,         0,         0,         0, ($wd/2)-4, ($wd/2)-4,        $ws,       $ws);
+              $params[4][1] = array(($wd/2)+4,         0,         0,         0, ($wd/2)-4, ($wd/2)-4,        $ws,       $ws);
+              $params[4][2] = array(        0, ($wd/2)+4,         0,         0, ($wd/2)-4, ($wd/2)-4,        $ws,       $ws);
+              $params[4][3] = array(($wd/2)+4, ($wd/2)+4,         0,         0, ($wd/2)-4, ($wd/2)-4,        $ws,       $ws);
 
-          $images = array_slice($images, 0, 4);
-          $img_count = count($images);
-          if ($img_count > 0) $collageSrc = $images[0]['src']; // collage image has the same name as the first image
-          set_time_limit(30); // resets default 30secs time limit back to zero
-          $d = $this->config['image_width_collage'];
-          $image_dst = imagecreatetruecolor($d, $d)
-              or $this->reportError('cms/model/edit_update createCollageImage image: '. $images[0]['src'].'  Problem with imagecreatetruecolor');
-          $white = imagecolorallocate($image_dst, 255, 255, 255);
-          imagefill($image_dst, 0, 0, $white);
-          foreach ($images as $image) {
-              $temp_src = imagecreatefromjpeg(CONFIG_DIR.'/content/images/square/1x/' . $image['src']);
-              $p = $params[$img_count][$image['seq']];
-              imagecopyresampled($image_dst, $temp_src, $p[0], $p[1], $p[2], $p[3], $p[4], $p[5], $p[6], $p[7])
-                  or $this->reportError('cms/model/edit_update createCollageImage image: '. $image['src'].'  Problem with imagecopyresampled');
+              $images = array_slice($images, 0, 4);
+              $img_count = count($images);
+              if ($img_count > 0) $collageSrc = $images[0]['src']; // collage image has the same name as the first image
+              set_time_limit(30); // resets default 30secs time limit back to zero
+              $d = $this->config['image_width_collage'];
+              $image_dst = imagecreatetruecolor($d, $d)
+                  or $this->reportError('cms/model/edit_update createCollageImage image: '. $images[0]['src'].'  Problem with imagecreatetruecolor');
+              $white = imagecolorallocate($image_dst, 255, 255, 255);
+              imagefill($image_dst, 0, 0, $white);
+              foreach ($images as $image) {
+                  $temp_src = imagecreatefromjpeg(CONFIG_DIR.'/content/images/square/1x/' . $image['src']);
+                  $p = $params[$img_count][$image['seq']];
+                  imagecopyresampled($image_dst, $temp_src, $p[0], $p[1], $p[2], $p[3], $p[4], $p[5], $p[6], $p[7])
+                      or $this->reportError('cms/model/edit_update createCollageImage image: '. $image['src'].'  Problem with imagecopyresampled');
+              }
+
+              $dst_URL = CONFIG_DIR.'/content/'.$folder.'/collage/' . $collageSrc;
+              imagejpeg($image_dst, $dst_URL, $this->config['image_quality'])
+                  or $this->reportError('cms/model/edit_update createCollageImage image: '. $collageSrc.'  Problem with imagejpeg writing collage image');
+
+              imagedestroy($image_dst);
           }
-
-          $dst_URL = CONFIG_DIR.'/content/'.$folder.'/collage/' . $collageSrc;
-          imagejpeg($image_dst, $dst_URL, $this->config['image_quality'])
-              or $this->reportError('cms/model/edit_update createCollageImage image: '. $collageSrc.'  Problem with imagejpeg writing collage image');
-
-          imagedestroy($image_dst);
-
-        }
+     }
 
     /**
      * Create a pending item on database.
