@@ -1,5 +1,10 @@
 ## CHANGE LOG
 
+## v.1.0.14 &nbsp;&nbsp;&nbsp;22 Oct 2020
+* update for PHP 7.4.9
+* redesign of items listing page to open up items for topics in tabs
+* corrections to base URL and scrset code
+
 ## v.1.0.13 &nbsp;&nbsp;&nbsp;20 Jul 2020
 * allow non-Admin user to create and delete backups of images and database
 

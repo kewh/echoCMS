@@ -2,7 +2,7 @@
 /**
  * view for common/header
  *
- * @since 1.0.13
+ * @since 1.0.14
  * @author Keith Wheatley
  * @package echocms
  */
@@ -22,7 +22,7 @@
     <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/tapmodo/Jcrop@0.9.12/css/jquery.Jcrop.min.css'>
     <link rel='stylesheet' href='<?php echo CONFIG_URL; ?>assets/css/selectize.bootstrap3.css'>
     <link rel='stylesheet' href='<?php echo CONFIG_URL; ?>assets/css/pick-a-color-1.2.3.min.css'>
-    <link rel='stylesheet' href='<?php echo CONFIG_URL; ?>assets/css/echocms.css'>
+    <link rel='stylesheet' href='<?php echo CONFIG_URL; ?>assets/css/echocms.1.0.14.css'>
     <!-- jQuery needed here because various page specific scripts are loaded before footer -->
     <script src='https://code.jquery.com/jquery-1.11.2.min.js'></script>
 </head>
@@ -75,12 +75,21 @@
           <div class='col-xs-12'>
           <?php if ( isset($_SESSION['isLogged']) && $_SESSION['isLogged'] ) { ?>
               <ul class='nav nav-tabs'>
-                    <li role='presentation' class='<?php if ($menu == 'create') echo 'active' ?>'><a href='<?php echo CONFIG_URL; ?>edit/input/create'><span class='glyphicon glyphicon-open-file'</span> create<span class='hidden-xs'> item</span></a></li>
-                    <li role='presentation' class='<?php if ($menu == 'update') echo 'active' ?>'><a href='<?php echo CONFIG_URL; ?>edit/items/'><span class='glyphicon glyphicon-edit'</span> edit<span class='hidden-xs'> item</span></a></li>
-                    <li role='presentation' class='<?php if ($menu == 'offline') echo 'active' ?>'><a href='<?php echo CONFIG_URL; ?>edit/items/offline'><span class='glyphicon glyphicon-list-alt'</span> offline<span class='hidden-xs'> items</span></a></li>
+                    <li role='presentation' class='<?php if ($menu == 'create') echo 'active' ?>'>
+                        <a href='<?php echo CONFIG_URL; ?>edit/input/create'>
+                            <span class='glyphicon glyphicon-open-file'></span> create item</a>
+                    </li>
+                    <li role='presentation' class='<?php if ($menu == 'update') echo 'active' ?>'>
+                        <a href='<?php echo CONFIG_URL; ?>edit/items/'>
+                            <span class='glyphicon glyphicon-edit'></span> edit items</a>
+                    </li>
+                    <li role='presentation' class='<?php if ($menu == 'offline') echo 'active' ?>'>
+                        <a href='<?php echo CONFIG_URL; ?>edit/items/offline'>
+                            <span class='glyphicon glyphicon-list-alt'></span> offline items</a>
+                    </li>
                     <li role='presentation' class='dropdown pull-right <?php if ($menu == 'user') echo 'active';?>'>
                         <a class='dropdown-toggle' data-toggle='dropdown' href='#' role='button' aria-haspopup='true' aria-expanded='false'>
-                          <span class='glyphicon glyphicon-user' ></span><span class='hidden-xs'><small> <?php echo $_SESSION['isLoggedEmail'];?></small></span><span class='caret'></span>
+                          <span class='glyphicon glyphicon-user'></span><span class='hidden-xs'><small> <?php echo $_SESSION['isLoggedEmail'];?></small></span><span class='caret'></span>
                         </a>
                         <ul class='dropdown-menu'>
                             <li> <a href='<?php echo CONFIG_URL; ?>auth/changeEmail'>change your email</a></li>

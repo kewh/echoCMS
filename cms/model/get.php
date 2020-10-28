@@ -3,7 +3,7 @@
 /**
  * model class for get
  *
- * @since 1.0.12
+ * @since 1.0.14
  * @author Keith Wheatley
  * @package echocms\get
  */
@@ -13,23 +13,12 @@ class getModel
 
     function __construct()
     {
-        // The definition of URL and file paths allow for the script including this (get.php)
-        // and the CMS directory to be in same or different (sub)directories
-        define('CONTENT_DIR', substr(__DIR__,0,-5));
-	      require CONTENT_DIR . 'config/db.php';
+        $contentDir = getcwd().'/cms/';
+        require $contentDir . 'config/url.php';
+	      require $contentDir . 'config/db.php';
         $this->connCMS = new \PDO('mysql:host=' .$db_host. ';dbname=' .$db_name . ';charset=utf8mb4', $db_user, $db_pass, array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION));
         $this->config = $this->getConfig();
-        require CONTENT_DIR . 'config/url.php';
-        if ($config_URL_DIR) $config_URL_DIR =  '/' . $config_URL_DIR;
-        define('CONTENT_URL', 'cms/content/');
-        //define('CONTENT_URL', '//' . $_SERVER['HTTP_HOST'] . $config_URL_DIR . '/cms/content/');
-/*
-    error_log ('cms/model/get.php construct. __DIR__: ' . print_r(__DIR__, true) );
-    error_log ('cms/model/get.php construct. $_SERVER[HTTP_HOST]: ' . print_r($_SERVER['HTTP_HOST'], true) );
-    error_log ('cms/model/get.php construct. $config_URL_DIR: ' . print_r($config_URL_DIR, true) );
-    error_log ('cms/model/get.php construct. CONTENT_DIR: ' . print_r(CONTENT_DIR, true) );
-    error_log ('cms/model/get.php construct. CONTENT_URL: ' . print_r(CONTENT_URL, true) );
-*/
+        define('CONTENT_URL', $config_URL.'/cms/content/');
 	  }
 
     /**
@@ -452,7 +441,7 @@ class getModel
         $collage['collage'] = array();
         if ($stmt->rowCount() > 0) {
           $collage_src = $stmt->fetch(\PDO::FETCH_ASSOC)['src'];
-          $collage['collage']['src'] = CONTENT_URL .'images/collage/'.$collage_src;
+          $collage['collage']['src'] = '/'.CONTENT_URL .'images/collage/'.$collage_src;
         }
 
         //error_log ('cms/model/get.php  itemCollage. $collage: ' . print_r($collage, true) );
@@ -529,9 +518,9 @@ class getModel
                                   '2x-height' => $image_height_panorama *2,
                                   '3x-height' => $image_height_panorama *3,
                                   'srcset-w' =>
-                                          $url.'panorama/1x/'.$image['src'] . ' ' . $this->config['image_width_panorama']  . 'w, ' .
+                                          $url.$panorama_3x.$image['src'] . ' ' .  $this->config['image_width_panorama'] *3 . 'w, '.
                                           $url.$panorama_2x.$image['src'] . ' ' .  $this->config['image_width_panorama'] *2 . 'w, ' .
-                                          $url.$panorama_3x.$image['src'] . ' ' .  $this->config['image_width_panorama'] *3 . 'w',
+                                          $url.'panorama/1x/'.$image['src'] . ' ' . $this->config['image_width_panorama']  . 'w',
                                   'srcset-d' =>
                                           $url.'panorama/1x/'.$image['src'] . ', ' .
                                           $url.$panorama_2x.$image['src'] . ' x2, ' .
@@ -548,9 +537,9 @@ class getModel
                                   '2x-height' => $image_height_portrait *2,
                                   '3x-height' => $image_height_portrait *3,
                                   'srcset-w' =>
-                                          $url.'portrait/1x/'.$image['src']. ' ' .  $this->config['image_width_portrait']  . 'w, ' .
+                                          $url.$portrait_3x.$image['src'] . ' ' .  $this->config['image_width_portrait'] *3 . 'w, ' .
                                           $url.$portrait_2x.$image['src'] . ' ' .  $this->config['image_width_portrait'] *2 . 'w, ' .
-                                          $url.$portrait_3x.$image['src'] . ' ' .  $this->config['image_width_portrait'] *3 . 'w',
+                                          $url.'portrait/1x/'.$image['src']. ' ' .  $this->config['image_width_portrait']  . 'w',
                                   'srcset-d' =>
                                           $url.'portrait/1x/'.$image['src'] . ', ' .
                                           $url.$portrait_2x.$image['src']. ' x2, ' .
@@ -567,9 +556,10 @@ class getModel
                                   '2x-height' => $image_height_landscape *2,
                                   '3x-height' => $image_height_landscape *3,
                                   'srcset-w' =>
-                                          $url.'landscape/1x/'.$image['src'] . ' ' .  $this->config['image_width_landscape'] . 'w, ' .
+                                          $url.$landscape_3x.$image['src'] . ' ' .  $this->config['image_width_landscape'] *3 . 'w, ' .
                                           $url.$landscape_2x.$image['src'] . ' ' .  $this->config['image_width_landscape'] *2 . 'w, ' .
-                                          $url.$landscape_3x.$image['src'] . ' ' .  $this->config['image_width_landscape'] *3 . 'w',
+                                          $url.'landscape/1x/'.$image['src'] . ' ' .  $this->config['image_width_landscape'] . 'w' ,
+
                                   'srcset-d' =>
                                           $url.'landscape/1x/'.$image['src'] . ', ' .
                                           $url.$landscape_2x.$image['src'] . ' x2, ' .
@@ -586,9 +576,10 @@ class getModel
                                   '2x-height' => $image_height_square *2,
                                   '3x-height' => $image_height_square *3,
                                   'srcset-w' =>
-                                          $url.'square/1x/'.$image['src'] . ' ' .  $this->config['image_width_square'] . 'w, ' .
+                                          $url.$square_3x.$image['src'] . ' ' .  $this->config['image_width_square'] *3 . 'w, ' .
                                           $url.$square_2x.$image['src'] . ' ' .  $this->config['image_width_square'] *2 . 'w, ' .
-                                          $url.$square_3x.$image['src'] . ' ' .  $this->config['image_width_square'] *3 . 'w',
+                                          $url.'square/1x/'.$image['src'] . ' ' .  $this->config['image_width_square'] . 'w' ,
+
                                   'srcset-d' =>
                                           $url.'square/1x/'.$image['src'] . ', ' .
                                           $url.$square_2x.$image['src'] . ' x2, ' .
@@ -605,9 +596,11 @@ class getModel
                                   '2x-height' => $image['height_fluid'] *2,
                                   '3x-height' => $image['height_fluid'] *3,
                                   'srcset-w' =>
-                                          $url.'fluid/1x/'.$image['src'] . ' ' .  $image['width_fluid'] . 'w, ' .
+                                          $url.$fluid_3x.$image['src'] . ' ' .  $image['width_fluid'] *3 . 'w, ' .
                                           $url.$fluid_2x.$image['src'] . ' ' .  $image['width_fluid'] *2 . 'w, ' .
-                                          $url.$fluid_3x.$image['src'] . ' ' .  $image['width_fluid'] *3 . 'w',
+                                          $url.'fluid/1x/'.$image['src'] . ' ' .  $image['width_fluid'] . 'w' ,
+
+
                                   'srcset-d' =>
                                           $url.'fluid/1x/'.$image['src'] . ', ' .
                                           $url.$fluid_2x.$image['src'] . ' x2, ' .
